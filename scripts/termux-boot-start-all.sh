@@ -25,7 +25,7 @@ if ! pgrep -f "fb_internal.db" > /dev/null; then
     nohup filebrowser -d ~/.config/filebrowser/fb_internal.db > /dev/null 2>&1 &
 fi
 
-echo "=== [5/5] Launching Debian PRoot Server Stack (Nginx + Tunnel + AdGuard) ==="
+echo "=== [5/5] Launching Debian PRoot Server Stack (Nginx + Tunnel + AdGuard + Health Monitor) ==="
 nohup proot-distro login debian -- bash -c "
     service nginx start
     if ! pgrep -x cloudflared > /dev/null; then
@@ -33,6 +33,9 @@ nohup proot-distro login debian -- bash -c "
     fi
     if [ -d /root/AdGuardHome ] && ! pgrep -f 'AdGuardHome' > /dev/null; then
         cd /root/AdGuardHome && nohup ./AdGuardHome -c AdGuardHome.yaml > /dev/null 2>&1 &
+    fi
+    if ! pgrep -f 'sys_monitor.py' > /dev/null; then
+        nohup python3 /root/tablet-server-infra/scripts/sys_monitor.py > /dev/null 2>&1 &
     fi
 " > /dev/null 2>&1 &
 

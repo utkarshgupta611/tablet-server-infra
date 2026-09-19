@@ -239,6 +239,131 @@
             font-size: 0.85rem;
             border-top: 1px solid var(--border-color);
         }
+
+        .metrics-container {
+            margin-bottom: 3rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.75rem;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+            transition: border-color 0.3s ease;
+        }
+
+        .metrics-container:hover {
+            border-color: rgba(99, 102, 241, 0.3);
+        }
+
+        .metrics-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.25rem;
+        }
+
+        .section-heading {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin: 0;
+        }
+
+        .live-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.82rem;
+            color: var(--status-green);
+            font-weight: 500;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+        }
+
+        .pulse-dot-small {
+            width: 6px;
+            height: 6px;
+            background-color: var(--status-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--status-green);
+            animation: pulse 2s infinite;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .metric-card {
+            background: rgba(10, 13, 20, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1.25rem;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+        }
+
+        .metric-card:hover {
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px var(--accent-glow);
+        }
+
+        .metric-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .metric-title {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .metric-value {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: monospace;
+        }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 0.75rem;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 999px;
+            transition: width 0.6s ease;
+        }
+
+        .badge-status {
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            background: rgba(99, 102, 241, 0.15);
+            color: var(--accent-primary);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
     </style>
 </head>
 
@@ -264,6 +389,51 @@
             <h1 class="hero-title">Android Tablet Home Server</h1>
             <p class="hero-subtitle">High-performance edge-proxied home server powered by ARM64 Termux, Debian PRoot,
                 and Cloudflare Tunnels.</p>
+        </section>
+
+        <!-- System Health Monitor Container -->
+        <section class="metrics-container">
+            <div class="metrics-header-bar">
+                <h2 class="section-heading"><span>📊</span> System Health Monitor</h2>
+                <span class="live-tag"><span class="pulse-dot-small"></span> Real-time</span>
+            </div>
+            <div class="metrics-grid">
+                <div class="metric-card" id="card-cpu">
+                    <div class="metric-header">
+                        <span class="metric-title">CPU Load</span>
+                        <span class="metric-value" id="val-cpu">--%</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="bar-cpu"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="card-ram">
+                    <div class="metric-header">
+                        <span class="metric-title">RAM Memory</span>
+                        <span class="metric-value" id="val-ram">-- MB</span>
+                    </div>
+                    <div class="progress-bar-bg">
+                        <div class="progress-bar-fill" id="bar-ram"></div>
+                    </div>
+                </div>
+
+                <div class="metric-card" id="card-battery">
+                    <div class="metric-header">
+                        <span class="metric-title">Battery & Power</span>
+                        <span class="badge-status" id="val-battery-status">Online</span>
+                    </div>
+                    <div class="metric-value" id="val-battery">--%</div>
+                </div>
+
+                <div class="metric-card" id="card-uptime">
+                    <div class="metric-header">
+                        <span class="metric-title">Server Uptime</span>
+                        <span class="badge-status">Active</span>
+                    </div>
+                    <div class="metric-value" id="val-uptime">--</div>
+                </div>
+            </div>
         </section>
 
         <section class="grid">
@@ -302,6 +472,46 @@
     <footer>
         <p>&copy; 2026 chozzen.xyz • Powered by Cloudflare Edge & Debian PRoot</p>
     </footer>
+
+    <script>
+        async function updateStats() {
+            try {
+                const res = await fetch('/stats.json?t=' + Date.now());
+                if (!res.ok) return;
+                const data = await res.json();
+
+                // CPU
+                if (data.cpu && data.cpu.percent !== undefined) {
+                    const cpuPct = data.cpu.percent;
+                    document.getElementById('val-cpu').innerText = cpuPct + '%';
+                    document.getElementById('bar-cpu').style.width = Math.min(100, Math.max(0, cpuPct)) + '%';
+                }
+
+                // RAM
+                if (data.ram) {
+                    const ramPct = data.ram.percent;
+                    document.getElementById('val-ram').innerText = `${data.ram.used_mb} / ${data.ram.total_mb} MB`;
+                    document.getElementById('bar-ram').style.width = Math.min(100, Math.max(0, ramPct)) + '%';
+                }
+
+                // Battery
+                if (data.battery) {
+                    document.getElementById('val-battery').innerText = data.battery.capacity + '%';
+                    document.getElementById('val-battery-status').innerText = data.battery.status;
+                }
+
+                // Uptime
+                if (data.uptime) {
+                    document.getElementById('val-uptime').innerText = data.uptime;
+                }
+            } catch (e) {
+                console.error('Stats fetch error:', e);
+            }
+        }
+
+        updateStats();
+        setInterval(updateStats, 3000);
+    </script>
 </body>
 
 </html>

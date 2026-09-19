@@ -33,10 +33,15 @@ if [ -d "$REPO_DIR/web" ]; then
     echo "Web dashboard assets updated across Termux host webroot (/data/data/com.termux/files/home/www) and Debian webroots."
 fi
 
-echo "=== [4/4] Validating & Restarting Nginx ==="
+echo "=== [4/4] Validating & Restarting Services ==="
 nginx -t 2>/dev/null || true
 pkill -9 -f nginx 2>/dev/null || true
 nohup nginx >/dev/null 2>&1 &
+
+pkill -f "sys_monitor.py" 2>/dev/null || true
+if [ -f "$REPO_DIR/scripts/sys_monitor.py" ]; then
+    nohup python3 "$REPO_DIR/scripts/sys_monitor.py" > /dev/null 2>&1 &
+fi
 sleep 1
 
 echo "=============================================================================="
