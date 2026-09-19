@@ -596,15 +596,7 @@
                     }
                 }
             } catch (err) {
-                console.warn('Backend auth endpoint offline/unreachable:', err);
-            }
-
-            // Resilient fallback if backend has not been pulled/reloaded yet
-            if (!isVerified) {
-                const cleanInput = passwordInput.trim().toLowerCase();
-                if (['chozzen2026', 'chozzen', 'yournewpassword', 'admin2026'].includes(cleanInput)) {
-                    isVerified = true;
-                }
+                console.error('Backend auth endpoint offline/unreachable:', err);
             }
 
             if (isVerified) {

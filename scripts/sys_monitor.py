@@ -57,11 +57,8 @@ def is_valid_password(pwd_input):
     if not pwd_input:
         return False
     pwd_clean = pwd_input.strip()
-    calc_hash = hashlib.sha256((AUTH_SALT + pwd_clean).encode()).hexdigest()
-    if calc_hash == get_server_password_hash():
-        return True
     
-    # Direct match check against .chozzen_pass file
+    # 1. If password file exists, it is the SOLE authority!
     possible_paths = [
         "/root/.chozzen_pass",
         "/data/data/com.termux/files/home/.chozzen_pass",
@@ -72,15 +69,15 @@ def is_valid_password(pwd_input):
             try:
                 with open(p, "r") as f:
                     file_pwd = f.read().strip()
-                    if file_pwd and (pwd_clean == file_pwd or pwd_input == file_pwd):
-                        return True
+                    if file_pwd:
+                        # ONLY the password in this file is accepted!
+                        return pwd_clean == file_pwd or pwd_input == file_pwd
             except Exception:
                 pass
 
-    # Safety fallbacks
-    if pwd_clean in ["chozzen2026", "chozzen", "YourNewPassword", "admin2026"]:
-        return True
-    return False
+    # 2. Only if NO password file exists at all, fall back to initial default
+    calc_hash = hashlib.sha256((AUTH_SALT + pwd_clean).encode()).hexdigest()
+    return calc_hash == DEFAULT_HASH
 
 def get_cpu_times():
     try:
