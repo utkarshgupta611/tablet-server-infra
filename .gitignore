@@ -1,0 +1,19 @@
+# Credentials & Secrets (CRITICAL SECURITY)
+*.json
+cert.pem
+*.key
+*.pem
+*.crt
+
+# Local State & Databases
+*.db
+filebrowser.db
+
+# Logs & PID files
+*.log
+*.pid
+
+# OS & Environment
+.DS_Store
+Thumbs.db
+.env

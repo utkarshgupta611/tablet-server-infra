@@ -1,0 +1,9 @@
+# Cloudflare Tunnel Configuration Template
+# Note: Ensure the tunnel UUID and credentials path match your local deployment environment.
+tunnel: a80246c7-82b8-48fc-8324-1a5055dc0d1d
+credentials-file: /root/.cloudflared/a80246c7-82b8-48fc-8324-1a5055dc0d1d.json
+
+ingress:
+  - hostname: chozzen.xyz
+    service: http://127.0.0.1:8085
+  - service: http_status:404
