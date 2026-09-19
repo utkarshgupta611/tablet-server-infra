@@ -62,21 +62,26 @@ def get_battery_info():
     capacity = 100
     status = "Discharging"
     
-    # 1. Try termux-battery-status command
-    try:
-        proc = subprocess.run(["termux-battery-status"], capture_output=True, text=True, timeout=2)
-        if proc.returncode == 0 and proc.stdout:
-            b_data = json.loads(proc.stdout)
-            capacity = b_data.get("percentage", 100)
-            plugged = b_data.get("plugged", "UNPLUGGED")
-            raw_status = b_data.get("status", "DISCHARGING")
-            if plugged != "UNPLUGGED":
-                status = "Charging" if raw_status == "CHARGING" else "Plugged In"
-            else:
-                status = "Discharging"
-            return {"capacity": capacity, "status": status}
-    except Exception:
-        pass
+    # 1. Try termux-battery-status command with full paths
+    termux_cmds = [
+        "/data/data/com.termux/files/usr/bin/termux-battery-status",
+        "termux-battery-status"
+    ]
+    for cmd in termux_cmds:
+        try:
+            proc = subprocess.run([cmd], capture_output=True, text=True, timeout=2)
+            if proc.returncode == 0 and proc.stdout:
+                b_data = json.loads(proc.stdout)
+                capacity = b_data.get("percentage", 100)
+                plugged = b_data.get("plugged", "UNPLUGGED")
+                raw_status = b_data.get("status", "DISCHARGING")
+                if plugged != "UNPLUGGED" or raw_status == "CHARGING":
+                    status = "Charging"
+                else:
+                    status = "Discharging"
+                return {"capacity": capacity, "status": status}
+        except Exception:
+            pass
 
     # 2. Check power_supply USB / AC online states
     usb_online = False
@@ -89,25 +94,33 @@ def get_battery_info():
             except Exception:
                 pass
 
-    # 3. Read battery capacity and status files
-    cap_path = "/sys/class/power_supply/battery/capacity"
-    stat_path = "/sys/class/power_supply/battery/status"
+    # 3. Read battery capacity & status files (support bms & battery nodes)
+    cap_paths = ["/sys/class/power_supply/battery/capacity", "/sys/class/power_supply/bms/capacity"]
+    stat_paths = ["/sys/class/power_supply/battery/status", "/sys/class/power_supply/bms/status"]
     
-    try:
-        if os.path.exists(cap_path):
-            with open(cap_path, "r") as f:
-                capacity = int(f.read().strip())
-        if os.path.exists(stat_path):
-            with open(stat_path, "r") as f:
-                raw_stat = f.read().strip().capitalize()
-                if raw_stat:
-                    status = raw_stat
-                elif usb_online:
-                    status = "Charging"
-                else:
-                    status = "Discharging"
-    except Exception:
-        pass
+    for p in cap_paths:
+        if os.path.exists(p):
+            try:
+                with open(p, "r") as f:
+                    capacity = int(f.read().strip())
+                    break
+            except Exception:
+                pass
+
+    for p in stat_paths:
+        if os.path.exists(p):
+            try:
+                with open(p, "r") as f:
+                    raw_stat = f.read().strip().capitalize()
+                    if raw_stat in ["Charging", "Full"]:
+                        status = "Charging"
+                    elif raw_stat == "Discharging":
+                        status = "Discharging"
+                    elif usb_online:
+                        status = "Charging"
+                    break
+            except Exception:
+                pass
         
     return {"capacity": capacity, "status": status}
 
