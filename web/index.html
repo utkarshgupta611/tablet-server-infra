@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +36,7 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background: 
+            background:
                 linear-gradient(rgba(10, 13, 20, 0.75), rgba(10, 13, 20, 0.85)),
                 url('chozzen1.jpeg') no-repeat center center / cover fixed;
         }
@@ -130,9 +131,20 @@
         }
 
         @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-            100% { opacity: 1; transform: scale(1); }
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
         .hero-title {
@@ -229,6 +241,7 @@
         }
     </style>
 </head>
+
 <body>
     <header>
         <a href="/" class="brand">
@@ -249,7 +262,8 @@
                 <span>Server Online & Secure</span>
             </div>
             <h1 class="hero-title">Android Tablet Home Server</h1>
-            <p class="hero-subtitle">High-performance edge-proxied home server powered by ARM64 Termux, Debian PRoot, and Cloudflare Tunnels.</p>
+            <p class="hero-subtitle">High-performance edge-proxied home server powered by ARM64 Termux, Debian PRoot,
+                and Cloudflare Tunnels.</p>
         </section>
 
         <section class="grid">
@@ -259,7 +273,8 @@
                         <div class="card-icon">📁</div>
                     </div>
                     <h2 class="card-title">File Browser</h2>
-                    <p class="card-desc">Access, upload, and manage files stored on the tablet home server via web interface.</p>
+                    <p class="card-desc">Access, upload, and manage files stored on the tablet home server via web
+                        interface.</p>
                 </div>
                 <div class="card-action">
                     <span>Open File Browser</span>
@@ -273,7 +288,8 @@
                         <div class="card-icon">⚡</div>
                     </div>
                     <h2 class="card-title">System Architecture</h2>
-                    <p class="card-desc">Explore technical specifications, network topology, and runtime infrastructure.</p>
+                    <p class="card-desc">Explore technical specifications, network topology, and runtime infrastructure.
+                    </p>
                 </div>
                 <div class="card-action">
                     <span>View Specifications</span>
@@ -287,4 +303,5 @@
         <p>&copy; 2026 chozzen.xyz • Powered by Cloudflare Edge & Debian PRoot</p>
     </footer>
 </body>
+
 </html>
