@@ -7,10 +7,23 @@
     <meta name="description" content="Technical Details & Architecture for chozzen.xyz Android Tablet Home Server">
     <title>System Architecture — chozzen.xyz</title>
     <script>
-        (function() {
-            const session = localStorage.getItem('chozzen_session') || sessionStorage.getItem('chozzen_session');
-            if (!session) {
+        (async function() {
+            const token = localStorage.getItem('chozzen_session') || sessionStorage.getItem('chozzen_session');
+            if (!token) {
                 window.location.replace('/login.html?redirect=' + encodeURIComponent(window.location.pathname));
+                return;
+            }
+            try {
+                const res = await fetch('/api/auth/verify', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                if (!res.ok) {
+                    localStorage.removeItem('chozzen_session');
+                    sessionStorage.removeItem('chozzen_session');
+                    window.location.replace('/login.html?redirect=' + encodeURIComponent(window.location.pathname));
+                }
+            } catch (e) {
+                // If offline, allow existing stored token
             }
         })();
     </script>
@@ -329,7 +342,10 @@
     </footer>
 
     <script>
-        function logout() {
+        async function logout() {
+            try {
+                await fetch('/api/logout', { method: 'POST' });
+            } catch (e) {}
             localStorage.removeItem('chozzen_session');
             localStorage.removeItem('chozzen_user');
             sessionStorage.removeItem('chozzen_session');
