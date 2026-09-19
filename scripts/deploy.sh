@@ -11,7 +11,7 @@ REPO_DIR="$(dirname "$SCRIPT_DIR")"
 
 echo "=== [1/4] Pulling latest repository updates ==="
 cd "$REPO_DIR"
-git pull origin main || echo "Warning: git pull failed or repository not backed by remote yet."
+git pull origin master || git pull || echo "Warning: git pull failed or repository not backed by remote yet."
 
 echo "=== [2/4] Syncing Nginx configuration ==="
 if [ -f "$REPO_DIR/configs/nginx/default.conf" ]; then
