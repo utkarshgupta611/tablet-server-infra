@@ -19,7 +19,7 @@ echo "=== [3/4] Starting Cloudflare Tunnel (redmi-tunnel) ==="
 if pgrep -x "cloudflared" > /dev/null; then
     echo "Cloudflare Tunnel (cloudflared) is already running."
 else
-    nohup cloudflared tunnel run redmi-tunnel > /root/.cloudflared/tunnel.log 2>&1 &
+    nohup cloudflared tunnel --protocol http2 run redmi-tunnel > /root/.cloudflared/tunnel.log 2>&1 &
     echo "Cloudflare Tunnel started."
 fi
 

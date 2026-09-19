@@ -29,7 +29,7 @@ echo "=== [5/5] Launching Debian PRoot Server Stack (Nginx + Tunnel + AdGuard + 
 nohup proot-distro login debian -- bash -c "
     service nginx start
     if ! pgrep -x cloudflared > /dev/null; then
-        nohup cloudflared tunnel run redmi-tunnel > /root/.cloudflared/tunnel.log 2>&1 &
+        nohup cloudflared tunnel --protocol http2 run redmi-tunnel > /root/.cloudflared/tunnel.log 2>&1 &
     fi
     if [ -d /root/AdGuardHome ] && ! pgrep -f 'AdGuardHome' > /dev/null; then
         cd /root/AdGuardHome && nohup ./AdGuardHome -c AdGuardHome.yaml > /dev/null 2>&1 &
