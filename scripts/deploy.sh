@@ -32,9 +32,10 @@ if [ -d "$REPO_DIR/web" ]; then
     echo "Web dashboard assets updated across all webroots (/var/www/dashboard & /var/www/html)."
 fi
 
-echo "=== [4/4] Validating & Reloading Nginx ==="
+echo "=== [4/4] Validating & Restarting Nginx ==="
 nginx -t
-nginx -s reload 2>/dev/null || service nginx reload 2>/dev/null || true
+pkill -9 nginx 2>/dev/null || true
+nginx 2>/dev/null || service nginx restart 2>/dev/null || true
 
 echo "=============================================================================="
 echo "Deployment successful! Live at https://chozzen.xyz"
