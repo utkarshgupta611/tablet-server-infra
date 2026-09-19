@@ -34,9 +34,11 @@ if [ -d "$REPO_DIR/web" ]; then
 fi
 
 echo "=== [4/4] Validating & Restarting Services ==="
-nginx -t 2>/dev/null || true
-pkill -9 -f nginx 2>/dev/null || true
-nohup nginx >/dev/null 2>&1 &
+nginx -t || true
+service nginx restart 2>/dev/null || service nginx start 2>/dev/null || {
+    pkill -9 -f nginx 2>/dev/null || true
+    nohup nginx >/dev/null 2>&1 &
+}
 
 pkill -f "sys_monitor.py" 2>/dev/null || true
 if [ -f "$REPO_DIR/scripts/sys_monitor.py" ]; then
