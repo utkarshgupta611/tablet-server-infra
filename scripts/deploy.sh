@@ -15,7 +15,9 @@ git pull origin master || git pull || echo "Warning: git pull failed or reposito
 
 echo "=== [2/4] Syncing Nginx configuration ==="
 if [ -f "$REPO_DIR/configs/nginx/default.conf" ]; then
-    cp "$REPO_DIR/configs/nginx/default.conf" /etc/nginx/sites-available/default
+    mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d
+    cp "$REPO_DIR/configs/nginx/default.conf" /etc/nginx/sites-available/default 2>/dev/null || true
+    cp "$REPO_DIR/configs/nginx/default.conf" /etc/nginx/conf.d/default.conf 2>/dev/null || true
     echo "Nginx site configuration updated."
 fi
 
