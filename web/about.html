@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Technical Details & Architecture for chozzen.xyz Android Tablet Home Server">
     <title>System Architecture — chozzen.xyz</title>
+    <script>
+        (function() {
+            const session = localStorage.getItem('chozzen_session') || sessionStorage.getItem('chozzen_session');
+            if (!session) {
+                window.location.replace('/login.html?redirect=' + encodeURIComponent(window.location.pathname));
+            }
+        })();
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -274,6 +282,7 @@
             <a href="/" class="nav-link">Home</a>
             <a href="/files/" class="nav-link">FileBrowser</a>
             <a href="/about" class="nav-link active">Architecture</a>
+            <a href="javascript:void(0)" onclick="logout()" class="nav-link" style="color: #f87171;">Log Out</a>
         </nav>
     </header>
 
@@ -318,6 +327,16 @@
     <footer>
         <p>&copy; 2026 chozzen.xyz • Powered by Cloudflare Edge & Debian PRoot</p>
     </footer>
+
+    <script>
+        function logout() {
+            localStorage.removeItem('chozzen_session');
+            localStorage.removeItem('chozzen_user');
+            sessionStorage.removeItem('chozzen_session');
+            sessionStorage.removeItem('chozzen_user');
+            window.location.replace('/login.html');
+        }
+    </script>
 </body>
 
 </html>

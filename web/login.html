@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign In to Chozzen Server — Android Tablet Infrastructure Guarded by Chozzen">
+    <title>Sign In — chozzen.xyz</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-canvas: #090e17;
+            --glass-card: rgba(18, 28, 46, 0.68);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --accent-cyan: #38bdf8;
+            --accent-indigo: #818cf8;
+            --accent-mint: #34d399;
+            --accent-gold: #fbbf24;
+            --accent-red: #ef4444;
+            --accent-yellow: #facc15;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 1.5rem;
+        }
+
+        /* Ambient Glowing Background Orbs */
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.45;
+            animation: floatOrb 18s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 460px;
+            height: 460px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.45), transparent 70%);
+            top: -60px;
+            left: -60px;
+        }
+
+        .orb-2 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(129, 140, 248, 0.4), transparent 70%);
+            bottom: -80px;
+            right: -60px;
+            animation-delay: -6s;
+        }
+
+        .orb-3 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.3), transparent 70%);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -12s;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 40px) scale(1.08); }
+            100% { transform: translate(-25px, 20px) scale(0.95); }
+        }
+
+        /* Glassmorphic Login Container */
+        .login-card {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 440px;
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 28px;
+            padding: 2.75rem 2.25rem 2.25rem 2.25rem;
+            backdrop-filter: blur(28px);
+            box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.65), 0 0 30px rgba(56, 189, 248, 0.1);
+            text-align: center;
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Dog Avatar & Reactive Expressions */
+        .dog-avatar-container {
+            position: relative;
+            width: 104px;
+            height: 104px;
+            margin: 0 auto 1.5rem auto;
+        }
+
+        .dog-avatar-badge {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid rgba(251, 191, 36, 0.6);
+            box-shadow: 0 0 25px rgba(251, 191, 36, 0.35);
+            background: #1e293b;
+            transition: all 0.35s ease;
+            position: relative;
+            z-index: 2;
+        }
+
+        .dog-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: filter 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Dog Mood Halo Glow */
+        .dog-halo {
+            position: absolute;
+            top: -6px;
+            left: -6px;
+            right: -6px;
+            bottom: -6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.4), transparent 70%);
+            z-index: 1;
+            transition: all 0.35s ease;
+        }
+
+        /* Happy Dog State Animation */
+        .dog-avatar-container.happy .dog-avatar-badge {
+            border-color: var(--accent-mint);
+            box-shadow: 0 0 35px rgba(52, 211, 153, 0.7);
+            animation: happyBounce 0.45s infinite alternate ease-in-out;
+        }
+
+        .dog-avatar-container.happy .dog-halo {
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.6), transparent 70%);
+            transform: scale(1.2);
+        }
+
+        @keyframes happyBounce {
+            0% { transform: translateY(0) scale(1) rotate(0deg); }
+            100% { transform: translateY(-12px) scale(1.08) rotate(4deg); }
+        }
+
+        /* Angry Dog State Animation */
+        .dog-avatar-container.angry .dog-avatar-badge {
+            border-color: var(--accent-red);
+            box-shadow: 0 0 35px rgba(239, 68, 68, 0.75);
+            animation: angryVibrate 0.1s infinite alternate ease-in-out;
+        }
+
+        .dog-avatar-container.angry .dog-img {
+            filter: contrast(1.3) sepia(0.6) hue-rotate(-50deg);
+        }
+
+        .dog-avatar-container.angry .dog-halo {
+            background: radial-gradient(circle, rgba(239, 68, 68, 0.65), transparent 70%);
+            transform: scale(1.25);
+        }
+
+        @keyframes angryVibrate {
+            0% { transform: translate(-3px, -2px) rotate(-3deg); }
+            100% { transform: translate(3px, 2px) rotate(3deg); }
+        }
+
+        /* Typography */
+        .login-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.4rem;
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-subtitle {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-weight: 500;
+        }
+
+        /* Form Inputs */
+        .form-group {
+            margin-bottom: 1.25rem;
+            text-align: left;
+            position: relative;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 1.1rem;
+            font-size: 1rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            transition: color 0.2s ease;
+        }
+
+        .form-input {
+            width: 100%;
+            background: rgba(10, 16, 28, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 14px;
+            padding: 0.85rem 1rem 0.85rem 2.8rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.95rem;
+            backdrop-filter: blur(14px);
+            outline: none;
+            transition: all 0.25s ease;
+        }
+
+        .form-input:focus {
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+            background: rgba(10, 16, 28, 0.75);
+        }
+
+        .form-input:focus + .input-icon {
+            color: var(--accent-cyan);
+        }
+
+        /* Pee Animation Stream and Splash */
+        .pee-stream {
+            position: absolute;
+            pointer-events: none;
+            z-index: 25;
+            top: 70px;
+            left: 50%;
+            width: 140px;
+            height: 180px;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .pee-stream.active {
+            opacity: 1;
+        }
+
+        .pee-arc {
+            stroke-dasharray: 200;
+            stroke-dashoffset: 200;
+            animation: squirtArc 0.65s ease-out forwards;
+        }
+
+        @keyframes squirtArc {
+            0% { stroke-dashoffset: 200; }
+            100% { stroke-dashoffset: 0; }
+        }
+
+        /* Password Dissolve Melt Animation */
+        .form-input.dissolve {
+            animation: meltAway 1.2s forwards cubic-bezier(0.25, 1, 0.5, 1);
+            border-color: var(--accent-yellow) !important;
+            background: rgba(250, 204, 21, 0.15) !important;
+        }
+
+        @keyframes meltAway {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+                filter: blur(0);
+                color: #facc15;
+            }
+            30% {
+                transform: translateY(4px) skewX(6deg);
+                color: #eab308;
+                letter-spacing: 2px;
+                filter: blur(1px);
+            }
+            60% {
+                transform: translateY(10px) skewX(-8deg) scaleY(0.6);
+                color: #ca8a04;
+                letter-spacing: 5px;
+                filter: blur(3px);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(18px) scale(0.85);
+                filter: blur(8px);
+                opacity: 0;
+            }
+        }
+
+        /* Sizzle Splash Effect */
+        .splash-puddle {
+            position: absolute;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--accent-yellow);
+            box-shadow: 0 0 12px var(--accent-yellow);
+            opacity: 0;
+            transition: all 0.4s ease;
+            pointer-events: none;
+        }
+
+        .splash-puddle.active {
+            width: 70%;
+            opacity: 0.85;
+            animation: splashFading 1.5s forwards ease-out;
+        }
+
+        @keyframes splashFading {
+            0% { width: 10%; opacity: 0.9; }
+            50% { width: 75%; opacity: 0.85; }
+            100% { width: 90%; opacity: 0; }
+        }
+
+        /* Remember & Options Row */
+        .options-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.75rem;
+        }
+
+        .remember-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .remember-checkbox {
+            accent-color: var(--accent-cyan);
+            width: 16px;
+            height: 16px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Sign In Button */
+        .btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+            border: none;
+            border-radius: 14px;
+            padding: 0.95rem 1.5rem;
+            color: #04101e;
+            font-family: inherit;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(56, 189, 248, 0.5);
+            background: linear-gradient(135deg, #38bdf8, #7dd3fc);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        /* Feedback Toast Message */
+        .dog-toast {
+            margin-top: 1.25rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            min-height: 24px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(6px);
+        }
+
+        .dog-toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dog-toast.happy {
+            color: var(--accent-mint);
+        }
+
+        .dog-toast.angry {
+            color: #f87171;
+        }
+
+        .footer-note {
+            margin-top: 1.5rem;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ambient Lighting Orbs -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+
+    <main class="login-card">
+        <!-- Reactive Dog Avatar -->
+        <div class="dog-avatar-container" id="dog-avatar-box">
+            <div class="dog-halo"></div>
+            <div class="dog-avatar-badge">
+                <img src="chozzen-dog.jpg" alt="Chozzen the Dog" class="dog-img" onerror="this.src='chozzen1.jpeg'">
+            </div>
+        </div>
+
+        <!-- SVG Stream for the Pee Animation -->
+        <svg class="pee-stream" id="pee-stream" viewBox="0 0 140 180">
+            <path class="pee-arc" d="M 40 20 Q 85 40 50 160" fill="none" stroke="#facc15" stroke-width="4.5" stroke-linecap="round" filter="drop-shadow(0 0 6px #facc15)" />
+        </svg>
+
+        <h1 class="login-title">Welcome to Chozzen Server</h1>
+        <p class="login-subtitle">Guarded with care by Chozzen the Watchdog 🐾</p>
+
+        <form id="login-form" autocomplete="off" onsubmit="handleLogin(event)">
+            <!-- Username Input -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">👤</span>
+                    <input type="text" id="username" class="form-input" placeholder="admin or chozzen" required autofocus>
+                </div>
+            </div>
+
+            <!-- Password Input -->
+            <div class="form-group" style="position: relative;">
+                <label for="password" class="form-label">Password</label>
+                <div class="input-wrapper">
+                    <span class="input-icon">🔑</span>
+                    <input type="password" id="password" class="form-input" placeholder="Enter password" required>
+                </div>
+                <!-- Sizzle Puddle beneath password -->
+                <div class="splash-puddle" id="splash-puddle"></div>
+            </div>
+
+            <div class="options-row">
+                <label class="remember-label">
+                    <input type="checkbox" id="remember-me" class="remember-checkbox" checked>
+                    <span>Remember this session</span>
+                </label>
+                <span style="color: var(--accent-cyan); font-size: 0.78rem;">chozzen.xyz</span>
+            </div>
+
+            <button type="submit" class="btn-submit" id="btn-submit">
+                <span>Enter Server</span>
+                <span>🐾</span>
+            </button>
+        </form>
+
+        <div class="dog-toast" id="dog-toast"></div>
+
+        <p class="footer-note">Chozzen Infrastructure Guard • Tablet Server</p>
+    </main>
+
+    <script>
+        // Web Audio Synthesizer for Realistic Dog Barks
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new AudioContext();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        // Happy, Cheerful Dog Bark Sound Synthesis
+        function playHappyBark() {
+            initAudio();
+            const now = audioCtx.currentTime;
+
+            // First cheerful Woof
+            playSingleBark(now, 450, 750, 0.14, 'triangle');
+            // Second playful Yip
+            playSingleBark(now + 0.18, 520, 900, 0.16, 'triangle');
+        }
+
+        // Angry, Low Guard Dog Bark Sound Synthesis
+        function playAngryBark() {
+            initAudio();
+            const now = audioCtx.currentTime;
+
+            // Deep aggressive Ruff!
+            playSingleBark(now, 160, 240, 0.25, 'sawtooth');
+            // Second menacing Growl Bark
+            playSingleBark(now + 0.24, 130, 200, 0.32, 'sawtooth');
+        }
+
+        function playSingleBark(startTime, startFreq, peakFreq, duration, waveType) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            const filter = audioCtx.createBiquadFilter();
+
+            osc.type = waveType;
+            osc.frequency.setValueAtTime(startFreq, startTime);
+            osc.frequency.exponentialRampToValueAtTime(peakFreq, startTime + duration * 0.4);
+            osc.frequency.exponentialRampToValueAtTime(startFreq * 0.7, startTime + duration);
+
+            filter.type = 'bandpass';
+            filter.frequency.setValueAtTime(peakFreq * 1.2, startTime);
+            filter.Q.setValueAtTime(3.5, startTime);
+
+            gain.gain.setValueAtTime(0.01, startTime);
+            gain.gain.linearRampToValueAtTime(0.65, startTime + duration * 0.2);
+            gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration);
+
+            osc.connect(filter);
+            filter.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            osc.start(startTime);
+            osc.stop(startTime + duration);
+        }
+
+        // Authentication Verification
+        // Accepts password 'chozzen2026' or username matching password
+        const VALID_PASSWORDS = ['chozzen2026', 'chozzen', 'admin2026'];
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const usernameInput = document.getElementById('username').value.trim().toLowerCase();
+            const passwordInput = document.getElementById('password').value;
+            const rememberMe = document.getElementById('remember-me').checked;
+
+            const dogAvatar = document.getElementById('dog-avatar-box');
+            const peeStream = document.getElementById('pee-stream');
+            const splashPuddle = document.getElementById('splash-puddle');
+            const passwordElem = document.getElementById('password');
+            const toast = document.getElementById('dog-toast');
+            const submitBtn = document.getElementById('btn-submit');
+
+            const isCorrect = VALID_PASSWORDS.includes(passwordInput.toLowerCase()) || 
+                             (usernameInput === 'chozzen' && passwordInput === 'chozzen') ||
+                             (usernameInput === 'admin' && passwordInput === 'chozzen2026');
+
+            if (isCorrect) {
+                // ==================== CORRECT PASSWORD! ====================
+                // Happy dog animation + Cheerful Bark
+                dogAvatar.className = 'dog-avatar-container happy';
+                playHappyBark();
+
+                toast.innerText = '🐾 Woof! Chozzen is happy! Access Granted!';
+                toast.className = 'dog-toast happy show';
+                submitBtn.style.background = 'linear-gradient(135deg, #10b981, #34d399)';
+                submitBtn.innerHTML = '<span>Entering Server...</span> <span>🐶✨</span>';
+
+                // Save session token
+                const token = 'chozzen_auth_' + Date.now();
+                if (rememberMe) {
+                    localStorage.setItem('chozzen_session', token);
+                    localStorage.setItem('chozzen_user', usernameInput || 'Admin');
+                } else {
+                    sessionStorage.setItem('chozzen_session', token);
+                    sessionStorage.setItem('chozzen_user', usernameInput || 'Admin');
+                }
+
+                // Redirect smoothly
+                const params = new URLSearchParams(window.location.search);
+                const redirectTarget = params.get('redirect') || '/';
+                setTimeout(() => {
+                    window.location.href = redirectTarget;
+                }, 1200);
+
+            } else {
+                // ==================== WRONG PASSWORD! ====================
+                // Angry dog animation + Angry Bark + Pee on password + Dissolve!
+                dogAvatar.className = 'dog-avatar-container angry';
+                playAngryBark();
+
+                toast.innerText = '😡 Grrr! Chozzen is angry! Invalid password!';
+                toast.className = 'dog-toast angry show';
+
+                // Trigger Pee Stream Animation onto Password Box
+                peeStream.classList.add('active');
+                splashPuddle.classList.add('active');
+
+                // Make password dissolve and disappear!
+                setTimeout(() => {
+                    passwordElem.classList.add('dissolve');
+                }, 280);
+
+                // Reset field after dissolve
+                setTimeout(() => {
+                    passwordElem.value = '';
+                    passwordElem.classList.remove('dissolve');
+                    peeStream.classList.remove('active');
+                    splashPuddle.classList.remove('active');
+                    dogAvatar.className = 'dog-avatar-container';
+                    passwordElem.focus();
+                }, 1600);
+            }
+        }
+    </script>
+</body>
+
+</html>
