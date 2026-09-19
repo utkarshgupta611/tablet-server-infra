@@ -19,19 +19,22 @@ if [ -f "$REPO_DIR/configs/nginx/default.conf" ]; then
     cp "$REPO_DIR/configs/nginx/default.conf" /etc/nginx/sites-available/default 2>/dev/null || true
     cp "$REPO_DIR/configs/nginx/default.conf" /etc/nginx/conf.d/default.conf 2>/dev/null || true
     cp "$REPO_DIR/configs/nginx/default.conf" /data/data/com.termux/files/usr/etc/nginx/conf.d/default.conf 2>/dev/null || true
+    ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default 2>/dev/null || true
     echo "Nginx site configuration updated."
 fi
 
 echo "=== [3/4] Syncing Dashboard Web UI assets ==="
 if [ -d "$REPO_DIR/web" ]; then
-    mkdir -p /var/www/dashboard /data/data/com.termux/files/usr/share/nginx/html 2>/dev/null || true
+    mkdir -p /var/www/dashboard /var/www/html /data/data/com.termux/files/usr/share/nginx/html 2>/dev/null || true
     cp -r "$REPO_DIR/web/"* /var/www/dashboard/ 2>/dev/null || true
-    echo "Web dashboard assets updated in /var/www/dashboard/."
+    cp -r "$REPO_DIR/web/"* /var/www/html/ 2>/dev/null || true
+    cp -r "$REPO_DIR/web/"* /data/data/com.termux/files/usr/share/nginx/html/ 2>/dev/null || true
+    echo "Web dashboard assets updated across all webroots (/var/www/dashboard & /var/www/html)."
 fi
 
 echo "=== [4/4] Validating & Reloading Nginx ==="
 nginx -t
-nginx -s reload 2>/dev/null || service nginx reload 2>/dev/null || nginx 2>/dev/null || true
+nginx -s reload 2>/dev/null || service nginx reload 2>/dev/null || true
 
 echo "=============================================================================="
 echo "Deployment successful! Live at https://chozzen.xyz"
