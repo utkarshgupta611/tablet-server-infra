@@ -4,28 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Chozzen Home Server Dashboard — High-performance Android Tablet Server guarded by Chozzen the Watchdog">
-    <title>chozzen.xyz — Chozzen Home Server Dashboard</title>
+    <meta name="description" content="Chozzen Home Server Dashboard — High-performance Android Tablet Server guarded by Chozzen">
+    <title>CHOZZEN HOME Server — chozzen.xyz</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-canvas: #090e17;
-            --glass-bg: rgba(18, 28, 45, 0.55);
-            --glass-bg-hover: rgba(26, 40, 64, 0.75);
-            --glass-border: rgba(255, 255, 255, 0.12);
+            --sidebar-bg: rgba(12, 19, 32, 0.7);
+            --glass-card: rgba(18, 28, 46, 0.62);
+            --glass-card-hover: rgba(24, 38, 62, 0.82);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --glass-border-hover: rgba(56, 189, 248, 0.35);
-            --accent-primary: #38bdf8;
-            --accent-secondary: #818cf8;
-            --accent-gold: #fbbf24;
-            --status-mint: #34d399;
+            --accent-cyan: #38bdf8;
+            --accent-indigo: #818cf8;
+            --accent-mint: #34d399;
+            --accent-amber: #fbbf24;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
             --text-muted: #64748b;
-            --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.45);
-            --glow-mint: rgba(52, 211, 153, 0.18);
-            --glow-sky: rgba(56, 189, 248, 0.15);
+            --card-radius: 20px;
+            --glow-mint: rgba(52, 211, 153, 0.25);
+            --glow-cyan: rgba(56, 189, 248, 0.2);
         }
 
         * {
@@ -40,296 +41,324 @@
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             position: relative;
             overflow-x: hidden;
         }
 
-        /* Calm Glassmorphism Ambient Orbs */
+        /* Ambient Glowing Background Orbs */
         .ambient-orb {
             position: fixed;
             border-radius: 50%;
-            filter: blur(100px);
+            filter: blur(110px);
             z-index: 0;
             pointer-events: none;
             opacity: 0.45;
-            animation: floatOrb 18s ease-in-out infinite alternate;
+            animation: floatOrb 20s ease-in-out infinite alternate;
         }
 
         .orb-1 {
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.4), transparent 70%);
-            top: -100px;
-            left: -100px;
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.45), transparent 70%);
+            top: -80px;
+            left: 20%;
         }
 
         .orb-2 {
-            width: 500px;
-            height: 500px;
-            background: radial-gradient(circle, rgba(129, 140, 248, 0.35), transparent 70%);
-            bottom: -150px;
-            right: -100px;
-            animation-delay: -6s;
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, rgba(129, 140, 248, 0.4), transparent 70%);
+            bottom: -100px;
+            right: 10%;
+            animation-delay: -7s;
         }
 
         .orb-3 {
-            width: 380px;
-            height: 380px;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(52, 211, 153, 0.3), transparent 70%);
+            top: 45%;
+            right: 35%;
+            animation-delay: -14s;
+        }
+
+        .orb-4 {
+            width: 320px;
+            height: 320px;
             background: radial-gradient(circle, rgba(251, 191, 36, 0.25), transparent 70%);
-            top: 40%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            animation-delay: -12s;
+            bottom: 5%;
+            left: 45%;
+            animation-delay: -4s;
         }
 
         @keyframes floatOrb {
             0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(30px, 40px) scale(1.08); }
-            100% { transform: translate(-20px, 20px) scale(0.95); }
+            50% { transform: translate(25px, 35px) scale(1.08); }
+            100% { transform: translate(-20px, 15px) scale(0.94); }
         }
 
-        header {
-            position: relative;
-            z-index: 10;
-            padding: 1.5rem 6%;
+        /* Left Sidebar Layout */
+        .app-sidebar {
+            width: 250px;
+            min-width: 250px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--glass-border);
+            backdrop-filter: blur(24px);
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--glass-border);
-            background: rgba(9, 14, 23, 0.65);
-            backdrop-filter: blur(20px);
+            flex-direction: column;
+            padding: 1.5rem 1.1rem;
+            z-index: 20;
+            min-height: 100vh;
         }
 
-        .brand {
+        .sidebar-brand {
             display: flex;
             align-items: center;
             gap: 0.85rem;
             text-decoration: none;
             color: var(--text-primary);
+            padding: 0.5rem 0.6rem 1.6rem 0.6rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 1.5rem;
         }
 
-        .brand-avatar {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(251, 191, 36, 0.2));
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
-            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.25);
-            transition: transform 0.3s ease;
+        .dog-avatar-wrap {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(251, 191, 36, 0.4);
+            box-shadow: 0 0 16px rgba(251, 191, 36, 0.3);
+            flex-shrink: 0;
+            background: #1e293b;
         }
 
-        .brand:hover .brand-avatar {
-            transform: scale(1.08) rotate(-4deg);
+        .dog-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
-        .brand-text {
+        .sidebar-brand-text {
             display: flex;
             flex-direction: column;
         }
 
-        .brand-title {
-            font-size: 1.3rem;
+        .brand-name {
+            font-size: 1.15rem;
             font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(135deg, #ffffff 30%, var(--accent-primary) 100%);
+            letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        .brand-subtitle {
-            font-size: 0.78rem;
+        .brand-sub {
+            font-size: 0.72rem;
+            font-weight: 600;
             color: var(--text-secondary);
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
+            letter-spacing: 0.04em;
         }
 
-        .nav-links {
+        .sidebar-nav {
             display: flex;
-            gap: 1.75rem;
-            align-items: center;
+            flex-direction: column;
+            gap: 0.45rem;
+            flex: 1;
         }
 
-        .nav-link {
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
             color: var(--text-secondary);
             text-decoration: none;
-            font-weight: 600;
             font-size: 0.92rem;
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-            transition: all 0.2s ease;
+            font-weight: 600;
+            transition: all 0.22s ease;
         }
 
-        .nav-link:hover {
+        .nav-item:hover {
             color: var(--text-primary);
             background: rgba(255, 255, 255, 0.06);
+            transform: translateX(3px);
         }
 
-        .nav-link.active {
-            color: var(--accent-primary);
-            background: rgba(56, 189, 248, 0.12);
+        .nav-item.active {
+            color: #ffffff;
+            background: rgba(56, 189, 248, 0.16);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.18);
         }
 
-        main {
-            position: relative;
-            z-index: 10;
+        .nav-icon {
+            font-size: 1.15rem;
+            opacity: 0.9;
+        }
+
+        .sidebar-footer {
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* Main Dashboard Content Area */
+        .app-main {
             flex: 1;
-            padding: 2.5rem 6%;
-            max-width: 1240px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            z-index: 10;
+            position: relative;
+            padding: 1.25rem 2rem 2.5rem 2rem;
+            max-width: 1680px;
             margin: 0 auto;
             width: 100%;
         }
 
-        /* Hero Banner with Dog Theme */
-        .hero {
-            margin-bottom: 2.5rem;
-            text-align: center;
-            position: relative;
+        /* Top Header Bar */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        .dog-watchdog-card {
+        .search-container {
+            position: relative;
+            flex: 1;
+            max-width: 480px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            background: rgba(18, 28, 46, 0.55);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 0.65rem 1rem 0.65rem 2.6rem;
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            backdrop-filter: blur(12px);
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: rgba(56, 189, 248, 0.4);
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+        }
+
+        .search-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .top-status-group {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-pill-online {
             display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
-            padding: 0.6rem 1.4rem;
-            background: rgba(52, 211, 153, 0.08);
-            border: 1px solid rgba(52, 211, 153, 0.28);
-            border-radius: 9999px;
-            font-size: 0.9rem;
-            color: var(--status-mint);
-            font-weight: 600;
-            margin-bottom: 1.25rem;
-            backdrop-filter: blur(12px);
-            box-shadow: 0 4px 20px var(--glow-mint);
+            gap: 0.45rem;
+            padding: 0.45rem 1.1rem;
+            background: rgba(52, 211, 153, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.35);
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--accent-mint);
+            box-shadow: 0 0 16px var(--glow-mint);
         }
 
         .pulse-dot {
-            width: 9px;
-            height: 9px;
-            background-color: var(--status-mint);
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-mint);
             border-radius: 50%;
-            box-shadow: 0 0 12px var(--status-mint);
-            animation: pulse 2.2s infinite ease-in-out;
+            box-shadow: 0 0 10px var(--accent-mint);
+            animation: pulse 2.2s infinite;
         }
 
         @keyframes pulse {
             0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.4; transform: scale(1.25); }
+            50% { opacity: 0.45; transform: scale(1.3); }
             100% { opacity: 1; transform: scale(1); }
         }
 
-        .hero-title {
-            font-size: 2.6rem;
-            font-weight: 800;
-            letter-spacing: -0.03em;
-            margin-bottom: 0.75rem;
-            line-height: 1.2;
-            background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .hero-subtitle {
-            color: var(--text-secondary);
-            font-size: 1.05rem;
-            max-width: 640px;
-            margin: 0 auto;
-            line-height: 1.65;
-            font-weight: 400;
-        }
-
-        /* Glassmorphic Metrics Container */
-        .metrics-section {
-            margin-bottom: 2.5rem;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
-            padding: 2rem;
-            backdrop-filter: blur(24px);
-            box-shadow: var(--card-shadow);
-            transition: border-color 0.3s ease;
-        }
-
-        .metrics-section:hover {
-            border-color: rgba(56, 189, 248, 0.25);
-        }
-
-        .metrics-header {
-            display: flex;
-            justify-content: space-between;
+        .dog-guard-badge {
+            display: inline-flex;
             align-items: center;
+            gap: 0.5rem;
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.25);
+            padding: 0.45rem 1rem;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--accent-amber);
+        }
+
+        /* 4 WIDGETS IN EXACTLY ONE LINE */
+        .system-health-row {
             margin-bottom: 1.5rem;
         }
 
-        .section-title {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-        }
-
-        .title-paw {
-            font-size: 1.1rem;
-            opacity: 0.85;
-        }
-
-        .live-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            font-size: 0.8rem;
-            color: var(--status-mint);
-            font-weight: 600;
-            background: rgba(52, 211, 153, 0.1);
-            border: 1px solid rgba(52, 211, 153, 0.25);
-            padding: 0.3rem 0.85rem;
-            border-radius: 999px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .metrics-grid {
+        .health-grid-single-line {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.25rem;
         }
 
-        .metric-card {
-            background: rgba(10, 16, 27, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 18px;
-            padding: 1.4rem;
-            backdrop-filter: blur(14px);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .health-card {
+            background: var(--glass-card);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--card-radius);
+            padding: 1.25rem 1.35rem;
+            backdrop-filter: blur(20px);
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
-        .metric-card:hover {
-            border-color: var(--glass-border-hover);
+        .health-card:hover {
+            background: var(--glass-card-hover);
             transform: translateY(-3px);
-            box-shadow: 0 10px 25px var(--glow-sky);
+            border-color: var(--glass-border-hover);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
         }
 
-        .metric-top {
+        .card-header-flex {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.85rem;
+            margin-bottom: 0.75rem;
         }
 
-        .metric-label {
-            font-size: 0.88rem;
+        .card-label-title {
+            font-size: 0.85rem;
             font-weight: 600;
             color: var(--text-secondary);
             display: flex;
@@ -337,254 +366,585 @@
             gap: 0.4rem;
         }
 
-        .metric-val {
+        .pill-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 0.2rem 0.6rem;
+            border-radius: 999px;
+            background: rgba(52, 211, 153, 0.12);
+            color: var(--accent-mint);
+            border: 1px solid rgba(52, 211, 153, 0.25);
+        }
+
+        .card-big-value {
             font-size: 1.45rem;
             font-weight: 700;
             color: var(--text-primary);
             font-family: 'JetBrains Mono', monospace;
             letter-spacing: -0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-sub-info {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
         }
 
         .progress-track {
             width: 100%;
-            height: 8px;
+            height: 7px;
             background: rgba(255, 255, 255, 0.08);
             border-radius: 999px;
             overflow: hidden;
-            margin-top: 0.85rem;
-            position: relative;
+            margin-top: 0.6rem;
         }
 
         .progress-fill {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-indigo));
             border-radius: 999px;
-            transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: width 0.6s ease;
         }
 
-        .status-pill {
-            font-size: 0.78rem;
-            font-weight: 600;
-            padding: 0.2rem 0.65rem;
-            border-radius: 999px;
-            background: rgba(56, 189, 248, 0.12);
-            color: var(--accent-primary);
-            border: 1px solid rgba(56, 189, 248, 0.3);
+        .sparkline-svg {
+            width: 100%;
+            height: 28px;
+            margin-top: 0.35rem;
+            overflow: visible;
         }
 
-        /* Action Cards Grid */
-        .cards-grid {
+        /* Main Dashboard Grid (Inspired by the Mockup) */
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1.25rem;
+            flex: 1;
         }
 
-        .action-card {
-            background: var(--glass-bg);
+        .glass-panel {
+            background: var(--glass-card);
             border: 1px solid var(--glass-border);
-            border-radius: 22px;
-            padding: 1.85rem;
+            border-radius: var(--card-radius);
+            padding: 1.4rem;
             backdrop-filter: blur(20px);
-            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-            text-decoration: none;
-            color: inherit;
+            transition: border-color 0.25s ease;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            box-shadow: var(--card-shadow);
         }
 
-        .action-card:hover {
-            background: var(--glass-bg-hover);
-            transform: translateY(-5px);
-            border-color: var(--glass-border-hover);
-            box-shadow: 0 16px 35px var(--glow-sky);
+        .glass-panel:hover {
+            border-color: rgba(255, 255, 255, 0.2);
         }
 
-        .card-icon-wrap {
-            width: 52px;
-            height: 52px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(129, 140, 248, 0.15));
-            border: 1px solid rgba(255, 255, 255, 0.15);
+        .panel-header {
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            justify-content: center;
-            font-size: 1.6rem;
             margin-bottom: 1.25rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .card-heading {
-            font-size: 1.25rem;
+        .panel-title {
+            font-size: 0.98rem;
             font-weight: 700;
-            margin-bottom: 0.6rem;
             color: var(--text-primary);
-        }
-
-        .card-text {
-            color: var(--text-secondary);
-            font-size: 0.94rem;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-link-btn {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--accent-primary);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            transition: gap 0.2s ease;
         }
 
-        .action-card:hover .card-link-btn {
+        .panel-dots {
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        /* Services List Panel */
+        .services-list {
+            display: flex;
+            flex-direction: column;
             gap: 0.75rem;
+            flex: 1;
+        }
+
+        .service-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.65rem 0.85rem;
+            border-radius: 12px;
+            background: rgba(10, 16, 28, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s ease;
+        }
+
+        .service-row:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(56, 189, 248, 0.25);
+        }
+
+        .service-left {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .service-icon {
+            font-size: 1.15rem;
+            width: 28px;
+            text-align: center;
+        }
+
+        .service-name {
+            font-size: 0.88rem;
+            font-weight: 600;
             color: var(--text-primary);
         }
 
-        footer {
-            position: relative;
-            z-index: 10;
-            padding: 2.2rem 6%;
-            text-align: center;
+        .service-port {
+            font-size: 0.72rem;
             color: var(--text-muted);
-            font-size: 0.88rem;
-            border-top: 1px solid var(--glass-border);
-            background: rgba(9, 14, 23, 0.75);
-            backdrop-filter: blur(16px);
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .footer-dog-badge {
-            display: inline-flex;
+        .running-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--accent-mint);
+            background: rgba(52, 211, 153, 0.12);
+            border: 1px solid rgba(52, 211, 153, 0.25);
+            padding: 0.2rem 0.55rem;
+            border-radius: 999px;
+            box-shadow: 0 0 10px rgba(52, 211, 153, 0.15);
+        }
+
+        /* Network Traffic Waveform Panel */
+        .traffic-rates {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.86rem;
+        }
+
+        .rate-item {
+            display: flex;
             align-items: center;
             gap: 0.4rem;
-            margin-top: 0.4rem;
-            color: var(--text-secondary);
-            font-weight: 500;
         }
 
-        @media (max-width: 640px) {
-            .hero-title { font-size: 2rem; }
-            header { padding: 1.2rem 4%; }
-            main { padding: 1.75rem 4%; }
-            .metrics-section { padding: 1.35rem; }
+        .rate-in { color: var(--accent-cyan); font-weight: 600; }
+        .rate-out { color: var(--accent-indigo); font-weight: 600; }
+
+        .traffic-canvas-box {
+            position: relative;
+            flex: 1;
+            min-height: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(10, 16, 28, 0.4);
+            border-radius: 14px;
+            padding: 0.75rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+
+        .traffic-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Storage & Architecture Panel */
+        .storage-visual-box {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0.5rem 0;
+            margin-bottom: 1rem;
+        }
+
+        .donut-wrap {
+            width: 90px;
+            height: 90px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .donut-svg {
+            transform: rotate(-90deg);
+            width: 100%;
+            height: 100%;
+        }
+
+        .donut-center-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .storage-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex: 1;
+        }
+
+        .storage-stat-line {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+        }
+
+        .storage-stat-val {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .quick-action-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 1rem;
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.86rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-top: auto;
+        }
+
+        .quick-action-link:hover {
+            background: rgba(56, 189, 248, 0.16);
+            border-color: rgba(56, 189, 248, 0.4);
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1200px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 900px) {
+            body { flex-direction: column; }
+            .app-sidebar {
+                width: 100%;
+                min-width: 100%;
+                min-height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--glass-border);
+                padding: 1rem 1.25rem;
+            }
+            .sidebar-brand { margin-bottom: 0.75rem; padding-bottom: 0.75rem; }
+            .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
+            .app-main { padding: 1.25rem 1rem; }
+            .health-grid-single-line {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 580px) {
+            .health-grid-single-line {
+                grid-template-columns: 1fr;
+            }
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Calm Ambient Glass Orbs -->
+    <!-- Floating Ambient Orbs for Calm Glassmorphic Lighting -->
     <div class="ambient-orb orb-1"></div>
     <div class="ambient-orb orb-2"></div>
     <div class="ambient-orb orb-3"></div>
+    <div class="ambient-orb orb-4"></div>
 
-    <header>
-        <a href="/" class="brand" id="brand-link">
-            <div class="brand-avatar" title="Chozzen the Loyal Watchdog">🐕</div>
-            <div class="brand-text">
-                <span class="brand-title">chozzen.xyz</span>
-                <span class="brand-subtitle">🐾 Chozzen Server</span>
+    <!-- Left Navigation Sidebar (Mockup Style) -->
+    <aside class="app-sidebar">
+        <a href="/" class="sidebar-brand">
+            <div class="dog-avatar-wrap">
+                <img src="chozzen-dog.jpg" alt="Chozzen the Dog" class="dog-avatar-img" onerror="this.src='chozzen1.jpeg'">
+            </div>
+            <div class="sidebar-brand-text">
+                <span class="brand-name">CHOZZEN</span>
+                <span class="brand-sub">HOME SERVER</span>
             </div>
         </a>
-        <nav class="nav-links">
-            <a href="/" class="nav-link active" id="nav-home">Home</a>
-            <a href="/files/" class="nav-link" id="nav-files">FileBrowser</a>
-            <a href="/about" class="nav-link" id="nav-about">Architecture</a>
+
+        <nav class="sidebar-nav">
+            <a href="/" class="nav-item active" id="menu-dashboard">
+                <span class="nav-icon">⊞</span>
+                <span>Dashboard</span>
+            </a>
+            <a href="/files/" class="nav-item" id="menu-files">
+                <span class="nav-icon">📁</span>
+                <span>FileBrowser</span>
+            </a>
+            <a href="/about" class="nav-item" id="menu-arch">
+                <span class="nav-icon">⚡</span>
+                <span>Architecture</span>
+            </a>
+            <a href="https://dash.cloudflare.com" target="_blank" rel="noopener" class="nav-item">
+                <span class="nav-icon">☁️</span>
+                <span>Cloudflare</span>
+            </a>
         </nav>
-    </header>
 
-    <main>
-        <!-- Hero Section with Calm Watchdog Theme -->
-        <section class="hero">
-            <div class="dog-watchdog-card" id="watchdog-banner">
-                <div class="pulse-dot"></div>
-                <span id="watchdog-text">Chozzen is resting peacefully — 100% Operational 🐾</span>
-            </div>
-            <h1 class="hero-title">Android Tablet Home Server</h1>
-            <p class="hero-subtitle">Serene ARM64 edge server powered by Termux, Debian PRoot, and Cloudflare HTTP/2 Tunnels.</p>
-        </section>
+        <div class="sidebar-footer">
+            <p><strong>chozzen.xyz</strong></p>
+            <p>Guarded by Chozzen 🐾</p>
+            <p style="color: var(--accent-mint); margin-top: 0.25rem;">● Host Online</p>
+        </div>
+    </aside>
 
-        <!-- Real-Time System Telemetry Container -->
-        <section class="metrics-section">
-            <div class="metrics-header">
-                <h2 class="section-title"><span class="title-paw">🐾</span> System Health Monitor</h2>
-                <span class="live-badge"><span class="pulse-dot"></span> LIVE TELEMETRY</span>
+    <!-- Main Content Area -->
+    <main class="app-main">
+        <!-- Top Utility Bar -->
+        <header class="top-bar">
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" class="search-input" id="search-input" placeholder="Search systems, services, logs..." aria-label="Search systems">
             </div>
-            <div class="metrics-grid">
-                <div class="metric-card" id="card-cpu">
-                    <div class="metric-top">
-                        <span class="metric-label">💻 CPU Load</span>
-                        <span class="metric-val" id="val-cpu">--%</span>
+            <div class="top-status-group">
+                <div class="dog-guard-badge" id="dog-guard-status">
+                    <span>🐕</span>
+                    <span>Chozzen Watchdog: Calm & Vigilant</span>
+                </div>
+                <div class="status-pill-online">
+                    <span class="pulse-dot"></span>
+                    <span>ONLINE</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- SYSTEM HEALTH MONITOR: ALL 4 WIDGETS IN EXACTLY ONE LINE -->
+        <section class="system-health-row" aria-label="System Health Telemetry">
+            <div class="health-grid-single-line">
+                <!-- Widget 1: CPU Load -->
+                <div class="health-card" id="card-cpu">
+                    <div class="card-header-flex">
+                        <span class="card-label-title">💻 CPU Load</span>
+                        <span class="pill-badge" id="badge-cpu">ACTIVE</span>
                     </div>
+                    <div class="card-big-value" id="val-cpu">--%</div>
+                    <svg class="sparkline-svg" viewBox="0 0 100 25" preserveAspectRatio="none">
+                        <path d="M0,20 Q15,5 30,16 T60,8 T85,18 T100,12" fill="none" stroke="var(--accent-cyan)" stroke-width="2.2" stroke-linecap="round" />
+                    </svg>
                     <div class="progress-track">
                         <div class="progress-fill" id="bar-cpu"></div>
                     </div>
                 </div>
 
-                <div class="metric-card" id="card-ram">
-                    <div class="metric-top">
-                        <span class="metric-label">🧠 RAM Memory</span>
-                        <span class="metric-val" id="val-ram">-- MB</span>
+                <!-- Widget 2: RAM Memory -->
+                <div class="health-card" id="card-ram">
+                    <div class="card-header-flex">
+                        <span class="card-label-title">🧠 Memory</span>
+                        <span class="pill-badge" id="badge-ram">OPTIMAL</span>
                     </div>
+                    <div class="card-big-value" id="val-ram">-- MB</div>
+                    <div class="card-sub-info" id="val-ram-sub">Used / Total Memory</div>
                     <div class="progress-track">
                         <div class="progress-fill" id="bar-ram"></div>
                     </div>
                 </div>
 
-                <div class="metric-card" id="card-battery">
-                    <div class="metric-top">
-                        <span class="metric-label">🔋 Battery & Power</span>
-                        <span class="status-pill" id="val-battery-status">Optimal</span>
+                <!-- Widget 3: Battery & Power -->
+                <div class="health-card" id="card-battery">
+                    <div class="card-header-flex">
+                        <span class="card-label-title">🔋 Battery & Power</span>
+                        <span class="pill-badge" id="val-battery-status" style="color: var(--accent-cyan); background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.25);">Online</span>
                     </div>
-                    <div class="metric-val" id="val-battery">--%</div>
+                    <div class="card-big-value" id="val-battery">--%</div>
+                    <div class="card-sub-info">Thermal & Power Pass</div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="bar-battery" style="background: linear-gradient(90deg, var(--accent-mint), var(--accent-cyan));"></div>
+                    </div>
                 </div>
 
-                <div class="metric-card" id="card-uptime">
-                    <div class="metric-top">
-                        <span class="metric-label">⏳ Server Uptime</span>
-                        <span class="status-pill" style="color: var(--status-mint); background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.3);">Active</span>
+                <!-- Widget 4: Server Uptime -->
+                <div class="health-card" id="card-uptime">
+                    <div class="card-header-flex">
+                        <span class="card-label-title">⏳ Host Uptime</span>
+                        <span class="pill-badge">STABLE</span>
                     </div>
-                    <div class="metric-val" id="val-uptime">--</div>
+                    <div class="card-big-value" id="val-uptime">--</div>
+                    <div class="card-sub-info">Debian PRoot + Termux Host</div>
+                    <div class="progress-track">
+                        <div class="progress-fill" style="width: 100%; background: linear-gradient(90deg, var(--accent-mint), var(--accent-indigo));"></div>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- Quick Access Services -->
-        <section class="cards-grid">
-            <a href="/files/" class="action-card" id="card-files">
-                <div>
-                    <div class="card-icon-wrap">📁</div>
-                    <h2 class="card-heading">File Browser Storage</h2>
-                    <p class="card-text">Explore, upload, and stream media & files stored on the tablet home server storage.</p>
+        <!-- Secondary 3-Column Glassmorphism Grid -->
+        <section class="dashboard-grid">
+            <!-- Active Services Panel -->
+            <div class="glass-panel" id="panel-services">
+                <div class="panel-header">
+                    <h2 class="panel-title"><span>⚡</span> Active Services</h2>
+                    <span class="panel-dots">•••</span>
                 </div>
-                <div class="card-link-btn">
-                    <span>Open File Browser</span>
-                    <span>→</span>
-                </div>
-            </a>
+                <div class="services-list">
+                    <div class="service-row">
+                        <div class="service-left">
+                            <span class="service-icon">🌐</span>
+                            <div>
+                                <div class="service-name">Nginx Gateway</div>
+                                <div class="service-port">Port 8085 • HTTP Reverse Proxy</div>
+                            </div>
+                        </div>
+                        <span class="running-tag">RUNNING</span>
+                    </div>
 
-            <a href="/about" class="action-card" id="card-about">
-                <div>
-                    <div class="card-icon-wrap">⚡</div>
-                    <h2 class="card-heading">System Architecture</h2>
-                    <p class="card-text">Inspect hardware specs, PRoot guest container layers, and Cloudflare HTTP/2 proxy configuration.</p>
+                    <div class="service-row">
+                        <div class="service-left">
+                            <span class="service-icon">🔒</span>
+                            <div>
+                                <div class="service-name">Cloudflare Tunnel</div>
+                                <div class="service-port">HTTP/2 Protocol • redmi-tunnel</div>
+                            </div>
+                        </div>
+                        <span class="running-tag">RUNNING</span>
+                    </div>
+
+                    <div class="service-row">
+                        <div class="service-left">
+                            <span class="service-icon">📁</span>
+                            <div>
+                                <div class="service-name">FileBrowser Storage</div>
+                                <div class="service-port">Port 8080 • /files</div>
+                            </div>
+                        </div>
+                        <span class="running-tag">RUNNING</span>
+                    </div>
+
+                    <div class="service-row">
+                        <div class="service-left">
+                            <span class="service-icon">📡</span>
+                            <div>
+                                <div class="service-name">Mosquitto MQTT</div>
+                                <div class="service-port">Port 1883 • IoT Broker</div>
+                            </div>
+                        </div>
+                        <span class="running-tag">RUNNING</span>
+                    </div>
+
+                    <div class="service-row">
+                        <div class="service-left">
+                            <span class="service-icon">📊</span>
+                            <div>
+                                <div class="service-name">System Health Monitor</div>
+                                <div class="service-port">Python3 Daemon • stats.json</div>
+                            </div>
+                        </div>
+                        <span class="running-tag">RUNNING</span>
+                    </div>
                 </div>
-                <div class="card-link-btn">
-                    <span>View Specifications</span>
+            </div>
+
+            <!-- Network & Edge Tunnel Panel -->
+            <div class="glass-panel" id="panel-traffic">
+                <div class="panel-header">
+                    <h2 class="panel-title"><span>🌊</span> Network & Cloudflare Edge</h2>
+                    <span class="panel-dots">•••</span>
+                </div>
+                <div class="traffic-rates">
+                    <div class="rate-item">
+                        <span>↓ In:</span>
+                        <span class="rate-in" id="rate-in">Optimal</span>
+                    </div>
+                    <div class="rate-item">
+                        <span>↑ Out:</span>
+                        <span class="rate-out" id="rate-out">Low Latency</span>
+                    </div>
+                </div>
+                <div class="traffic-canvas-box">
+                    <svg class="traffic-svg" viewBox="0 0 300 120" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="rgba(56, 189, 248, 0.35)" />
+                                <stop offset="100%" stop-color="rgba(56, 189, 248, 0.0)" />
+                            </linearGradient>
+                            <linearGradient id="indigoGrad" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="rgba(129, 140, 248, 0.35)" />
+                                <stop offset="100%" stop-color="rgba(129, 140, 248, 0.0)" />
+                            </linearGradient>
+                        </defs>
+                        <!-- Inbound Wave -->
+                        <path d="M0,80 Q40,30 80,65 T160,45 T240,75 T300,50 L300,120 L0,120 Z" fill="url(#cyanGrad)" />
+                        <path d="M0,80 Q40,30 80,65 T160,45 T240,75 T300,50" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5" />
+                        <!-- Outbound Wave -->
+                        <path d="M0,95 Q50,60 100,85 T200,60 T300,75 L300,120 L0,120 Z" fill="url(#indigoGrad)" />
+                        <path d="M0,95 Q50,60 100,85 T200,60 T300,75" fill="none" stroke="var(--accent-indigo)" stroke-width="2.2" />
+                    </svg>
+                </div>
+                <a href="/about" class="quick-action-link" style="margin-top: 1rem;">
+                    <span>View Tunnel & Edge Details</span>
                     <span>→</span>
+                </a>
+            </div>
+
+            <!-- Storage & Quick Management Panel -->
+            <div class="glass-panel" id="panel-storage">
+                <div class="panel-header">
+                    <h2 class="panel-title"><span>💾</span> Storage & Environment</h2>
+                    <span class="panel-dots">•••</span>
                 </div>
-            </a>
+                <div class="storage-visual-box">
+                    <div class="donut-wrap">
+                        <svg class="donut-svg" viewBox="0 0 36 36">
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="3.8" />
+                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="url(#donutGrad)" stroke-dasharray="68, 100" stroke-width="3.8" stroke-linecap="round" />
+                            <defs>
+                                <linearGradient id="donutGrad" x1="0" y1="0" x2="1" y2="1">
+                                    <stop offset="0%" stop-color="var(--accent-cyan)" />
+                                    <stop offset="100%" stop-color="var(--accent-mint)" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="donut-center-text" id="donut-pct">ARM64</div>
+                    </div>
+                    <div class="storage-details">
+                        <div class="storage-stat-line">
+                            <span>Host Architecture</span>
+                            <span class="storage-stat-val">aarch64</span>
+                        </div>
+                        <div class="storage-stat-line">
+                            <span>Storage Root</span>
+                            <span class="storage-stat-val">/root/storage</span>
+                        </div>
+                        <div class="storage-stat-line">
+                            <span>Wake Lock State</span>
+                            <span class="storage-stat-val" style="color: var(--accent-mint);">Active</span>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="/files/" class="quick-action-link">
+                    <span>Open FileBrowser Explorer</span>
+                    <span>→</span>
+                </a>
+            </div>
         </section>
     </main>
-
-    <footer>
-        <p>&copy; 2026 chozzen.xyz • Powered by Cloudflare Edge & Debian PRoot</p>
-        <div class="footer-dog-badge">
-            <span>Guarded with care by Chozzen 🐶</span>
-        </div>
-    </footer>
 
     <script>
         async function updateStats() {
@@ -598,19 +958,34 @@
                     const cpuPct = data.cpu.percent;
                     document.getElementById('val-cpu').innerText = cpuPct + '%';
                     document.getElementById('bar-cpu').style.width = Math.min(100, Math.max(0, cpuPct)) + '%';
+                    const badgeCpu = document.getElementById('badge-cpu');
+                    if (cpuPct > 80) {
+                        badgeCpu.innerText = 'HIGH';
+                        badgeCpu.style.color = '#f87171';
+                        badgeCpu.style.borderColor = 'rgba(248, 113, 113, 0.3)';
+                    } else {
+                        badgeCpu.innerText = 'ACTIVE';
+                        badgeCpu.style.color = 'var(--accent-mint)';
+                        badgeCpu.style.borderColor = 'rgba(52, 211, 153, 0.25)';
+                    }
                 }
 
                 // RAM
                 if (data.ram) {
                     const ramPct = data.ram.percent;
-                    document.getElementById('val-ram').innerText = `${data.ram.used_mb} / ${data.ram.total_mb} MB`;
+                    document.getElementById('val-ram').innerText = `${data.ram.used_mb} MB`;
+                    document.getElementById('val-ram-sub').innerText = `Used of ${data.ram.total_mb} MB (${ramPct}%)`;
                     document.getElementById('bar-ram').style.width = Math.min(100, Math.max(0, ramPct)) + '%';
                 }
 
                 // Battery
                 if (data.battery) {
-                    document.getElementById('val-battery').innerText = data.battery.capacity + '%';
-                    document.getElementById('val-battery-status').innerText = data.battery.status || 'Optimal';
+                    const cap = data.battery.capacity;
+                    document.getElementById('val-battery').innerText = (cap !== undefined ? cap : '--') + '%';
+                    document.getElementById('val-battery-status').innerText = data.battery.status || 'Online';
+                    if (cap !== undefined) {
+                        document.getElementById('bar-battery').style.width = Math.min(100, Math.max(0, cap)) + '%';
+                    }
                 }
 
                 // Uptime
