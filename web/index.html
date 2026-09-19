@@ -4,23 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Android Tablet Home Server Dashboard for chozzen.xyz">
-    <title>chozzen.xyz - Tablet Server Dashboard</title>
+    <meta name="description" content="Chozzen Home Server Dashboard — High-performance Android Tablet Server guarded by Chozzen the Watchdog">
+    <title>chozzen.xyz — Chozzen Home Server Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-primary: #0a0d14;
-            --bg-card: rgba(22, 27, 38, 0.7);
-            --bg-card-hover: rgba(30, 38, 54, 0.85);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --accent-glow: rgba(99, 102, 241, 0.15);
-            --accent-primary: #6366f1;
-            --accent-secondary: #a855f7;
+            --bg-canvas: #090e17;
+            --glass-bg: rgba(18, 28, 45, 0.55);
+            --glass-bg-hover: rgba(26, 40, 64, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.12);
+            --glass-border-hover: rgba(56, 189, 248, 0.35);
+            --accent-primary: #38bdf8;
+            --accent-secondary: #818cf8;
+            --accent-gold: #fbbf24;
+            --status-mint: #34d399;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --status-green: #10b981;
+            --text-muted: #64748b;
+            --card-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.45);
+            --glow-mint: rgba(52, 211, 153, 0.18);
+            --glow-sky: rgba(56, 189, 248, 0.15);
         }
 
         * {
@@ -30,438 +35,543 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-canvas);
             color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            background:
-                linear-gradient(rgba(10, 13, 20, 0.75), rgba(10, 13, 20, 0.85)),
-                url('chozzen1.jpeg') no-repeat center center / cover fixed;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Calm Glassmorphism Ambient Orbs */
+        .ambient-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: 0;
+            pointer-events: none;
+            opacity: 0.45;
+            animation: floatOrb 18s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.4), transparent 70%);
+            top: -100px;
+            left: -100px;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(129, 140, 248, 0.35), transparent 70%);
+            bottom: -150px;
+            right: -100px;
+            animation-delay: -6s;
+        }
+
+        .orb-3 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.25), transparent 70%);
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -12s;
+        }
+
+        @keyframes floatOrb {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(30px, 40px) scale(1.08); }
+            100% { transform: translate(-20px, 20px) scale(0.95); }
         }
 
         header {
-            padding: 2rem 5%;
+            position: relative;
+            z-index: 10;
+            padding: 1.5rem 6%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--glass-border);
+            background: rgba(9, 14, 23, 0.65);
+            backdrop-filter: blur(20px);
         }
 
         .brand {
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.85rem;
             text-decoration: none;
             color: var(--text-primary);
         }
 
-        .brand-icon {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-            border-radius: 10px;
+        .brand-avatar {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(251, 191, 36, 0.2));
+            border: 1px solid rgba(255, 255, 255, 0.2);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 700;
-            font-size: 1.2rem;
-            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            font-size: 1.6rem;
+            box-shadow: 0 4px 16px rgba(56, 189, 248, 0.25);
+            transition: transform 0.3s ease;
+        }
+
+        .brand:hover .brand-avatar {
+            transform: scale(1.08) rotate(-4deg);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
         }
 
         .brand-title {
-            font-size: 1.25rem;
-            font-weight: 700;
+            font-size: 1.3rem;
+            font-weight: 800;
             letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-primary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-subtitle {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
         }
 
         .nav-links {
             display: flex;
-            gap: 1.5rem;
+            gap: 1.75rem;
+            align-items: center;
         }
 
         .nav-link {
             color: var(--text-secondary);
             text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.2s ease;
+            font-weight: 600;
+            font-size: 0.92rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
 
         .nav-link:hover {
             color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .nav-link.active {
+            color: var(--accent-primary);
+            background: rgba(56, 189, 248, 0.12);
         }
 
         main {
+            position: relative;
+            z-index: 10;
             flex: 1;
-            padding: 3rem 5%;
-            max-width: 1200px;
+            padding: 2.5rem 6%;
+            max-width: 1240px;
             margin: 0 auto;
             width: 100%;
         }
 
+        /* Hero Banner with Dog Theme */
         .hero {
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             text-align: center;
+            position: relative;
         }
 
-        .status-badge {
+        .dog-watchdog-card {
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
-            padding: 0.4rem 1rem;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            gap: 0.75rem;
+            padding: 0.6rem 1.4rem;
+            background: rgba(52, 211, 153, 0.08);
+            border: 1px solid rgba(52, 211, 153, 0.28);
             border-radius: 9999px;
-            font-size: 0.85rem;
-            color: var(--status-green);
-            font-weight: 500;
-            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--status-mint);
+            font-weight: 600;
+            margin-bottom: 1.25rem;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px var(--glow-mint);
         }
 
         .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--status-green);
+            width: 9px;
+            height: 9px;
+            background-color: var(--status-mint);
             border-radius: 50%;
-            box-shadow: 0 0 10px var(--status-green);
-            animation: pulse 2s infinite;
+            box-shadow: 0 0 12px var(--status-mint);
+            animation: pulse 2.2s infinite ease-in-out;
         }
 
         @keyframes pulse {
-            0% {
-                opacity: 1;
-                transform: scale(1);
-            }
-
-            50% {
-                opacity: 0.5;
-                transform: scale(1.2);
-            }
-
-            100% {
-                opacity: 1;
-                transform: scale(1);
-            }
+            0% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(1.25); }
+            100% { opacity: 1; transform: scale(1); }
         }
 
         .hero-title {
-            font-size: 2.75rem;
-            font-weight: 700;
+            font-size: 2.6rem;
+            font-weight: 800;
             letter-spacing: -0.03em;
             margin-bottom: 0.75rem;
-            background: linear-gradient(135deg, #ffffff 0%, var(--text-secondary) 100%);
+            line-height: 1.2;
+            background: linear-gradient(135deg, #ffffff 40%, #cbd5e1 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .hero-subtitle {
             color: var(--text-secondary);
-            font-size: 1.1rem;
-            max-width: 600px;
+            font-size: 1.05rem;
+            max-width: 640px;
             margin: 0 auto;
-            line-height: 1.6;
+            line-height: 1.65;
+            font-weight: 400;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.75rem;
-            backdrop-filter: blur(16px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .card:hover {
-            background: var(--bg-card-hover);
-            transform: translateY(-4px);
-            border-color: rgba(99, 102, 241, 0.4);
-            box-shadow: 0 12px 30px var(--accent-glow);
-        }
-
-        .card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.25rem;
-        }
-
-        .card-icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-        }
-
-        .card-title {
-            font-size: 1.2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-desc {
-            color: var(--text-secondary);
-            font-size: 0.92rem;
-            line-height: 1.5;
-            margin-bottom: 1.5rem;
-        }
-
-        .card-action {
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--accent-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        footer {
-            padding: 2rem 5%;
-            text-align: center;
-            color: var(--text-secondary);
-            font-size: 0.85rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .metrics-container {
-            margin-bottom: 3rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 1.75rem;
-            backdrop-filter: blur(16px);
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+        /* Glassmorphic Metrics Container */
+        .metrics-section {
+            margin-bottom: 2.5rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(24px);
+            box-shadow: var(--card-shadow);
             transition: border-color 0.3s ease;
         }
 
-        .metrics-container:hover {
-            border-color: rgba(99, 102, 241, 0.3);
+        .metrics-section:hover {
+            border-color: rgba(56, 189, 248, 0.25);
         }
 
-        .metrics-header-bar {
+        .metrics-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
         }
 
-        .section-heading {
-            font-size: 1.25rem;
-            font-weight: 600;
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 700;
             color: var(--text-primary);
             display: flex;
             align-items: center;
-            gap: 0.6rem;
-            margin: 0;
+            gap: 0.65rem;
         }
 
-        .live-tag {
+        .title-paw {
+            font-size: 1.1rem;
+            opacity: 0.85;
+        }
+
+        .live-badge {
             display: inline-flex;
             align-items: center;
-            gap: 0.4rem;
-            font-size: 0.82rem;
-            color: var(--status-green);
-            font-weight: 500;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.25);
-            padding: 0.25rem 0.75rem;
+            gap: 0.45rem;
+            font-size: 0.8rem;
+            color: var(--status-mint);
+            font-weight: 600;
+            background: rgba(52, 211, 153, 0.1);
+            border: 1px solid rgba(52, 211, 153, 0.25);
+            padding: 0.3rem 0.85rem;
             border-radius: 999px;
-        }
-
-        .pulse-dot-small {
-            width: 6px;
-            height: 6px;
-            background-color: var(--status-green);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--status-green);
-            animation: pulse 2s infinite;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .metrics-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
             gap: 1.25rem;
         }
 
         .metric-card {
-            background: rgba(10, 13, 20, 0.6);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 1.25rem;
-            backdrop-filter: blur(12px);
+            background: rgba(10, 16, 27, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 1.4rem;
+            backdrop-filter: blur(14px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            transition: all 0.25s ease;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
         }
 
         .metric-card:hover {
-            border-color: rgba(99, 102, 241, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px var(--accent-glow);
+            border-color: var(--glass-border-hover);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px var(--glow-sky);
         }
 
-        .metric-header {
+        .metric-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 0.75rem;
+            margin-bottom: 0.85rem;
         }
 
-        .metric-title {
-            font-size: 0.9rem;
-            font-weight: 500;
+        .metric-label {
+            font-size: 0.88rem;
+            font-weight: 600;
             color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
         }
 
-        .metric-value {
-            font-size: 1.35rem;
+        .metric-val {
+            font-size: 1.45rem;
             font-weight: 700;
             color: var(--text-primary);
-            font-family: monospace;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.02em;
         }
 
-        .progress-bar-bg {
+        .progress-track {
             width: 100%;
             height: 8px;
             background: rgba(255, 255, 255, 0.08);
             border-radius: 999px;
             overflow: hidden;
-            margin-top: 0.75rem;
+            margin-top: 0.85rem;
+            position: relative;
         }
 
-        .progress-bar-fill {
+        .progress-fill {
             height: 100%;
             width: 0%;
             background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
             border-radius: 999px;
-            transition: width 0.6s ease;
+            transition: width 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
-        .badge-status {
-            font-size: 0.8rem;
+        .status-pill {
+            font-size: 0.78rem;
             font-weight: 600;
-            padding: 0.2rem 0.6rem;
+            padding: 0.2rem 0.65rem;
             border-radius: 999px;
-            background: rgba(99, 102, 241, 0.15);
+            background: rgba(56, 189, 248, 0.12);
             color: var(--accent-primary);
-            border: 1px solid rgba(99, 102, 241, 0.3);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        /* Action Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 22px;
+            padding: 1.85rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: var(--card-shadow);
+        }
+
+        .action-card:hover {
+            background: var(--glass-bg-hover);
+            transform: translateY(-5px);
+            border-color: var(--glass-border-hover);
+            box-shadow: 0 16px 35px var(--glow-sky);
+        }
+
+        .card-icon-wrap {
+            width: 52px;
+            height: 52px;
+            border-radius: 16px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(129, 140, 248, 0.15));
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .card-heading {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: var(--text-primary);
+        }
+
+        .card-text {
+            color: var(--text-secondary);
+            font-size: 0.94rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-link-btn {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.2s ease;
+        }
+
+        .action-card:hover .card-link-btn {
+            gap: 0.75rem;
+            color: var(--text-primary);
+        }
+
+        footer {
+            position: relative;
+            z-index: 10;
+            padding: 2.2rem 6%;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            border-top: 1px solid var(--glass-border);
+            background: rgba(9, 14, 23, 0.75);
+            backdrop-filter: blur(16px);
+        }
+
+        .footer-dog-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-top: 0.4rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        @media (max-width: 640px) {
+            .hero-title { font-size: 2rem; }
+            header { padding: 1.2rem 4%; }
+            main { padding: 1.75rem 4%; }
+            .metrics-section { padding: 1.35rem; }
         }
     </style>
 </head>
 
 <body>
+    <!-- Calm Ambient Glass Orbs -->
+    <div class="ambient-orb orb-1"></div>
+    <div class="ambient-orb orb-2"></div>
+    <div class="ambient-orb orb-3"></div>
+
     <header>
-        <a href="/" class="brand">
-            <div class="brand-icon">C</div>
-            <span class="brand-title">chozzen.xyz</span>
+        <a href="/" class="brand" id="brand-link">
+            <div class="brand-avatar" title="Chozzen the Loyal Watchdog">🐕</div>
+            <div class="brand-text">
+                <span class="brand-title">chozzen.xyz</span>
+                <span class="brand-subtitle">🐾 Chozzen Server</span>
+            </div>
         </a>
         <nav class="nav-links">
-            <a href="/" class="nav-link">Home</a>
-            <a href="/files/" class="nav-link">FileBrowser</a>
-            <a href="/about" class="nav-link">About</a>
+            <a href="/" class="nav-link active" id="nav-home">Home</a>
+            <a href="/files/" class="nav-link" id="nav-files">FileBrowser</a>
+            <a href="/about" class="nav-link" id="nav-about">Architecture</a>
         </nav>
     </header>
 
     <main>
+        <!-- Hero Section with Calm Watchdog Theme -->
         <section class="hero">
-            <div class="status-badge">
+            <div class="dog-watchdog-card" id="watchdog-banner">
                 <div class="pulse-dot"></div>
-                <span>Server Online & Secure</span>
+                <span id="watchdog-text">Chozzen is resting peacefully — 100% Operational 🐾</span>
             </div>
             <h1 class="hero-title">Android Tablet Home Server</h1>
-            <p class="hero-subtitle">High-performance edge-proxied home server powered by ARM64 Termux, Debian PRoot,
-                and Cloudflare Tunnels.</p>
+            <p class="hero-subtitle">Serene ARM64 edge server powered by Termux, Debian PRoot, and Cloudflare HTTP/2 Tunnels.</p>
         </section>
 
-        <!-- System Health Monitor Container -->
-        <section class="metrics-container">
-            <div class="metrics-header-bar">
-                <h2 class="section-heading"><span>📊</span> System Health Monitor</h2>
-                <span class="live-tag"><span class="pulse-dot-small"></span> Real-time</span>
+        <!-- Real-Time System Telemetry Container -->
+        <section class="metrics-section">
+            <div class="metrics-header">
+                <h2 class="section-title"><span class="title-paw">🐾</span> System Health Monitor</h2>
+                <span class="live-badge"><span class="pulse-dot"></span> LIVE TELEMETRY</span>
             </div>
             <div class="metrics-grid">
                 <div class="metric-card" id="card-cpu">
-                    <div class="metric-header">
-                        <span class="metric-title">CPU Load</span>
-                        <span class="metric-value" id="val-cpu">--%</span>
+                    <div class="metric-top">
+                        <span class="metric-label">💻 CPU Load</span>
+                        <span class="metric-val" id="val-cpu">--%</span>
                     </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" id="bar-cpu"></div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="bar-cpu"></div>
                     </div>
                 </div>
 
                 <div class="metric-card" id="card-ram">
-                    <div class="metric-header">
-                        <span class="metric-title">RAM Memory</span>
-                        <span class="metric-value" id="val-ram">-- MB</span>
+                    <div class="metric-top">
+                        <span class="metric-label">🧠 RAM Memory</span>
+                        <span class="metric-val" id="val-ram">-- MB</span>
                     </div>
-                    <div class="progress-bar-bg">
-                        <div class="progress-bar-fill" id="bar-ram"></div>
+                    <div class="progress-track">
+                        <div class="progress-fill" id="bar-ram"></div>
                     </div>
                 </div>
 
                 <div class="metric-card" id="card-battery">
-                    <div class="metric-header">
-                        <span class="metric-title">Battery & Power</span>
-                        <span class="badge-status" id="val-battery-status">Online</span>
+                    <div class="metric-top">
+                        <span class="metric-label">🔋 Battery & Power</span>
+                        <span class="status-pill" id="val-battery-status">Optimal</span>
                     </div>
-                    <div class="metric-value" id="val-battery">--%</div>
+                    <div class="metric-val" id="val-battery">--%</div>
                 </div>
 
                 <div class="metric-card" id="card-uptime">
-                    <div class="metric-header">
-                        <span class="metric-title">Server Uptime</span>
-                        <span class="badge-status">Active</span>
+                    <div class="metric-top">
+                        <span class="metric-label">⏳ Server Uptime</span>
+                        <span class="status-pill" style="color: var(--status-mint); background: rgba(52, 211, 153, 0.12); border-color: rgba(52, 211, 153, 0.3);">Active</span>
                     </div>
-                    <div class="metric-value" id="val-uptime">--</div>
+                    <div class="metric-val" id="val-uptime">--</div>
                 </div>
             </div>
         </section>
 
-        <section class="grid">
-            <a href="/files/" class="card" id="card-files">
+        <!-- Quick Access Services -->
+        <section class="cards-grid">
+            <a href="/files/" class="action-card" id="card-files">
                 <div>
-                    <div class="card-header">
-                        <div class="card-icon">📁</div>
-                    </div>
-                    <h2 class="card-title">File Browser</h2>
-                    <p class="card-desc">Access, upload, and manage files stored on the tablet home server via web
-                        interface.</p>
+                    <div class="card-icon-wrap">📁</div>
+                    <h2 class="card-heading">File Browser Storage</h2>
+                    <p class="card-text">Explore, upload, and stream media & files stored on the tablet home server storage.</p>
                 </div>
-                <div class="card-action">
+                <div class="card-link-btn">
                     <span>Open File Browser</span>
                     <span>→</span>
                 </div>
             </a>
 
-            <a href="/about" class="card" id="card-about">
+            <a href="/about" class="action-card" id="card-about">
                 <div>
-                    <div class="card-header">
-                        <div class="card-icon">⚡</div>
-                    </div>
-                    <h2 class="card-title">System Architecture</h2>
-                    <p class="card-desc">Explore technical specifications, network topology, and runtime infrastructure.
-                    </p>
+                    <div class="card-icon-wrap">⚡</div>
+                    <h2 class="card-heading">System Architecture</h2>
+                    <p class="card-text">Inspect hardware specs, PRoot guest container layers, and Cloudflare HTTP/2 proxy configuration.</p>
                 </div>
-                <div class="card-action">
+                <div class="card-link-btn">
                     <span>View Specifications</span>
                     <span>→</span>
                 </div>
@@ -471,6 +581,9 @@
 
     <footer>
         <p>&copy; 2026 chozzen.xyz • Powered by Cloudflare Edge & Debian PRoot</p>
+        <div class="footer-dog-badge">
+            <span>Guarded with care by Chozzen 🐶</span>
+        </div>
     </footer>
 
     <script>
@@ -497,7 +610,7 @@
                 // Battery
                 if (data.battery) {
                     document.getElementById('val-battery').innerText = data.battery.capacity + '%';
-                    document.getElementById('val-battery-status').innerText = data.battery.status;
+                    document.getElementById('val-battery-status').innerText = data.battery.status || 'Optimal';
                 }
 
                 // Uptime
