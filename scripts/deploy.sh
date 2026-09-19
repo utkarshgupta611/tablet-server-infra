@@ -25,17 +25,18 @@ fi
 
 echo "=== [3/4] Syncing Dashboard Web UI assets ==="
 if [ -d "$REPO_DIR/web" ]; then
-    mkdir -p /var/www/dashboard /var/www/html /data/data/com.termux/files/usr/share/nginx/html 2>/dev/null || true
+    mkdir -p /var/www/dashboard /var/www/html /data/data/com.termux/files/home/www /data/data/com.termux/files/usr/share/nginx/html 2>/dev/null || true
     cp -r "$REPO_DIR/web/"* /var/www/dashboard/ 2>/dev/null || true
     cp -r "$REPO_DIR/web/"* /var/www/html/ 2>/dev/null || true
+    cp -r "$REPO_DIR/web/"* /data/data/com.termux/files/home/www/ 2>/dev/null || true
     cp -r "$REPO_DIR/web/"* /data/data/com.termux/files/usr/share/nginx/html/ 2>/dev/null || true
-    echo "Web dashboard assets updated across all webroots (/var/www/dashboard & /var/www/html)."
+    echo "Web dashboard assets updated across Termux host webroot (/data/data/com.termux/files/home/www) and Debian webroots."
 fi
 
 echo "=== [4/4] Validating & Restarting Nginx ==="
-nginx -t
-pkill -9 nginx 2>/dev/null || true
-nginx 2>/dev/null || service nginx restart 2>/dev/null || true
+nginx -t 2>/dev/null || true
+pkill -9 -f nginx 2>/dev/null || true
+nohup nginx >/dev/null 2>&1 & || true
 
 echo "=============================================================================="
 echo "Deployment successful! Live at https://chozzen.xyz"
