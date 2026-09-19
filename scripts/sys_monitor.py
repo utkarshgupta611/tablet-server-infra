@@ -36,16 +36,21 @@ LATEST_STATS = {}
 STATS_LOCK = threading.Lock()
 
 def get_server_password_hash():
-    # Allow overriding password via custom file on the server
-    custom_pass_file = "/root/.chozzen_pass"
-    if os.path.exists(custom_pass_file):
-        try:
-            with open(custom_pass_file, "r") as f:
-                content = f.read().strip()
-                if content:
-                    return hashlib.sha256((AUTH_SALT + content).encode()).hexdigest()
-        except Exception:
-            pass
+    # Allow overriding password via custom file in Debian PRoot or Termux host
+    possible_paths = [
+        "/root/.chozzen_pass",
+        "/data/data/com.termux/files/home/.chozzen_pass",
+        os.path.expanduser("~/.chozzen_pass"),
+    ]
+    for p in possible_paths:
+        if os.path.exists(p):
+            try:
+                with open(p, "r") as f:
+                    content = f.read().strip()
+                    if content:
+                        return hashlib.sha256((AUTH_SALT + content).encode()).hexdigest()
+            except Exception:
+                pass
     return DEFAULT_HASH
 
 def is_valid_password(pwd_input):
