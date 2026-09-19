@@ -36,7 +36,8 @@ fi
 echo "=== [4/4] Validating & Restarting Nginx ==="
 nginx -t 2>/dev/null || true
 pkill -9 -f nginx 2>/dev/null || true
-nohup nginx >/dev/null 2>&1 & || true
+nohup nginx >/dev/null 2>&1 &
+sleep 1
 
 echo "=============================================================================="
 echo "Deployment successful! Live at https://chozzen.xyz"
