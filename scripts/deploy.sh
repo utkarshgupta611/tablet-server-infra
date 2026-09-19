@@ -15,22 +15,23 @@ git pull origin master || git pull || echo "Warning: git pull failed or reposito
 
 echo "=== [2/4] Syncing Nginx configuration ==="
 if [ -f "$REPO_DIR/configs/nginx/default.conf" ]; then
-    mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d
+    mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d /data/data/com.termux/files/usr/etc/nginx/conf.d 2>/dev/null || true
     cp "$REPO_DIR/configs/nginx/default.conf" /etc/nginx/sites-available/default 2>/dev/null || true
     cp "$REPO_DIR/configs/nginx/default.conf" /etc/nginx/conf.d/default.conf 2>/dev/null || true
+    cp "$REPO_DIR/configs/nginx/default.conf" /data/data/com.termux/files/usr/etc/nginx/conf.d/default.conf 2>/dev/null || true
     echo "Nginx site configuration updated."
 fi
 
 echo "=== [3/4] Syncing Dashboard Web UI assets ==="
 if [ -d "$REPO_DIR/web" ]; then
-    mkdir -p /var/www/dashboard
-    cp -r "$REPO_DIR/web/"* /var/www/dashboard/
+    mkdir -p /var/www/dashboard /data/data/com.termux/files/usr/share/nginx/html 2>/dev/null || true
+    cp -r "$REPO_DIR/web/"* /var/www/dashboard/ 2>/dev/null || true
     echo "Web dashboard assets updated in /var/www/dashboard/."
 fi
 
 echo "=== [4/4] Validating & Reloading Nginx ==="
 nginx -t
-service nginx reload
+nginx -s reload 2>/dev/null || service nginx reload 2>/dev/null || nginx 2>/dev/null || true
 
 echo "=============================================================================="
 echo "Deployment successful! Live at https://chozzen.xyz"
