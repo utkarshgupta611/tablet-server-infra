@@ -6,6 +6,7 @@
 
 import json
 import os
+import subprocess
 import sys
 import time
 
@@ -58,10 +59,39 @@ def get_ram_usage():
         return {"total_mb": 0, "used_mb": 0, "percent": 0.0}
 
 def get_battery_info():
+    capacity = 100
+    status = "Discharging"
+    
+    # 1. Try termux-battery-status command
+    try:
+        proc = subprocess.run(["termux-battery-status"], capture_output=True, text=True, timeout=2)
+        if proc.returncode == 0 and proc.stdout:
+            b_data = json.loads(proc.stdout)
+            capacity = b_data.get("percentage", 100)
+            plugged = b_data.get("plugged", "UNPLUGGED")
+            raw_status = b_data.get("status", "DISCHARGING")
+            if plugged != "UNPLUGGED":
+                status = "Charging" if raw_status == "CHARGING" else "Plugged In"
+            else:
+                status = "Discharging"
+            return {"capacity": capacity, "status": status}
+    except Exception:
+        pass
+
+    # 2. Check power_supply USB / AC online states
+    usb_online = False
+    for p in ["/sys/class/power_supply/usb/online", "/sys/class/power_supply/ac/online"]:
+        if os.path.exists(p):
+            try:
+                with open(p, "r") as f:
+                    if f.read().strip() == "1":
+                        usb_online = True
+            except Exception:
+                pass
+
+    # 3. Read battery capacity and status files
     cap_path = "/sys/class/power_supply/battery/capacity"
     stat_path = "/sys/class/power_supply/battery/status"
-    capacity = 100
-    status = "Plugged In"
     
     try:
         if os.path.exists(cap_path):
@@ -69,8 +99,13 @@ def get_battery_info():
                 capacity = int(f.read().strip())
         if os.path.exists(stat_path):
             with open(stat_path, "r") as f:
-                raw_stat = f.read().strip()
-                status = raw_stat if raw_stat else "Plugged In"
+                raw_stat = f.read().strip().capitalize()
+                if raw_stat:
+                    status = raw_stat
+                elif usb_online:
+                    status = "Charging"
+                else:
+                    status = "Discharging"
     except Exception:
         pass
         
