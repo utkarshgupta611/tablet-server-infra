@@ -28,8 +28,11 @@ fi
 echo "=== [5/5] Launching Debian PRoot Server Stack (Nginx + Tunnel + AdGuard + Health Monitor) ==="
 nohup proot-distro login debian -- bash -c "
     service nginx start
-    if ! pgrep -x cloudflared > /dev/null; then
-        nohup cloudflared tunnel --protocol http2 run redmi-tunnel > /root/.cloudflared/tunnel.log 2>&1 &
+    chmod +x /root/run-tunnel.sh /root/tablet-server-infra/scripts/run-tunnel.sh 2>/dev/null || true
+    if ! pgrep -f "run-tunnel.sh" > /dev/null; then
+        RUN_TUNNEL="/root/run-tunnel.sh"
+        [ ! -f "$RUN_TUNNEL" ] && RUN_TUNNEL="/root/tablet-server-infra/scripts/run-tunnel.sh"
+        nohup "$RUN_TUNNEL" > /dev/null 2>&1 &
     fi
     if [ -d /root/AdGuardHome ] && ! pgrep -f 'AdGuardHome' > /dev/null; then
         cd /root/AdGuardHome && nohup ./AdGuardHome -c AdGuardHome.yaml > /dev/null 2>&1 &
