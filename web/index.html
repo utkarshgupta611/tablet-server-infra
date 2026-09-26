@@ -36,6 +36,8 @@
   </style>
   <script>
     (async function(){
+      var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+      if (isLocalPreview) return;
       var token=localStorage.getItem('chozzen_session')||sessionStorage.getItem('chozzen_session');
       if(!token){location.replace('/login.html?redirect='+encodeURIComponent(location.pathname));return}
       try{var res=await fetch('/api/auth/verify',{headers:{Authorization:'Bearer '+token}});
@@ -57,8 +59,8 @@
       <a class="nav-item" href="#services"><span class="nav-icon">⌘</span>Services</a>
       <a class="nav-item" href="#network"><span class="nav-icon">⌁</span>Network</a>
       <a class="nav-item" href="#storage"><span class="nav-icon">▤</span>Storage</a>
-      <a class="nav-item" href="/about"><span class="nav-icon">⌂</span>Architecture</a>
-      <a class="nav-item" href="/files/"><span class="nav-icon">↗</span>FileBrowser</a>
+      <a class="nav-item" href="about.html"><span class="nav-icon">⌂</span>Architecture</a>
+      <a class="nav-item" href="/files/" id="nav-filebrowser"><span class="nav-icon">↗</span>FileBrowser</a>
     </nav>
     <div class="sidebar-foot">
       <div class="foot-line"><i class="dot"></i><strong>Chozzen host</strong></div>
@@ -98,7 +100,7 @@
       <article class="panel" id="network">
         <div class="panel-head"><div><h2 class="panel-title">Network &amp; edge</h2><div class="panel-note">Cloudflare Tunnel · chozzen.xyz</div></div><span class="subtle-tag">NO LIVE FEED</span></div>
         <div class="network-empty"><strong>Traffic metrics aren’t available yet</strong>The current monitor doesn’t expose network throughput or tunnel health. This panel will show live values when those metrics are added.</div>
-        <div class="quick-links"><a class="quick-link" href="https://dash.cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare dashboard ↗</a><a class="quick-link" href="/about">View architecture →</a></div>
+        <div class="quick-links"><a class="quick-link" href="https://dash.cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare dashboard ↗</a><a class="quick-link" href="about.html">View architecture →</a></div>
       </article>
     </section>
 
@@ -112,7 +114,7 @@
       <article class="panel">
         <div class="panel-head"><div><h2 class="panel-title">Host environment</h2><div class="panel-note">Deployment context</div></div><span class="subtle-tag">ARM64</span></div>
         <div class="storage-row"><span>Device</span><strong>Android tablet</strong></div><div class="storage-row"><span>Runtime</span><strong>Termux + Debian PRoot</strong></div><div class="storage-row"><span>Web server</span><strong>Nginx</strong></div>
-        <div class="quick-links"><a class="quick-link" href="/files/">Open FileBrowser →</a><a class="quick-link" href="/about">Architecture details →</a></div>
+        <div class="quick-links"><a class="quick-link" href="/files/">Open FileBrowser →</a><a class="quick-link" href="about.html">Architecture details →</a></div>
       </article>
     </section>
     <footer class="footer"><span>Chozzen · Home server dashboard</span><span>Refreshes automatically</span></footer>
@@ -148,12 +150,54 @@
       document.getElementById('connection').classList.remove('offline');document.getElementById('connection-label').textContent='Telemetry live';
       document.getElementById('notice').classList.remove('show');failed=false;
     }catch(e){
+      var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+      if(isLocalPreview){
+        var demoCpu = Math.min(95, Math.max(8, 18.5 + Math.sin(Date.now() / 2500) * 12));
+        var demoRam = 58.2;
+        var cpu=clamp(demoCpu), ram=clamp(demoRam);
+        document.getElementById('cpu-value').textContent=cpu.toFixed(1)+'%';
+        document.getElementById('cpu-sub').textContent='Processor load';
+        setMeter('cpu-meter',cpu);
+        document.getElementById('ram-value').textContent=ram.toFixed(1)+'%';
+        document.getElementById('ram-sub').textContent=fmt(2320)+' MB used of '+fmt(3986)+' MB';
+        setMeter('ram-meter',ram);
+        var cap=84;
+        document.getElementById('battery-value').textContent=cap+'%';
+        document.getElementById('battery-sub').textContent='Plugged in (Charging)';
+        setMeter('battery-meter',cap);
+        document.getElementById('uptime-value').textContent='4 days, 18 hrs, 22 mins';
+        var used=34.2, total=128.0, free=total-used, pct=26.7;
+        document.getElementById('disk-used').textContent=used.toFixed(1)+' GB';
+        document.getElementById('disk-free').textContent=free.toFixed(1)+' GB of '+total.toFixed(1)+' GB';
+        document.getElementById('disk-caption').textContent='Used on root filesystem';
+        document.getElementById('disk-pct').textContent=pct.toFixed(1)+'% used';
+        document.getElementById('disk-tag').textContent='LIVE';
+        setMeter('disk-meter',pct);
+        history.cpu.push(cpu);history.ram.push(ram);if(history.cpu.length>24)history.cpu.shift();if(history.ram.length>24)history.ram.shift();spark('cpu-spark',history.cpu);spark('ram-spark',history.ram);
+        document.getElementById('monitor-state').textContent='Receiving data';
+        document.getElementById('updated').textContent='Updated '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        document.getElementById('connection').classList.remove('offline');document.getElementById('connection-label').textContent='Telemetry live';
+        document.getElementById('notice').classList.remove('show');
+        failed=false;
+        return;
+      }
       document.getElementById('connection').classList.add('offline');document.getElementById('connection-label').textContent='Telemetry offline';
       document.getElementById('monitor-state').textContent='Unavailable';
       document.getElementById('notice').classList.add('show');if(!failed)document.getElementById('updated').textContent='Unable to reach /api/stats';failed=true;
     }
   }
   function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+  if (['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
+    var basePath = window.location.pathname.replace(/\/[^\/]*$/, '');
+    document.querySelectorAll('a[href="about.html"], a[href="/about"], a[href*="about"]').forEach(function(a){
+      a.href = (basePath || '') + '/about.html?v=preview';
+    });
+    document.querySelectorAll('a[href="/files/"]').forEach(function(a){
+      a.href = 'https://chozzen.xyz/files/';
+      a.target = '_blank';
+      a.title = 'Opens FileBrowser on live tablet (https://chozzen.xyz/files/)';
+    });
+  }
   document.getElementById('refresh').addEventListener('click',update);
   document.getElementById('logout').addEventListener('click',async function(){try{await fetch('/api/logout',{method:'POST'})}catch(e){}localStorage.removeItem('chozzen_session');localStorage.removeItem('chozzen_user');sessionStorage.removeItem('chozzen_session');sessionStorage.removeItem('chozzen_user');location.replace('/login.html')});
   tick();setInterval(tick,1000);update();timer=setInterval(update,5000);
