@@ -1,1041 +1,207 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Chozzen Home Server Dashboard — High-performance Android Tablet Server guarded by Chozzen">
-    <title>CHOZZEN HOME Server — chozzen.xyz</title>
-    <script>
-        (async function() {
-            const token = localStorage.getItem('chozzen_session') || sessionStorage.getItem('chozzen_session');
-            if (!token) {
-                window.location.replace('/login.html?redirect=' + encodeURIComponent(window.location.pathname));
-                return;
-            }
-            try {
-                const res = await fetch('/api/auth/verify', {
-                    headers: { 'Authorization': 'Bearer ' + token }
-                });
-                if (!res.ok) {
-                    localStorage.removeItem('chozzen_session');
-                    sessionStorage.removeItem('chozzen_session');
-                    window.location.replace('/login.html?redirect=' + encodeURIComponent(window.location.pathname));
-                }
-            } catch (e) {
-                // If offline, allow existing stored token
-            }
-        })();
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-canvas: #090e17;
-            --sidebar-bg: rgba(12, 19, 32, 0.7);
-            --glass-card: rgba(18, 28, 46, 0.62);
-            --glass-card-hover: rgba(24, 38, 62, 0.82);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-border-hover: rgba(56, 189, 248, 0.35);
-            --accent-cyan: #38bdf8;
-            --accent-indigo: #818cf8;
-            --accent-mint: #34d399;
-            --accent-amber: #fbbf24;
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
-            --card-radius: 20px;
-            --glow-mint: rgba(52, 211, 153, 0.25);
-            --glow-cyan: rgba(56, 189, 248, 0.2);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg-canvas);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Ambient Glowing Background Orbs */
-        .ambient-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(110px);
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.45;
-            animation: floatOrb 20s ease-in-out infinite alternate;
-        }
-
-        .orb-1 {
-            width: 480px;
-            height: 480px;
-            background: radial-gradient(circle, rgba(56, 189, 248, 0.45), transparent 70%);
-            top: -80px;
-            left: 20%;
-        }
-
-        .orb-2 {
-            width: 520px;
-            height: 520px;
-            background: radial-gradient(circle, rgba(129, 140, 248, 0.4), transparent 70%);
-            bottom: -100px;
-            right: 10%;
-            animation-delay: -7s;
-        }
-
-        .orb-3 {
-            width: 400px;
-            height: 400px;
-            background: radial-gradient(circle, rgba(52, 211, 153, 0.3), transparent 70%);
-            top: 45%;
-            right: 35%;
-            animation-delay: -14s;
-        }
-
-        .orb-4 {
-            width: 320px;
-            height: 320px;
-            background: radial-gradient(circle, rgba(251, 191, 36, 0.25), transparent 70%);
-            bottom: 5%;
-            left: 45%;
-            animation-delay: -4s;
-        }
-
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1); }
-            50% { transform: translate(25px, 35px) scale(1.08); }
-            100% { transform: translate(-20px, 15px) scale(0.94); }
-        }
-
-        /* Left Sidebar Layout */
-        .app-sidebar {
-            width: 250px;
-            min-width: 250px;
-            background: var(--sidebar-bg);
-            border-right: 1px solid var(--glass-border);
-            backdrop-filter: blur(24px);
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem 1.1rem;
-            z-index: 20;
-            min-height: 100vh;
-        }
-
-        .sidebar-brand {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            text-decoration: none;
-            color: var(--text-primary);
-            padding: 0.5rem 0.6rem 1.6rem 0.6rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 1.5rem;
-        }
-
-        .dog-avatar-wrap {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 2px solid rgba(251, 191, 36, 0.4);
-            box-shadow: 0 0 16px rgba(251, 191, 36, 0.3);
-            flex-shrink: 0;
-            background: #1e293b;
-        }
-
-        .dog-avatar-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .sidebar-brand-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .brand-name {
-            font-size: 1.15rem;
-            font-weight: 800;
-            letter-spacing: -0.01em;
-            background: linear-gradient(135deg, #ffffff 40%, var(--accent-cyan) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .brand-sub {
-            font-size: 0.72rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            letter-spacing: 0.04em;
-        }
-
-        .sidebar-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 0.45rem;
-            flex: 1;
-        }
-
-        .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.92rem;
-            font-weight: 600;
-            transition: all 0.22s ease;
-        }
-
-        .nav-item:hover {
-            color: var(--text-primary);
-            background: rgba(255, 255, 255, 0.06);
-            transform: translateX(3px);
-        }
-
-        .nav-item.active {
-            color: #ffffff;
-            background: rgba(56, 189, 248, 0.16);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.18);
-        }
-
-        .nav-icon {
-            font-size: 1.15rem;
-            opacity: 0.9;
-        }
-
-        .sidebar-footer {
-            padding-top: 1.25rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            font-size: 0.76rem;
-            color: var(--text-muted);
-            text-align: center;
-            line-height: 1.5;
-        }
-
-        /* Main Dashboard Content Area */
-        .app-main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            z-index: 10;
-            position: relative;
-            padding: 1.25rem 2rem 2.5rem 2rem;
-            max-width: 1680px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        /* Top Header Bar */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-container {
-            position: relative;
-            flex: 1;
-            max-width: 480px;
-        }
-
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            pointer-events: none;
-        }
-
-        .search-input {
-            width: 100%;
-            background: rgba(18, 28, 46, 0.55);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 0.65rem 1rem 0.65rem 2.6rem;
-            color: var(--text-primary);
-            font-family: inherit;
-            font-size: 0.9rem;
-            backdrop-filter: blur(12px);
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .search-input:focus {
-            border-color: rgba(56, 189, 248, 0.4);
-            box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
-        }
-
-        .search-input::placeholder {
-            color: var(--text-muted);
-        }
-
-        .top-status-group {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .status-pill-online {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.45rem;
-            padding: 0.45rem 1.1rem;
-            background: rgba(52, 211, 153, 0.12);
-            border: 1px solid rgba(52, 211, 153, 0.35);
-            border-radius: 999px;
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: var(--accent-mint);
-            box-shadow: 0 0 16px var(--glow-mint);
-        }
-
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background-color: var(--accent-mint);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-mint);
-            animation: pulse 2.2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.45; transform: scale(1.3); }
-            100% { opacity: 1; transform: scale(1); }
-        }
-
-        .dog-guard-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(251, 191, 36, 0.1);
-            border: 1px solid rgba(251, 191, 36, 0.25);
-            padding: 0.45rem 1rem;
-            border-radius: 999px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            color: var(--accent-amber);
-        }
-
-        /* 4 WIDGETS IN EXACTLY ONE LINE */
-        .system-health-row {
-            margin-bottom: 1.5rem;
-        }
-
-        .health-grid-single-line {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1.25rem;
-        }
-
-        .health-card {
-            background: var(--glass-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--card-radius);
-            padding: 1.25rem 1.35rem;
-            backdrop-filter: blur(20px);
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .health-card:hover {
-            background: var(--glass-card-hover);
-            transform: translateY(-3px);
-            border-color: var(--glass-border-hover);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
-        }
-
-        .card-header-flex {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.75rem;
-        }
-
-        .card-label-title {
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .pill-badge {
-            font-size: 0.72rem;
-            font-weight: 700;
-            padding: 0.2rem 0.6rem;
-            border-radius: 999px;
-            background: rgba(52, 211, 153, 0.12);
-            color: var(--accent-mint);
-            border: 1px solid rgba(52, 211, 153, 0.25);
-        }
-
-        .card-big-value {
-            font-size: 1.45rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-            letter-spacing: -0.02em;
-            margin-bottom: 0.5rem;
-        }
-
-        .card-sub-info {
-            font-size: 0.78rem;
-            color: var(--text-muted);
-            margin-top: 0.25rem;
-        }
-
-        .progress-track {
-            width: 100%;
-            height: 7px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 999px;
-            overflow: hidden;
-            margin-top: 0.6rem;
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--accent-cyan), var(--accent-indigo));
-            border-radius: 999px;
-            transition: width 0.6s ease;
-        }
-
-        .sparkline-svg {
-            width: 100%;
-            height: 28px;
-            margin-top: 0.35rem;
-            overflow: visible;
-        }
-
-        /* Main Dashboard Grid (Inspired by the Mockup) */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 1.25rem;
-            flex: 1;
-        }
-
-        .glass-panel {
-            background: var(--glass-card);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--card-radius);
-            padding: 1.4rem;
-            backdrop-filter: blur(20px);
-            transition: border-color 0.25s ease;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .glass-panel:hover {
-            border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.25rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-
-        .panel-title {
-            font-size: 0.98rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .panel-dots {
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 1.1rem;
-            line-height: 1;
-        }
-
-        /* Services List Panel */
-        .services-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-            flex: 1;
-        }
-
-        .service-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.65rem 0.85rem;
-            border-radius: 12px;
-            background: rgba(10, 16, 28, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.2s ease;
-        }
-
-        .service-row:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(56, 189, 248, 0.25);
-        }
-
-        .service-left {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .service-icon {
-            font-size: 1.15rem;
-            width: 28px;
-            text-align: center;
-        }
-
-        .service-name {
-            font-size: 0.88rem;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        .service-port {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .running-tag {
-            font-size: 0.72rem;
-            font-weight: 700;
-            color: var(--accent-mint);
-            background: rgba(52, 211, 153, 0.12);
-            border: 1px solid rgba(52, 211, 153, 0.25);
-            padding: 0.2rem 0.55rem;
-            border-radius: 999px;
-            box-shadow: 0 0 10px rgba(52, 211, 153, 0.15);
-        }
-
-        /* Network Traffic Waveform Panel */
-        .traffic-rates {
-            display: flex;
-            gap: 1.5rem;
-            margin-bottom: 0.75rem;
-            font-size: 0.86rem;
-        }
-
-        .rate-item {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-
-        .rate-in { color: var(--accent-cyan); font-weight: 600; }
-        .rate-out { color: var(--accent-indigo); font-weight: 600; }
-
-        .traffic-canvas-box {
-            position: relative;
-            flex: 1;
-            min-height: 140px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(10, 16, 28, 0.4);
-            border-radius: 14px;
-            padding: 0.75rem;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            overflow: hidden;
-        }
-
-        .traffic-svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Storage & Architecture Panel */
-        .storage-visual-box {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            padding: 0.5rem 0;
-            margin-bottom: 1rem;
-        }
-
-        .donut-wrap {
-            width: 90px;
-            height: 90px;
-            position: relative;
-            flex-shrink: 0;
-        }
-
-        .donut-svg {
-            transform: rotate(-90deg);
-            width: 100%;
-            height: 100%;
-        }
-
-        .donut-center-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 0.8rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .storage-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.4rem;
-            flex: 1;
-        }
-
-        .storage-stat-line {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.84rem;
-            color: var(--text-secondary);
-        }
-
-        .storage-stat-val {
-            font-weight: 600;
-            color: var(--text-primary);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        .quick-action-link {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.75rem 1rem;
-            background: rgba(56, 189, 248, 0.08);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 12px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-size: 0.86rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            margin-top: auto;
-        }
-
-        .quick-action-link:hover {
-            background: rgba(56, 189, 248, 0.16);
-            border-color: rgba(56, 189, 248, 0.4);
-            transform: translateY(-2px);
-        }
-
-        /* Responsive Breakpoints */
-        @media (max-width: 1200px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 900px) {
-            body { flex-direction: column; }
-            .app-sidebar {
-                width: 100%;
-                min-width: 100%;
-                min-height: auto;
-                border-right: none;
-                border-bottom: 1px solid var(--glass-border);
-                padding: 1rem 1.25rem;
-            }
-            .sidebar-brand { margin-bottom: 0.75rem; padding-bottom: 0.75rem; }
-            .sidebar-nav { flex-direction: row; flex-wrap: wrap; }
-            .app-main { padding: 1.25rem 1rem; }
-            .health-grid-single-line {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 580px) {
-            .health-grid-single-line {
-                grid-template-columns: 1fr;
-            }
-            .top-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0b1017">
+  <meta name="description" content="Chozzen home server status and system dashboard.">
+  <title>Chozzen — Server overview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{color-scheme:dark;--bg:#0b1017;--surface:#111923;--surface-2:#151f2b;--line:#243140;--muted:#93a1b2;--text:#edf3f8;--teal:#65e0c0;--blue:#82b8ff;--amber:#f4c46a;--red:#ff8585;--radius:18px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 78% -15%,#1b3540 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.55 Manrope,system-ui,sans-serif;min-height:100vh}
+    a{color:inherit;text-decoration:none}button,input{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;padding:25px 16px 18px;border-right:1px solid var(--line);background:#0e151e;display:flex;flex-direction:column;z-index:5}
+    .brand{display:flex;align-items:center;gap:12px;padding:3px 9px 24px;border-bottom:1px solid var(--line)}
+    .brand img{width:42px;height:42px;object-fit:cover;border-radius:14px;background:#202d39}.brand strong{display:block;font-size:14px;letter-spacing:.13em}.brand small{color:var(--muted);font-size:10px;letter-spacing:.1em}
+    .nav-label{margin:23px 10px 8px;color:#637184;font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    nav{display:grid;gap:5px}.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;color:var(--muted);font-weight:650;transition:.18s ease}.nav-item:hover,.nav-item.active{background:#1b2935;color:var(--text)}.nav-item.active{box-shadow:inset 2px 0 var(--teal)}.nav-icon{width:20px;text-align:center;color:var(--teal);font-size:16px}
+    .sidebar-foot{margin-top:auto;border-top:1px solid var(--line);padding:17px 10px 2px;color:var(--muted);font-size:11px}.foot-line{display:flex;align-items:center;gap:8px;margin-bottom:4px}.dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px #65e0c077}.foot-meta{color:#657487}
+    main{min-width:0;padding:28px clamp(20px,4vw,58px) 60px;max-width:1600px;width:100%;margin:0 auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:38px}.crumb{color:var(--muted);font-size:12px}.top-right{display:flex;align-items:center;gap:10px}.clock{font:12px "DM Mono",monospace;color:var(--muted);padding-right:12px;border-right:1px solid var(--line)}.icon-btn{border:1px solid var(--line);background:var(--surface);color:var(--text);height:38px;padding:0 13px;border-radius:10px;cursor:pointer}.icon-btn:hover{border-color:#476276;background:var(--surface-2)}
+    .intro{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:23px}.eyebrow{color:var(--teal);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.intro h1{margin:8px 0 5px;font-size:clamp(27px,4vw,38px);line-height:1.12;letter-spacing:-.045em}.intro p{margin:0;color:var(--muted)}.online-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #285848;background:#12251f;color:#9ae9cb;padding:9px 13px;border-radius:999px;white-space:nowrap;font-size:11px;font-weight:750}.online-pill.offline{border-color:#674144;background:#2a181b;color:#ffadad}.online-pill .dot{animation:pulse 2s infinite}@keyframes pulse{50%{opacity:.4;transform:scale(.8)}}
+    .notice{display:none;border:1px solid #68454b;background:#28191d;color:#ffc1c1;padding:11px 14px;border-radius:12px;margin:0 0 20px}.notice.show{display:block}
+    .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:29px 0 13px}.section-head h2{font-size:13px;margin:0;letter-spacing:.02em}.section-head span{color:var(--muted);font-size:11px}
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.card,.panel{border:1px solid var(--line);background:linear-gradient(145deg,#141e29,#101720);border-radius:var(--radius);box-shadow:0 10px 35px #00000012}.metric{padding:17px 18px;min-height:170px;position:relative;overflow:hidden}.metric:after{content:"";position:absolute;width:130px;height:130px;right:-60px;top:-74px;border-radius:50%;background:#65e0c00a}.metric-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-weight:650;font-size:11px}.metric-glyph{color:var(--teal);font-size:16px}.metric-value{font:500 27px "DM Mono",monospace;letter-spacing:-.06em;margin:18px 0 3px}.metric-sub{font-size:10px;color:var(--muted);min-height:16px}.meter{height:4px;border-radius:9px;background:#25313c;margin-top:14px;overflow:hidden}.meter i{height:100%;display:block;width:0;background:linear-gradient(90deg,var(--teal),var(--blue));transition:width .5s ease;border-radius:inherit}.spark{width:100%;height:28px;margin-top:8px;overflow:visible}.spark polyline{fill:none;stroke:var(--teal);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+    .grid-2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:14px}.panel{padding:19px}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px}.panel-title{margin:0;font-size:13px}.panel-note{font-size:10px;color:var(--muted);margin-top:3px}.subtle-tag{border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:9px;padding:4px 8px;white-space:nowrap}
+    .service-list{display:grid;gap:8px}.service{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid #202c39;background:#101821;border-radius:12px}.service-icon{width:32px;height:32px;border-radius:10px;background:#1c2b35;color:var(--teal);display:grid;place-items:center;font-size:14px;flex:none}.service-info{min-width:0;flex:1}.service-info b{display:block;font-size:11px}.service-info small{color:var(--muted);font-size:10px}.service-state{font-size:9px;color:var(--amber);border:1px solid #665533;background:#272316;padding:4px 7px;border-radius:999px;white-space:nowrap}
+    .storage-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #202c39;font-size:11px}.storage-row:last-child{border:0}.storage-row span:first-child{color:var(--muted)}.storage-row strong{font:11px "DM Mono",monospace}.storage-meter{height:7px;background:#25313c;border-radius:8px;overflow:hidden;margin:13px 0 6px}.storage-meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#65e0c0,#82b8ff);border-radius:inherit}.storage-caption{display:flex;justify-content:space-between;color:var(--muted);font-size:10px}
+    .network-empty{padding:21px 15px;border:1px dashed #334253;border-radius:13px;color:var(--muted);font-size:11px;line-height:1.6}.network-empty strong{display:block;color:var(--text);font-size:11px;margin-bottom:4px}.quick-links{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.quick-link{padding:9px 12px;background:#17232e;border:1px solid #2b3b4a;border-radius:10px;font-size:10px;font-weight:700}.quick-link:hover{border-color:var(--teal);color:var(--teal)}
+    .footer{margin-top:25px;color:#627184;font-size:10px;display:flex;justify-content:space-between;gap:10px}
+    @media(max-width:1100px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-2{grid-template-columns:1fr}}
+    @media(max-width:700px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto;padding:12px 14px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:2px 4px 12px;border:0}.brand img{width:34px;height:34px}.nav-label,.sidebar-foot{display:none}nav{display:flex;overflow-x:auto;gap:4px;margin-top:8px;padding-bottom:1px}.nav-item{padding:8px 10px;white-space:nowrap;font-size:11px}.nav-icon{width:auto}main{padding:20px 15px 40px}.topbar{margin-bottom:25px}.intro{align-items:flex-start;flex-direction:column}.intro h1{font-size:30px}.metrics{gap:9px}.metric{padding:13px;min-height:150px}.metric-value{font-size:22px;margin-top:15px}.panel{padding:15px}.clock{display:none}}
+    @media(max-width:390px){.metrics{grid-template-columns:1fr}.metric{min-height:130px}.metric-value{margin:12px 0 2px}.spark{height:22px}}
+    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+  </style>
+  <script>
+    (async function(){
+      var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+      if (isLocalPreview) return;
+      var token=localStorage.getItem('chozzen_session')||sessionStorage.getItem('chozzen_session');
+      if(!token){location.replace('/login.html?redirect='+encodeURIComponent(location.pathname));return}
+      try{var res=await fetch('/api/auth/verify',{headers:{Authorization:'Bearer '+token}});
+        if(!res.ok){localStorage.removeItem('chozzen_session');sessionStorage.removeItem('chozzen_session');location.replace('/login.html?redirect='+encodeURIComponent(location.pathname))}
+      }catch(e){}
+    })();
+  </script>
 </head>
-
 <body>
-    <!-- Floating Ambient Orbs for Calm Glassmorphic Lighting -->
-    <div class="ambient-orb orb-1"></div>
-    <div class="ambient-orb orb-2"></div>
-    <div class="ambient-orb orb-3"></div>
-    <div class="ambient-orb orb-4"></div>
+<div class="shell">
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Chozzen home">
+      <img src="chozzen-dog.jpg" alt="" onerror="this.src='chozzen1.jpeg'">
+      <span><strong>CHOZZEN</strong><small>HOME SERVER</small></span>
+    </a>
+    <div class="nav-label">Workspace</div>
+    <nav aria-label="Main navigation">
+      <a class="nav-item active" href="#overview"><span class="nav-icon">◫</span>Overview</a>
+      <a class="nav-item" href="#services"><span class="nav-icon">⌘</span>Services</a>
+      <a class="nav-item" href="#network"><span class="nav-icon">⌁</span>Network</a>
+      <a class="nav-item" href="#storage"><span class="nav-icon">▤</span>Storage</a>
+      <a class="nav-item" href="about.html"><span class="nav-icon">⌂</span>Architecture</a>
+      <a class="nav-item" href="/files/" id="nav-filebrowser"><span class="nav-icon">↗</span>FileBrowser</a>
+    </nav>
+    <div class="sidebar-foot">
+      <div class="foot-line"><i class="dot"></i><strong>Chozzen host</strong></div>
+      <div class="foot-meta">Android · Termux · Debian PRoot</div>
+    </div>
+  </aside>
+  <main id="overview">
+    <header class="topbar">
+      <div class="crumb">Home server <span aria-hidden="true">/</span> Overview</div>
+      <div class="top-right"><time class="clock" id="clock">--:--:--</time><button class="icon-btn" id="refresh" type="button">↻ <span>Refresh</span></button><button class="icon-btn" id="logout" type="button">Sign out</button></div>
+    </header>
+    <section class="intro">
+      <div><div class="eyebrow">System overview</div><h1>Your server at a glance.</h1><p>Live telemetry from your Android home server.</p></div>
+      <div class="online-pill" id="connection"><i class="dot"></i><span id="connection-label">Connecting</span></div>
+    </section>
+    <div class="notice" id="notice" role="status">Live metrics are temporarily unavailable. Showing the last received values.</div>
 
-    <!-- Left Navigation Sidebar (Mockup Style) -->
-    <aside class="app-sidebar">
-        <a href="/" class="sidebar-brand">
-            <div class="dog-avatar-wrap">
-                <img src="chozzen-dog.jpg" alt="Chozzen the Dog" class="dog-avatar-img" onerror="this.src='chozzen1.jpeg'">
-            </div>
-            <div class="sidebar-brand-text">
-                <span class="brand-name">CHOZZEN</span>
-                <span class="brand-sub">HOME SERVER</span>
-            </div>
-        </a>
+    <div class="section-head"><h2>Live system metrics</h2><span id="updated">Waiting for first update</span></div>
+    <section class="metrics" aria-label="Live system metrics">
+      <article class="card metric"><div class="metric-head"><span>Processor</span><span class="metric-glyph">⌁</span></div><div class="metric-value" id="cpu-value">—%</div><div class="metric-sub" id="cpu-sub">Awaiting telemetry</div><div class="meter"><i id="cpu-meter"></i></div><svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-label="Recent CPU history"><polyline id="cpu-spark" points="0,20 100,20"></polyline></svg></article>
+      <article class="card metric"><div class="metric-head"><span>Memory</span><span class="metric-glyph">▦</span></div><div class="metric-value" id="ram-value">—%</div><div class="metric-sub" id="ram-sub">Awaiting telemetry</div><div class="meter"><i id="ram-meter"></i></div><svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-label="Recent memory history"><polyline id="ram-spark" points="0,20 100,20"></polyline></svg></article>
+      <article class="card metric"><div class="metric-head"><span>Battery</span><span class="metric-glyph">ϟ</span></div><div class="metric-value" id="battery-value">—%</div><div class="metric-sub" id="battery-sub">Awaiting telemetry</div><div class="meter"><i id="battery-meter"></i></div></article>
+      <article class="card metric"><div class="metric-head"><span>Host uptime</span><span class="metric-glyph">◷</span></div><div class="metric-value" id="uptime-value">—</div><div class="metric-sub">Since last host restart</div><div class="meter"><i style="width:100%;background:linear-gradient(90deg,var(--teal),var(--blue))"></i></div></article>
+    </section>
 
-        <nav class="sidebar-nav">
-            <a href="/" class="nav-item active" id="menu-dashboard">
-                <span class="nav-icon">⊞</span>
-                <span>Dashboard</span>
-            </a>
-            <a href="/files/" class="nav-item" id="menu-files">
-                <span class="nav-icon">📁</span>
-                <span>FileBrowser</span>
-            </a>
-            <a href="/about" class="nav-item" id="menu-arch">
-                <span class="nav-icon">⚡</span>
-                <span>Architecture</span>
-            </a>
-            <a href="https://dash.cloudflare.com" target="_blank" rel="noopener" class="nav-item">
-                <span class="nav-icon">☁️</span>
-                <span>Cloudflare</span>
-            </a>
-            <a href="javascript:void(0)" onclick="logout()" class="nav-item" id="menu-logout" style="color: #f87171; margin-top: 0.5rem;">
-                <span class="nav-icon">🚪</span>
-                <span>Log Out</span>
-            </a>
-        </nav>
-
-        <div class="sidebar-footer">
-            <p><strong>chozzen.xyz</strong></p>
-            <p>Guarded by Chozzen 🐾</p>
-            <p style="color: var(--accent-mint); margin-top: 0.25rem;">● Host Online</p>
+    <div class="section-head" id="services"><h2>Services</h2><span>Configured endpoints · live health checks not exposed</span></div>
+    <section class="grid-2">
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Server components</h2><div class="panel-note">Service states are not reported by the current monitoring API.</div></div><span class="subtle-tag">CONFIGURED</span></div>
+        <div class="service-list">
+          <div class="service"><span class="service-icon">↗</span><div class="service-info"><b>Nginx gateway</b><small>HTTP · port 8085</small></div><span class="service-state">Health unavailable</span></div>
+          <div class="service"><span class="service-icon">◉</span><div class="service-info"><b>Cloudflare Tunnel</b><small>Public edge · redmi-tunnel</small></div><span class="service-state">Health unavailable</span></div>
+          <div class="service"><span class="service-icon">▤</span><div class="service-info"><b>FileBrowser</b><small>File access · /files/</small></div><span class="service-state">Health unavailable</span></div>
+          <div class="service"><span class="service-icon">⌁</span><div class="service-info"><b>System monitor</b><small>Python telemetry · /api/stats</small></div><span class="service-state" id="monitor-state">Waiting</span></div>
         </div>
-    </aside>
+      </article>
+      <article class="panel" id="network">
+        <div class="panel-head"><div><h2 class="panel-title">Network &amp; edge</h2><div class="panel-note">Cloudflare Tunnel · chozzen.xyz</div></div><span class="subtle-tag">NO LIVE FEED</span></div>
+        <div class="network-empty"><strong>Traffic metrics aren’t available yet</strong>The current monitor doesn’t expose network throughput or tunnel health. This panel will show live values when those metrics are added.</div>
+        <div class="quick-links"><a class="quick-link" href="https://dash.cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare dashboard ↗</a><a class="quick-link" href="about.html">View architecture →</a></div>
+      </article>
+    </section>
 
-    <!-- Main Content Area -->
-    <main class="app-main">
-        <!-- Top Utility Bar -->
-        <header class="top-bar">
-            <div class="search-container">
-                <span class="search-icon">🔍</span>
-                <input type="text" class="search-input" id="search-input" placeholder="Search systems, services, logs..." aria-label="Search systems">
-            </div>
-            <div class="top-status-group">
-                <div class="dog-guard-badge" id="dog-guard-status">
-                    <span>🐕</span>
-                    <span>Chozzen Watchdog: Calm & Vigilant</span>
-                </div>
-                <div class="status-pill-online">
-                    <span class="pulse-dot"></span>
-                    <span>ONLINE</span>
-                </div>
-            </div>
-        </header>
-
-        <!-- SYSTEM HEALTH MONITOR: ALL 4 WIDGETS IN EXACTLY ONE LINE -->
-        <section class="system-health-row" aria-label="System Health Telemetry">
-            <div class="health-grid-single-line">
-                <!-- Widget 1: CPU Load -->
-                <div class="health-card" id="card-cpu">
-                    <div class="card-header-flex">
-                        <span class="card-label-title">💻 CPU Load</span>
-                        <span class="pill-badge" id="badge-cpu">ACTIVE</span>
-                    </div>
-                    <div class="card-big-value" id="val-cpu">--%</div>
-                    <svg class="sparkline-svg" viewBox="0 0 100 25" preserveAspectRatio="none">
-                        <path d="M0,20 Q15,5 30,16 T60,8 T85,18 T100,12" fill="none" stroke="var(--accent-cyan)" stroke-width="2.2" stroke-linecap="round" />
-                    </svg>
-                    <div class="progress-track">
-                        <div class="progress-fill" id="bar-cpu"></div>
-                    </div>
-                </div>
-
-                <!-- Widget 2: RAM Memory -->
-                <div class="health-card" id="card-ram">
-                    <div class="card-header-flex">
-                        <span class="card-label-title">🧠 Memory</span>
-                        <span class="pill-badge" id="badge-ram">OPTIMAL</span>
-                    </div>
-                    <div class="card-big-value" id="val-ram">-- MB</div>
-                    <div class="card-sub-info" id="val-ram-sub">Used / Total Memory</div>
-                    <div class="progress-track">
-                        <div class="progress-fill" id="bar-ram"></div>
-                    </div>
-                </div>
-
-                <!-- Widget 3: Battery & Power -->
-                <div class="health-card" id="card-battery">
-                    <div class="card-header-flex">
-                        <span class="card-label-title">🔋 Battery & Power</span>
-                        <span class="pill-badge" id="val-battery-status" style="color: var(--accent-cyan); background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.25);">Online</span>
-                    </div>
-                    <div class="card-big-value" id="val-battery">--%</div>
-                    <div class="card-sub-info">Thermal & Power Pass</div>
-                    <div class="progress-track">
-                        <div class="progress-fill" id="bar-battery" style="background: linear-gradient(90deg, var(--accent-mint), var(--accent-cyan));"></div>
-                    </div>
-                </div>
-
-                <!-- Widget 4: Server Uptime -->
-                <div class="health-card" id="card-uptime">
-                    <div class="card-header-flex">
-                        <span class="card-label-title">⏳ Host Uptime</span>
-                        <span class="pill-badge">STABLE</span>
-                    </div>
-                    <div class="card-big-value" id="val-uptime">--</div>
-                    <div class="card-sub-info">Debian PRoot + Termux Host</div>
-                    <div class="progress-track">
-                        <div class="progress-fill" style="width: 100%; background: linear-gradient(90deg, var(--accent-mint), var(--accent-indigo));"></div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Secondary 3-Column Glassmorphism Grid -->
-        <section class="dashboard-grid">
-            <!-- Active Services Panel -->
-            <div class="glass-panel" id="panel-services">
-                <div class="panel-header">
-                    <h2 class="panel-title"><span>⚡</span> Active Services</h2>
-                    <span class="panel-dots">•••</span>
-                </div>
-                <div class="services-list">
-                    <div class="service-row">
-                        <div class="service-left">
-                            <span class="service-icon">🌐</span>
-                            <div>
-                                <div class="service-name">Nginx Gateway</div>
-                                <div class="service-port">Port 8085 • HTTP Reverse Proxy</div>
-                            </div>
-                        </div>
-                        <span class="running-tag">RUNNING</span>
-                    </div>
-
-                    <div class="service-row">
-                        <div class="service-left">
-                            <span class="service-icon">🔒</span>
-                            <div>
-                                <div class="service-name">Cloudflare Tunnel</div>
-                                <div class="service-port">HTTP/2 Protocol • redmi-tunnel</div>
-                            </div>
-                        </div>
-                        <span class="running-tag">RUNNING</span>
-                    </div>
-
-                    <div class="service-row">
-                        <div class="service-left">
-                            <span class="service-icon">📁</span>
-                            <div>
-                                <div class="service-name">FileBrowser Storage</div>
-                                <div class="service-port">Port 8080 • /files</div>
-                            </div>
-                        </div>
-                        <span class="running-tag">RUNNING</span>
-                    </div>
-
-                    <div class="service-row">
-                        <div class="service-left">
-                            <span class="service-icon">📡</span>
-                            <div>
-                                <div class="service-name">Mosquitto MQTT</div>
-                                <div class="service-port">Port 1883 • IoT Broker</div>
-                            </div>
-                        </div>
-                        <span class="running-tag">RUNNING</span>
-                    </div>
-
-                    <div class="service-row">
-                        <div class="service-left">
-                            <span class="service-icon">📊</span>
-                            <div>
-                                <div class="service-name">System Health Monitor</div>
-                                <div class="service-port">Python3 Daemon • stats.json</div>
-                            </div>
-                        </div>
-                        <span class="running-tag">RUNNING</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Network & Edge Tunnel Panel -->
-            <div class="glass-panel" id="panel-traffic">
-                <div class="panel-header">
-                    <h2 class="panel-title"><span>🌊</span> Network & Cloudflare Edge</h2>
-                    <span class="panel-dots">•••</span>
-                </div>
-                <div class="traffic-rates">
-                    <div class="rate-item">
-                        <span>↓ In:</span>
-                        <span class="rate-in" id="rate-in">Optimal</span>
-                    </div>
-                    <div class="rate-item">
-                        <span>↑ Out:</span>
-                        <span class="rate-out" id="rate-out">Low Latency</span>
-                    </div>
-                </div>
-                <div class="traffic-canvas-box">
-                    <svg class="traffic-svg" viewBox="0 0 300 120" preserveAspectRatio="none">
-                        <defs>
-                            <linearGradient id="cyanGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="rgba(56, 189, 248, 0.35)" />
-                                <stop offset="100%" stop-color="rgba(56, 189, 248, 0.0)" />
-                            </linearGradient>
-                            <linearGradient id="indigoGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="rgba(129, 140, 248, 0.35)" />
-                                <stop offset="100%" stop-color="rgba(129, 140, 248, 0.0)" />
-                            </linearGradient>
-                        </defs>
-                        <!-- Inbound Wave -->
-                        <path d="M0,80 Q40,30 80,65 T160,45 T240,75 T300,50 L300,120 L0,120 Z" fill="url(#cyanGrad)" />
-                        <path d="M0,80 Q40,30 80,65 T160,45 T240,75 T300,50" fill="none" stroke="var(--accent-cyan)" stroke-width="2.5" />
-                        <!-- Outbound Wave -->
-                        <path d="M0,95 Q50,60 100,85 T200,60 T300,75 L300,120 L0,120 Z" fill="url(#indigoGrad)" />
-                        <path d="M0,95 Q50,60 100,85 T200,60 T300,75" fill="none" stroke="var(--accent-indigo)" stroke-width="2.2" />
-                    </svg>
-                </div>
-                <a href="/about" class="quick-action-link" style="margin-top: 1rem;">
-                    <span>View Tunnel & Edge Details</span>
-                    <span>→</span>
-                </a>
-            </div>
-
-            <!-- Storage & Quick Management Panel -->
-            <div class="glass-panel" id="panel-storage">
-                <div class="panel-header">
-                    <h2 class="panel-title"><span>💾</span> Storage & Environment</h2>
-                    <span class="panel-dots">•••</span>
-                </div>
-                <div class="storage-visual-box">
-                    <div class="donut-wrap">
-                        <svg class="donut-svg" viewBox="0 0 36 36">
-                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="3.8" />
-                            <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="url(#donutGrad)" stroke-dasharray="68, 100" stroke-width="3.8" stroke-linecap="round" />
-                            <defs>
-                                <linearGradient id="donutGrad" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stop-color="var(--accent-cyan)" />
-                                    <stop offset="100%" stop-color="var(--accent-mint)" />
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                        <div class="donut-center-text" id="donut-pct">ARM64</div>
-                    </div>
-                    <div class="storage-details">
-                        <div class="storage-stat-line">
-                            <span>Host Architecture</span>
-                            <span class="storage-stat-val">aarch64</span>
-                        </div>
-                        <div class="storage-stat-line">
-                            <span>Storage Root</span>
-                            <span class="storage-stat-val">/root/storage</span>
-                        </div>
-                        <div class="storage-stat-line">
-                            <span>Wake Lock State</span>
-                            <span class="storage-stat-val" style="color: var(--accent-mint);">Active</span>
-                        </div>
-                    </div>
-                </div>
-
-                <a href="/files/" class="quick-action-link">
-                    <span>Open FileBrowser Explorer</span>
-                    <span>→</span>
-                </a>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        async function updateStats() {
-            try {
-                const res = await fetch('/stats.json?t=' + Date.now());
-                if (!res.ok) return;
-                const data = await res.json();
-
-                // CPU
-                if (data.cpu && data.cpu.percent !== undefined) {
-                    const cpuPct = data.cpu.percent;
-                    document.getElementById('val-cpu').innerText = cpuPct + '%';
-                    document.getElementById('bar-cpu').style.width = Math.min(100, Math.max(0, cpuPct)) + '%';
-                    const badgeCpu = document.getElementById('badge-cpu');
-                    if (cpuPct > 80) {
-                        badgeCpu.innerText = 'HIGH';
-                        badgeCpu.style.color = '#f87171';
-                        badgeCpu.style.borderColor = 'rgba(248, 113, 113, 0.3)';
-                    } else {
-                        badgeCpu.innerText = 'ACTIVE';
-                        badgeCpu.style.color = 'var(--accent-mint)';
-                        badgeCpu.style.borderColor = 'rgba(52, 211, 153, 0.25)';
-                    }
-                }
-
-                // RAM
-                if (data.ram) {
-                    const ramPct = data.ram.percent;
-                    document.getElementById('val-ram').innerText = `${data.ram.used_mb} MB`;
-                    document.getElementById('val-ram-sub').innerText = `Used of ${data.ram.total_mb} MB (${ramPct}%)`;
-                    document.getElementById('bar-ram').style.width = Math.min(100, Math.max(0, ramPct)) + '%';
-                }
-
-                // Battery
-                if (data.battery) {
-                    const cap = data.battery.capacity;
-                    document.getElementById('val-battery').innerText = (cap !== undefined ? cap : '--') + '%';
-                    document.getElementById('val-battery-status').innerText = data.battery.status || 'Online';
-                    if (cap !== undefined) {
-                        document.getElementById('bar-battery').style.width = Math.min(100, Math.max(0, cap)) + '%';
-                    }
-                }
-
-                // Uptime
-                if (data.uptime) {
-                    document.getElementById('val-uptime').innerText = data.uptime;
-                }
-            } catch (e) {
-                console.error('Stats fetch error:', e);
-            }
-        }
-
-        updateStats();
-        setInterval(updateStats, 3000);
-
-        async function logout() {
-            try {
-                await fetch('/api/logout', { method: 'POST' });
-            } catch (e) {}
-            localStorage.removeItem('chozzen_session');
-            localStorage.removeItem('chozzen_user');
-            sessionStorage.removeItem('chozzen_session');
-            sessionStorage.removeItem('chozzen_user');
-            window.location.replace('/login.html');
-        }
-    </script>
+    <div class="section-head" id="storage"><h2>Storage &amp; environment</h2><span>Disk figures reflect the monitor’s root filesystem</span></div>
+    <section class="grid-2">
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Root filesystem</h2><div class="panel-note">Reported by the existing system monitor</div></div><span class="subtle-tag" id="disk-tag">AWAITING DATA</span></div>
+        <div class="storage-row"><span>Used</span><strong id="disk-used">—</strong></div><div class="storage-row"><span>Available</span><strong id="disk-free">—</strong></div>
+        <div class="storage-meter"><i id="disk-meter"></i></div><div class="storage-caption"><span id="disk-caption">Awaiting telemetry</span><span id="disk-pct">—</span></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Host environment</h2><div class="panel-note">Deployment context</div></div><span class="subtle-tag">ARM64</span></div>
+        <div class="storage-row"><span>Device</span><strong>Android tablet</strong></div><div class="storage-row"><span>Runtime</span><strong>Termux + Debian PRoot</strong></div><div class="storage-row"><span>Web server</span><strong>Nginx</strong></div>
+        <div class="quick-links"><a class="quick-link" href="/files/">Open FileBrowser →</a><a class="quick-link" href="about.html">Architecture details →</a></div>
+      </article>
+    </section>
+    <footer class="footer"><span>Chozzen · Home server dashboard</span><span>Refreshes automatically</span></footer>
+  </main>
+</div>
+<script>
+(function(){
+  var history={cpu:[],ram:[]}, timer=null, failed=false;
+  function clamp(n){return Math.max(0,Math.min(100,Number(n)||0))}
+  function setMeter(id,value){document.getElementById(id).style.width=clamp(value)+'%'}
+  function spark(id,arr){var points=arr.map(function(v,i){var x=arr.length<2?100:i*100/(arr.length-1);var y=22-clamp(v)*.19;return x.toFixed(1)+','+y.toFixed(1)}).join(' ');document.getElementById(id).setAttribute('points',points||'0,20 100,20')}
+  function fmt(n){return Math.round(Number(n)||0).toLocaleString()}
+  async function update(){
+    var token=localStorage.getItem('chozzen_session')||sessionStorage.getItem('chozzen_session');
+    try{
+      var response=await fetch('/api/stats?t='+Date.now(),{cache:'no-store',headers:token?{Authorization:'Bearer '+token}:{}});
+      if(!response.ok)throw new Error('HTTP '+response.status);
+      var d=await response.json();
+      if(!d||!d.cpu||!d.ram)throw new Error('Telemetry not ready');
+      var cpu=clamp(d.cpu.percent), ram=clamp(d.ram.percent);
+      document.getElementById('cpu-value').textContent=cpu.toFixed(1)+'%';
+      document.getElementById('cpu-sub').textContent=cpu>80?'High utilization':'Processor load';
+      setMeter('cpu-meter',cpu);
+      document.getElementById('ram-value').textContent=ram.toFixed(1)+'%';
+      document.getElementById('ram-sub').textContent=fmt(d.ram.used_mb)+' MB used of '+fmt(d.ram.total_mb)+' MB';
+      setMeter('ram-meter',ram);
+      if(d.battery){var cap=clamp(d.battery.capacity);document.getElementById('battery-value').textContent=cap.toFixed(0)+'%';document.getElementById('battery-sub').textContent=d.battery.status||'Status unavailable';setMeter('battery-meter',cap)}
+      if(d.uptime)document.getElementById('uptime-value').textContent=d.uptime;
+      if(d.disk){var used=Number(d.disk.used_gb)||0,total=Number(d.disk.total_gb)||0,free=Math.max(0,total-used),pct=clamp(d.disk.percent);document.getElementById('disk-used').textContent=used.toFixed(1)+' GB';document.getElementById('disk-free').textContent=free.toFixed(1)+' GB of '+total.toFixed(1)+' GB';document.getElementById('disk-caption').textContent='Used on root filesystem';document.getElementById('disk-pct').textContent=pct.toFixed(1)+'% used';document.getElementById('disk-tag').textContent='LIVE';setMeter('disk-meter',pct)}
+      history.cpu.push(cpu);history.ram.push(ram);if(history.cpu.length>24)history.cpu.shift();if(history.ram.length>24)history.ram.shift();spark('cpu-spark',history.cpu);spark('ram-spark',history.ram);
+      document.getElementById('monitor-state').textContent='Receiving data';
+      document.getElementById('updated').textContent='Updated '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      document.getElementById('connection').classList.remove('offline');document.getElementById('connection-label').textContent='Telemetry live';
+      document.getElementById('notice').classList.remove('show');failed=false;
+    }catch(e){
+      var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+      if(isLocalPreview){
+        var demoCpu = Math.min(95, Math.max(8, 18.5 + Math.sin(Date.now() / 2500) * 12));
+        var demoRam = 58.2;
+        var cpu=clamp(demoCpu), ram=clamp(demoRam);
+        document.getElementById('cpu-value').textContent=cpu.toFixed(1)+'%';
+        document.getElementById('cpu-sub').textContent='Processor load';
+        setMeter('cpu-meter',cpu);
+        document.getElementById('ram-value').textContent=ram.toFixed(1)+'%';
+        document.getElementById('ram-sub').textContent=fmt(2320)+' MB used of '+fmt(3986)+' MB';
+        setMeter('ram-meter',ram);
+        var cap=84;
+        document.getElementById('battery-value').textContent=cap+'%';
+        document.getElementById('battery-sub').textContent='Plugged in (Charging)';
+        setMeter('battery-meter',cap);
+        document.getElementById('uptime-value').textContent='4 days, 18 hrs, 22 mins';
+        var used=34.2, total=128.0, free=total-used, pct=26.7;
+        document.getElementById('disk-used').textContent=used.toFixed(1)+' GB';
+        document.getElementById('disk-free').textContent=free.toFixed(1)+' GB of '+total.toFixed(1)+' GB';
+        document.getElementById('disk-caption').textContent='Used on root filesystem';
+        document.getElementById('disk-pct').textContent=pct.toFixed(1)+'% used';
+        document.getElementById('disk-tag').textContent='LIVE';
+        setMeter('disk-meter',pct);
+        history.cpu.push(cpu);history.ram.push(ram);if(history.cpu.length>24)history.cpu.shift();if(history.ram.length>24)history.ram.shift();spark('cpu-spark',history.cpu);spark('ram-spark',history.ram);
+        document.getElementById('monitor-state').textContent='Receiving data';
+        document.getElementById('updated').textContent='Updated '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        document.getElementById('connection').classList.remove('offline');document.getElementById('connection-label').textContent='Telemetry live';
+        document.getElementById('notice').classList.remove('show');
+        failed=false;
+        return;
+      }
+      document.getElementById('connection').classList.add('offline');document.getElementById('connection-label').textContent='Telemetry offline';
+      document.getElementById('monitor-state').textContent='Unavailable';
+      document.getElementById('notice').classList.add('show');if(!failed)document.getElementById('updated').textContent='Unable to reach /api/stats';failed=true;
+    }
+  }
+  function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
+  if (['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
+    var basePath = window.location.pathname.replace(/\/[^\/]*$/, '');
+    document.querySelectorAll('a[href="about.html"], a[href="/about"], a[href*="about"]').forEach(function(a){
+      a.href = (basePath || '') + '/about.html?v=preview';
+    });
+    document.querySelectorAll('a[href="/files/"]').forEach(function(a){
+      a.href = 'https://chozzen.xyz/files/';
+      a.target = '_blank';
+      a.title = 'Opens FileBrowser on live tablet (https://chozzen.xyz/files/)';
+    });
+  }
+  document.getElementById('refresh').addEventListener('click',update);
+  document.getElementById('logout').addEventListener('click',async function(){try{await fetch('/api/logout',{method:'POST'})}catch(e){}localStorage.removeItem('chozzen_session');localStorage.removeItem('chozzen_user');sessionStorage.removeItem('chozzen_session');sessionStorage.removeItem('chozzen_user');location.replace('/login.html')});
+  tick();setInterval(tick,1000);update();timer=setInterval(update,5000);
+})();
+</script>
 </body>
-
 </html>
