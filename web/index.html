@@ -748,7 +748,7 @@
   <!-- Auth verification guard -->
   <script>
     (async function(){
-      var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+      var isLocalPreview = location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
       if (isLocalPreview) return;
       var token = localStorage.getItem('chozzen_session') || sessionStorage.getItem('chozzen_session');
       if (!token) { location.replace('/login.html?redirect=' + encodeURIComponent(location.pathname)); return; }
@@ -1225,7 +1225,7 @@
       applyTelemetryData(d);
     } catch (e) {
       // Local preview fallback demo
-      var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+      var isLocalPreview = location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
       if (isLocalPreview) {
         var demoCpu = Math.min(95, Math.max(8, 16.5 + Math.sin(Date.now() / 2500) * 10));
         var mockData = {
@@ -1316,7 +1316,7 @@
   });
 
   // Localhost preview navigation links
-  if (['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
+  if (location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
     var navFb = document.getElementById('navFileBrowser');
     if (navFb) {
       navFb.href = 'https://chozzen.xyz/files/';
