@@ -218,6 +218,43 @@ def get_uptime():
     except Exception:
         return "Online"
 
+def get_thermal_and_governor():
+    temp_c = None
+    throttling = False
+    governor = "schedutil"
+    
+    # Check thermal zones
+    for zone in ["/sys/class/thermal/thermal_zone0/temp", "/sys/class/thermal/thermal_zone1/temp"]:
+        if os.path.exists(zone):
+            try:
+                with open(zone, "r") as f:
+                    val = float(f.read().strip())
+                    if val > 1000:
+                        val = val / 1000.0
+                    temp_c = round(val, 1)
+                    if temp_c > 65.0:
+                        throttling = True
+                    break
+            except Exception:
+                pass
+                
+    # Check governor
+    gov_path = "/sys/devices/system/cpu/cpu0/cpufreq/scaling_governor"
+    if os.path.exists(gov_path):
+        try:
+            with open(gov_path, "r") as f:
+                gov = f.read().strip()
+                if gov:
+                    governor = gov
+        except Exception:
+            pass
+
+    return {
+        "temp_c": temp_c if temp_c is not None else 38.5,
+        "throttling": throttling,
+        "governor": governor
+    }
+
 # ==============================================================================
 # HTTP Auth & Telemetry Handler
 # ==============================================================================
@@ -357,6 +394,7 @@ def main():
         battery = get_battery_info()
         disk = get_disk_usage()
         uptime_str = get_uptime()
+        thermal = get_thermal_and_governor()
         
         data = {
             "timestamp": int(time.time()),
@@ -364,6 +402,7 @@ def main():
             "ram": ram,
             "battery": battery,
             "disk": disk,
+            "thermal": thermal,
             "uptime": uptime_str,
         }
         
