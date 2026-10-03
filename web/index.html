@@ -32,7 +32,6 @@
       --amber: #f59e0b;
       --amber-glow: rgba(245, 158, 11, 0.25);
       --rose: #f43f5e;
-      --rose-glow: rgba(244, 63, 94, 0.25);
       
       --radius-sm: 10px;
       --radius-md: 16px;
@@ -81,14 +80,14 @@
       position: sticky;
       top: 0;
       height: 100vh;
-      padding: 26px 20px;
+      padding: 24px 18px;
       background: rgba(10, 14, 23, 0.88);
       backdrop-filter: blur(24px);
       -webkit-backdrop-filter: blur(24px);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
       z-index: 20;
       overflow-y: auto;
     }
@@ -96,8 +95,8 @@
     .brand-cluster {
       display: flex;
       align-items: center;
-      gap: 14px;
-      padding-bottom: 18px;
+      gap: 12px;
+      padding-bottom: 16px;
       border-bottom: 1px solid var(--border);
       text-decoration: none;
       color: inherit;
@@ -132,21 +131,15 @@
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Vertical Navigation Section Headings (CHOZZEN & SUPPORT) */
+
     .nav-group-title {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 800;
-      color: #818cf8;
+      color: var(--text-subtle);
       text-transform: uppercase;
       letter-spacing: 0.14em;
-      padding: 0 10px;
-      margin-top: 6px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-group-title.support {
-      color: #38bdf8;
+      padding: 0 8px;
+      margin-top: 4px;
     }
 
     .nav-links {
@@ -192,7 +185,7 @@
 
     .sidebar-footer {
       margin-top: auto;
-      padding: 16px;
+      padding: 14px 16px;
       background: rgba(255, 255, 255, 0.02);
       border-radius: var(--radius-md);
       border: 1px solid var(--border);
@@ -218,13 +211,28 @@
 
     /* Main Workspace */
     .workspace {
-      padding: 34px 44px;
+      padding: 32px 42px;
       max-width: 1480px;
       width: 100%;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 30px;
+      gap: 28px;
+    }
+
+    /* Page Views Switch Container */
+    .page-view {
+      display: none;
+      flex-direction: column;
+      gap: 28px;
+      animation: fadeInView 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .page-view.active {
+      display: flex;
+    }
+    @keyframes fadeInView {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     /* Top Bar */
@@ -280,20 +288,20 @@
     }
 
     /* ==============================================================
-       CHOZZEN THE WATCHDOG — THE CENTERPIECE
+       CHOZZEN THE WATCHDOG HERO CENTERPIECE
        ============================================================== */
     .watchdog-hero {
       position: relative;
       background: linear-gradient(135deg, rgba(22, 30, 52, 0.88) 0%, rgba(12, 17, 30, 0.96) 100%);
       border: 1px solid rgba(245, 158, 11, 0.3);
       border-radius: var(--radius-xl);
-      padding: 32px;
+      padding: 30px;
       box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(245, 158, 11, 0.08);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       display: grid;
       grid-template-columns: auto 1fr;
-      gap: 32px;
+      gap: 30px;
       align-items: start;
       overflow: hidden;
     }
@@ -311,7 +319,166 @@
       pointer-events: none;
     }
 
-    /* Dog Avatar with Radar & Mood Animation */
+    /* Watchdog Glassmorphic Zoom / Spotlight Mode */
+    .watchdog-zoom-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .watchdog-zoom-modal.active {
+      display: flex;
+    }
+    .watchdog-zoom-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(2, 4, 10, 0.95);
+      backdrop-filter: blur(45px);
+      -webkit-backdrop-filter: blur(45px);
+      z-index: 1;
+      cursor: pointer;
+    }
+    .watchdog-zoom-stage {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 1040px;
+      display: flex;
+      justify-content: center;
+    }
+    .watchdog-hero.zoomed {
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      background: linear-gradient(135deg, rgba(16, 24, 46, 0.98) 0%, rgba(6, 10, 20, 0.99) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.55);
+      border-radius: var(--radius-xl);
+      box-shadow: 
+        0 40px 140px -15px rgba(0, 0, 0, 0.95),
+        0 0 90px rgba(245, 158, 11, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(45px);
+      -webkit-backdrop-filter: blur(45px);
+      animation: watchdogZoomIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      padding: 34px 38px;
+    }
+
+    @keyframes watchdogZoomIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.88);
+        filter: blur(14px);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0);
+      }
+    }
+
+    .watchdog-hero.zoomed .dog-avatar-wrap {
+      width: 190px;
+      height: 190px;
+      box-shadow: 0 0 55px var(--amber-glow);
+    }
+
+    /* Sexy Glowing Exit Button */
+    .sexy-exit-btn {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 9px 20px;
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.35) 0%, rgba(245, 158, 11, 0.4) 50%, rgba(99, 102, 241, 0.45) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 999px;
+      color: #fff;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 4px 22px rgba(244, 63, 94, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .sexy-exit-btn:hover {
+      transform: translateY(-2px) scale(1.05);
+      border-color: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 8px 32px rgba(244, 63, 94, 0.65), 0 0 30px rgba(245, 158, 11, 0.5);
+    }
+    .sexy-exit-btn:active {
+      transform: scale(0.94);
+    }
+    .sexy-exit-icon {
+      font-size: 18px;
+      animation: waveHand 1.2s ease-in-out infinite alternate;
+      display: inline-block;
+    }
+    .sexy-exit-badge {
+      font-size: 10px;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 3px 8px;
+      border-radius: 999px;
+      color: #fed7aa;
+      font-weight: 700;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    @keyframes waveHand {
+      0% { transform: rotate(-14deg); }
+      100% { transform: rotate(18deg); }
+    }
+    .sexy-exit-btn * {
+      pointer-events: none;
+    }
+    .watchdog-hero.zoomed .sexy-exit-btn {
+      display: inline-flex;
+      z-index: 10;
+    }
+
+    /* Spank / Dog Butt Wobble Animation */
+    .dog-avatar-wrap.spank-wobble {
+      animation: buttSpankBounce 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+      box-shadow: 0 0 65px rgba(244, 63, 94, 0.85), 0 0 100px rgba(245, 158, 11, 0.7) !important;
+    }
+
+    @keyframes buttSpankBounce {
+      0% { transform: scale(1) rotate(0deg); }
+      15% { transform: scale(0.85, 1.28) rotate(-22deg) translateY(-18px) skewX(18deg); }
+      35% { transform: scale(1.3, 0.76) rotate(26deg) translateY(14px) skewX(-22deg); }
+      55% { transform: scale(0.9, 1.15) rotate(-14deg) translateY(-6px) skewX(12deg); }
+      75% { transform: scale(1.1, 0.92) rotate(10deg) translateY(3px) skewX(-8deg); }
+      90% { transform: scale(0.96, 1.04) rotate(-4deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .spank-burst-bubble {
+      position: absolute;
+      top: -14px;
+      right: -24px;
+      background: linear-gradient(135deg, #f43f5e, #f59e0b);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 900;
+      padding: 6px 14px;
+      border-radius: 999px;
+      box-shadow: 0 8px 25px rgba(244, 63, 94, 0.7);
+      border: 2px solid #fff;
+      pointer-events: none;
+      opacity: 0;
+      transform: scale(0.4) rotate(15deg);
+      transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 25;
+      white-space: nowrap;
+    }
+    .spank-burst-bubble.show {
+      opacity: 1;
+      transform: scale(1.15) rotate(-8deg) translateY(-14px);
+    }
+
     .dog-avatar-station {
       position: relative;
       display: flex;
@@ -331,15 +498,9 @@
       cursor: pointer;
       transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    .dog-avatar-wrap:hover {
-      transform: scale(1.06);
-    }
-    .dog-avatar-wrap.tail-wag {
-      animation: tailWag 0.6s ease-in-out infinite alternate;
-    }
-    .dog-avatar-wrap.bark-alert {
-      animation: barkBounce 0.4s cubic-bezier(0.16, 1, 0.3, 1) 2;
-    }
+    .dog-avatar-wrap:hover { transform: scale(1.06); }
+    .dog-avatar-wrap.tail-wag { animation: tailWag 0.6s ease-in-out infinite alternate; }
+    .dog-avatar-wrap.bark-alert { animation: barkBounce 0.4s cubic-bezier(0.16, 1, 0.3, 1) 2; }
 
     @keyframes tailWag {
       0% { transform: rotate(-5deg) scale(1.02); }
@@ -387,7 +548,6 @@
       transform: translateY(-1px);
     }
 
-    /* Watchdog Station Tabs & Header */
     .watchdog-content {
       display: flex;
       flex-direction: column;
@@ -435,7 +595,6 @@
       border-color: rgba(245, 158, 11, 0.4);
     }
 
-    /* Station View Mode Tabs (Dialogue vs Mini-Terminal) */
     .station-tabs {
       display: flex;
       gap: 8px;
@@ -465,7 +624,6 @@
       color: #fff;
     }
 
-    /* Dynamic Speech Bubble */
     .speech-bubble {
       background: rgba(10, 14, 25, 0.75);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -487,7 +645,6 @@
       transform: rotate(45deg);
     }
 
-    /* Motion Primitives Staggered Reveal */
     .text-effect-container {
       font-size: 14px;
       font-weight: 500;
@@ -507,9 +664,6 @@
       to { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
 
-    /* ==============================================================
-       INTERACTIVE MINI-TERMINAL (WATCHDOG CONSOLE)
-       ============================================================== */
     .mini-terminal {
       display: none;
       background: #050810;
@@ -556,7 +710,6 @@
       font-size: 12px;
     }
 
-    /* Quick Chips */
     .watchdog-actions {
       display: flex;
       flex-wrap: wrap;
@@ -621,9 +774,7 @@
       transform: translateY(-1px);
     }
 
-    /* ==============================================================
-       2026 BENTO GRID METRICS & CARDS
-       ============================================================== */
+    /* Bento Cards */
     .bento-section-title {
       font-size: 18px;
       font-weight: 800;
@@ -738,7 +889,6 @@
     .spark-cpu { stroke: var(--indigo); }
     .spark-ram { stroke: var(--cyan); }
 
-    /* Granular Storage & Stacked Bar */
     .storage-stacked-meter {
       display: flex;
       height: 10px;
@@ -763,7 +913,6 @@
     .storage-legend-item { display: flex; align-items: center; gap: 6px; }
     .storage-legend-dot { width: 8px; height: 8px; border-radius: 50%; }
 
-    /* Services Hub List */
     .grid-duo {
       display: grid;
       grid-template-columns: 1.15fr 0.85fr;
@@ -837,6 +986,77 @@
     .storage-stat-row span { color: var(--text-muted); }
     .storage-stat-row strong { font-family: 'JetBrains Mono', monospace; }
 
+    /* ==============================================================
+       SUPPORT PAGE SPECIFIC COMPONENTS
+       ============================================================== */
+    .support-hero-banner {
+      background: linear-gradient(135deg, rgba(14, 26, 48, 0.85) 0%, rgba(9, 14, 25, 0.95) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: var(--radius-xl);
+      padding: 30px;
+      box-shadow: 0 16px 40px -15px rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .support-banner-text h2 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .support-banner-text p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .specs-card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+    .spec-item-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+    .spec-item-box:hover {
+      border-color: var(--indigo);
+      transform: translateY(-2px);
+    }
+    .spec-item-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .spec-item-val {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .runbook-code-block {
+      background: #050810;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: #38bdf8;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
     .app-footer {
       display: flex;
       justify-content: space-between;
@@ -900,8 +1120,14 @@
 
 <div class="ambient-glow" id="ambientGlow"></div>
 
+<!-- Watchdog Dedicated Full-Focus Theater Modal (Direct Child of Body, Immune to Stacking Contexts) -->
+<div class="watchdog-zoom-modal" id="watchdogZoomModal">
+  <div class="watchdog-zoom-backdrop" id="watchdogZoomBackdrop"></div>
+  <div class="watchdog-zoom-stage" id="watchdogZoomStage"></div>
+</div>
+
 <div class="app-shell">
-  <!-- Sidebar Navigation with Explicit Headings: CHOZZEN and SUPPORT -->
+  <!-- Sidebar Navigation with the 2 Primary Toggle Buttons: CHOZZEN & SUPPORT -->
   <aside class="sidebar">
     <a class="brand-cluster" href="/" aria-label="Chozzen Home">
       <img src="chozzen-dog.jpg" alt="Chozzen Dog" class="brand-avatar-mini" id="miniAvatar">
@@ -911,51 +1137,67 @@
       </div>
     </a>
 
-    <!-- Heading 1: CHOZZEN -->
-    <div class="nav-group-title">CHOZZEN</div>
-    <nav class="nav-links">
-      <a class="nav-btn active" href="#dashboard">
+    <!-- Unified Vertical Navigation -->
+    <div class="nav-group-title">WORKSPACE</div>
+    <nav class="nav-links" id="unifiedNav" aria-label="Main navigation">
+      <a class="nav-btn active" href="#dashboard" id="navOverview" data-page="chozzen">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/></svg>
         Overview
       </a>
-      <a class="nav-btn" href="#watchdog">
+      <a class="nav-btn" href="#watchdog" id="navWatchdog" data-page="chozzen">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
         Watchdog Station
       </a>
-      <button class="nav-btn" id="navTerminalBtn" type="button">
+      <button class="nav-btn" id="navTerminalBtn" type="button" data-page="chozzen">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
         Mini-Terminal
       </button>
-      <a class="nav-btn" href="#vitals">
+      <a class="nav-btn" href="#vitals" id="navVitals" data-page="chozzen">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
         Live Vitals
       </a>
-      <a class="nav-btn" href="#services">
+      <a class="nav-btn" href="#services" id="navServices" data-page="chozzen">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>
         Services Hub
       </a>
-    </nav>
-
-    <!-- Heading 2: SUPPORT -->
-    <div class="nav-group-title support">SUPPORT</div>
-    <nav class="nav-links">
-      <a class="nav-btn" href="architecture.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
-        Diagram (Archify) ↗
+      <a class="nav-btn" href="#storage" id="navStorage" data-page="chozzen">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Storage Allocation
       </a>
-      <a class="nav-btn" href="about.html">
+      <a class="nav-btn" href="#support-arch" id="navArchitecture" data-page="support">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        Architecture
+      </a>
+      <a class="nav-btn" href="#support-specs" id="navSpecs" data-page="support">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        System Specs
+        Technical Specs
+      </a>
+      <a class="nav-btn" href="#support-runbook" id="navRunbook" data-page="support">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        Runbook
       </a>
       <a class="nav-btn" href="/files/" id="navFileBrowser" target="_blank">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
         FileBrowser ↗
       </a>
-      <button class="nav-btn" id="soundToggleBtn" type="button" title="Toggle audio feedback">
-        <span id="soundIcon" style="font-size: 16px;">🔊</span>
-        <span id="soundLabel">Sound: ON</span>
+      <!-- CHOZZEN & SUPPORT Page Toggle Buttons Below FileBrowser (Same Like Above Section) -->
+      <button class="nav-btn active" id="btnPageChozzen" type="button" data-page="chozzen" title="Toggle Chozzen Watchdog & Dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+        CHOZZEN
+      </button>
+      <button class="nav-btn" id="btnPageSupport" type="button" data-page="support" title="Toggle System Support & Architecture">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        SUPPORT
       </button>
     </nav>
+
+    <!-- Audio Feedback Setting Button in Sidebar -->
+    <div style="margin-top: auto; padding-top: 10px;">
+      <button class="nav-btn" id="soundToggleBtn" type="button" title="Toggle audio feedback" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border);">
+        <span id="soundIcon" style="font-size: 15px;">🔊</span>
+        <span id="soundLabel">Sound: ON</span>
+      </button>
+    </div>
 
     <div class="sidebar-footer">
       <div><span class="status-dot-pulse" id="hostPulse"></span><strong>Autonomous Host</strong></div>
@@ -968,8 +1210,8 @@
     <!-- Top Bar -->
     <header class="topbar">
       <div class="topbar-left">
-        <h1>Autonomous Tablet Infrastructure</h1>
-        <p>Live AI-assisted telemetry &amp; Cloudflare ingress gateway</p>
+        <h1 id="topbarTitle">Autonomous Tablet Infrastructure</h1>
+        <p id="topbarSubtitle">Live AI-assisted telemetry &amp; Cloudflare ingress gateway</p>
       </div>
       <div class="topbar-right">
         <div class="clock-badge" id="clock">--:--:--</div>
@@ -982,260 +1224,375 @@
     </header>
 
     <!-- ==============================================================
-         CHOZZEN THE WATCHDOG HERO CENTERPIECE
+         PAGE VIEW 1: CHOZZEN (DASHBOARD & WATCHDOG)
          ============================================================== -->
-    <section class="watchdog-hero" id="watchdog" aria-label="Chozzen the Watchdog Assistant">
-      <div class="dog-avatar-station">
-        <div class="dog-avatar-wrap tail-wag" id="avatarWrap" title="Click to interact with Chozzen!">
-          <div class="radar-sweep"></div>
-          <img src="chozzen-dog.jpg" alt="Chozzen Mascot" class="dog-avatar-img" id="dogAvatarImg">
-        </div>
-        <button class="avatar-toggle-btn" id="toggleAvatarBtn">🐾 Switch Avatar</button>
-      </div>
-
-      <div class="watchdog-content">
-        <div class="watchdog-header">
-          <div class="watchdog-title-block">
-            <h2>Chozzen the Watchdog <span style="font-size: 20px;">🐶</span></h2>
+    <div id="viewChozzen" class="page-view active">
+      <!-- CHOZZEN THE WATCHDOG HERO CENTERPIECE -->
+      <div id="watchdogPlaceholder" style="display: none;"></div>
+      <section class="watchdog-hero" id="watchdog" aria-label="Chozzen the Watchdog Assistant">
+        <div class="dog-avatar-station">
+          <div class="dog-avatar-wrap tail-wag" id="avatarWrap" title="Click to interact with Chozzen!">
+            <div class="radar-sweep"></div>
+            <img src="chozzen-dog.jpg" alt="Chozzen Mascot" class="dog-avatar-img" id="dogAvatarImg">
+            <div class="spank-burst-bubble" id="spankBurst">👋 *SMACK!* WOOF! 🐾</div>
           </div>
-          <div class="mood-badge" id="watchdogMoodBadge">
-            <span class="status-dot-pulse" id="moodPulse"></span>
-            <span id="watchdogMoodText">🟢 Patrolling · System Healthy</span>
-          </div>
+          <button class="avatar-toggle-btn" id="toggleAvatarBtn">🐾 Switch Avatar</button>
         </div>
 
-        <!-- Station View Mode Tabs (Dialogue vs Mini-Terminal) -->
-        <div class="station-tabs">
-          <button class="station-tab-btn active" id="tabDialogueBtn" type="button">💬 Assistant Dialogue</button>
-          <button class="station-tab-btn" id="tabTerminalBtn" type="button">⌨️ Mini-Terminal (CLI)</button>
-        </div>
-
-        <!-- Tab 1: Dynamic Speech Bubble with Motion Primitives Stagger Effect -->
-        <div class="speech-bubble" id="speechContainer">
-          <div class="text-effect-container" id="speechText">
-            Woof! Welcome to chozzen.xyz. All systems are operational, tunnel is secure, and I'm actively watching your home server!
+        <div class="watchdog-content">
+          <div class="watchdog-header">
+            <div class="watchdog-title-block">
+              <h2>Chozzen the Watchdog <span style="font-size: 20px;">🐶</span></h2>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <button class="sexy-exit-btn" id="watchdogZoomCloseBtn" type="button" onclick="triggerSpankAndExit()" title="Exit Watchdog Station (Click to Spank Butt &amp; Exit!)">
+                <span class="sexy-exit-icon">👋</span>
+                <span>Exit Station</span>
+                <span class="sexy-exit-badge">🐾 Spank &amp; Bye</span>
+              </button>
+              <div class="mood-badge" id="watchdogMoodBadge">
+                <span class="status-dot-pulse" id="moodPulse"></span>
+                <span id="watchdogMoodText">🟢 Patrolling · System Healthy</span>
+              </div>
+            </div>
           </div>
-        </div>
 
-        <!-- Tab 2: Interactive Mini-Terminal -->
-        <div class="mini-terminal" id="miniTerminal">
-          <div class="terminal-output" id="terminalOutput">
-            <div class="terminal-line sys">Chozzen Diagnostics Terminal v2.4 (ARM64 PRoot)</div>
-            <div class="terminal-line sys">Type 'help' for available watchdog diagnostic commands.</div>
+          <!-- Station View Mode Tabs (Dialogue vs Mini-Terminal) -->
+          <div class="station-tabs">
+            <button class="station-tab-btn active" id="tabDialogueBtn" type="button">💬 Assistant Dialogue</button>
+            <button class="station-tab-btn" id="tabTerminalBtn" type="button">⌨️ Mini-Terminal (CLI)</button>
           </div>
-          <form class="terminal-input-row" id="terminalForm">
-            <span class="terminal-prompt">chozzen@tablet:~$</span>
-            <input type="text" class="terminal-input" id="terminalInput" placeholder="vitals, tunnel, ping, patrol, treat..." autocomplete="off">
+
+          <!-- Tab 1: Dynamic Speech Bubble with Motion Primitives Stagger Effect -->
+          <div class="speech-bubble" id="speechContainer">
+            <div class="text-effect-container" id="speechText">
+              Woof! Welcome to chozzen.xyz. All systems are operational, tunnel is secure, and I'm actively watching your home server!
+            </div>
+          </div>
+
+          <!-- Tab 2: Interactive Mini-Terminal -->
+          <div class="mini-terminal" id="miniTerminal">
+            <div class="terminal-output" id="terminalOutput">
+              <div class="terminal-line sys">Chozzen Diagnostics Terminal v2.4 (ARM64 PRoot)</div>
+              <div class="terminal-line sys">Type 'help' for available watchdog diagnostic commands.</div>
+            </div>
+            <form class="terminal-input-row" id="terminalForm">
+              <span class="terminal-prompt">chozzen@tablet:~$</span>
+              <input type="text" class="terminal-input" id="terminalInput" placeholder="vitals, tunnel, ping, patrol, treat..." autocomplete="off">
+            </form>
+          </div>
+
+          <!-- Quick Action Interaction Chips -->
+          <div class="watchdog-actions">
+            <button class="dog-chip" data-action="patrol">🛡️ Run Patrol Check</button>
+            <button class="dog-chip" data-action="vitals">⚡ Inspect Vitals</button>
+            <button class="dog-chip" data-action="tunnel">🌐 Sniff Cloudflare Tunnel</button>
+            <button class="dog-chip" data-action="pet">🐾 Pet Chozzen</button>
+            <button class="dog-chip" data-action="treat">🦴 Give Treat</button>
+          </div>
+
+          <!-- Custom Command input -->
+          <form class="watchdog-input-row" id="watchdogForm">
+            <input type="text" class="watchdog-input" id="watchdogInput" placeholder="Ask Chozzen anything about the server or say hello...">
+            <button type="submit" class="watchdog-send-btn">Ask Chozzen</button>
           </form>
         </div>
+      </section>
 
-        <!-- Quick Action Interaction Chips -->
-        <div class="watchdog-actions">
-          <button class="dog-chip" data-action="patrol">🛡️ Run Patrol Check</button>
-          <button class="dog-chip" data-action="vitals">⚡ Inspect Vitals</button>
-          <button class="dog-chip" data-action="tunnel">🌐 Sniff Cloudflare Tunnel</button>
-          <button class="dog-chip" data-action="pet">🐾 Pet Chozzen</button>
-          <button class="dog-chip" data-action="treat">🦴 Give Treat</button>
+      <!-- 2026 BENTO METRICS -->
+      <div id="vitals">
+        <div class="bento-section-title">
+          <span>Hardware Vitals &amp; Network Health</span>
+          <small id="lastUpdated">Updated just now</small>
         </div>
+        <div class="bento-grid-5" style="margin-top: 14px;">
+          <!-- Card 1: CPU & Governor -->
+          <article class="bento-card">
+            <div class="metric-top">
+              <span>Processor Load</span>
+              <div class="metric-icon-wrap icon-cpu">⌁</div>
+            </div>
+            <div class="metric-number" id="cpuVal">—%</div>
+            <div class="metric-subtext" id="cpuSub">8-Core ARM64 · Schedutil</div>
+            <div class="metric-progress-track">
+              <div class="metric-progress-bar bar-cpu" id="cpuBar"></div>
+            </div>
+            <svg class="sparkline-svg" viewBox="0 0 100 24" preserveAspectRatio="none">
+              <polyline class="sparkline-polyline spark-cpu" id="cpuSpark" points="0,20 100,20"></polyline>
+            </svg>
+          </article>
 
-        <!-- Custom Command input -->
-        <form class="watchdog-input-row" id="watchdogForm">
-          <input type="text" class="watchdog-input" id="watchdogInput" placeholder="Ask Chozzen anything about the server or say hello...">
-          <button type="submit" class="watchdog-send-btn">Ask Chozzen</button>
-        </form>
+          <!-- Card 2: RAM Consumption -->
+          <article class="bento-card">
+            <div class="metric-top">
+              <span>Memory Usage</span>
+              <div class="metric-icon-wrap icon-ram">▦</div>
+            </div>
+            <div class="metric-number" id="ramVal">—%</div>
+            <div class="metric-subtext" id="ramSub">Awaiting telemetry</div>
+            <div class="metric-progress-track">
+              <div class="metric-progress-bar bar-ram" id="ramBar"></div>
+            </div>
+            <svg class="sparkline-svg" viewBox="0 0 100 24" preserveAspectRatio="none">
+              <polyline class="sparkline-polyline spark-ram" id="ramSpark" points="0,20 100,20"></polyline>
+            </svg>
+          </article>
+
+          <!-- Card 3: Battery & Power -->
+          <article class="bento-card">
+            <div class="metric-top">
+              <span>Battery &amp; Power</span>
+              <div class="metric-icon-wrap icon-battery">ϟ</div>
+            </div>
+            <div class="metric-number" id="batVal">—%</div>
+            <div class="metric-subtext" id="batSub">Checking state</div>
+            <div class="metric-progress-track">
+              <div class="metric-progress-bar bar-battery" id="batBar"></div>
+            </div>
+            <div style="margin-top: 14px; font-size: 11px; color: var(--emerald); font-weight: 600;" id="batStatusBadge">
+              ⚡ Tablet Plugged In
+            </div>
+          </article>
+
+          <!-- Card 4: Thermals & Governor -->
+          <article class="bento-card">
+            <div class="metric-top">
+              <span>Tablet Thermals</span>
+              <div class="metric-icon-wrap icon-thermal">🌡️</div>
+            </div>
+            <div class="metric-number" id="thermalVal" style="font-size: 26px;">38.5°C</div>
+            <div class="metric-subtext" id="thermalSub">Snapdragon SoC · No Throttling</div>
+            <div class="metric-progress-track">
+              <div class="metric-progress-bar" id="thermalBar" style="width: 38%; background: linear-gradient(90deg, var(--emerald), var(--amber));"></div>
+            </div>
+            <div style="margin-top: 12px; font-size: 11px; color: var(--emerald); font-weight: 600;" id="governorBadge">
+              Governor: schedutil (Dynamic)
+            </div>
+          </article>
+
+          <!-- Card 5: Cloudflare Tunnel & Network Feed -->
+          <article class="bento-card">
+            <div class="metric-top">
+              <span>Cloudflare Ingress</span>
+              <div class="metric-icon-wrap icon-tunnel">🌐</div>
+            </div>
+            <div class="metric-number" id="tunnelLatency" style="font-size: 26px; color: var(--cyan);">28 ms</div>
+            <div class="metric-subtext">HTTP/2 Anycast · Zero Inbound Ports</div>
+            <div class="metric-progress-track">
+              <div class="metric-progress-bar" style="width: 100%; background: linear-gradient(90deg, var(--cyan), #38bdf8);"></div>
+            </div>
+            <div style="margin-top: 12px; font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;" id="tunnelRouteBadge">
+              chozzen.xyz → cfargotunnel
+            </div>
+          </article>
+        </div>
       </div>
-    </section>
 
-    <!-- ==============================================================
-         2026 BENTO METRICS (CPU, RAM, BATTERY, THERMAL, TUNNEL)
-         ============================================================== -->
-    <div id="vitals">
-      <div class="bento-section-title">
-        <span>Hardware Vitals &amp; Network Health</span>
-        <small id="lastUpdated">Updated just now</small>
-      </div>
-      <div class="bento-grid-5" style="margin-top: 14px;">
-        <!-- Card 1: CPU & Governor -->
-        <article class="bento-card">
-          <div class="metric-top">
-            <span>Processor Load</span>
-            <div class="metric-icon-wrap icon-cpu">⌁</div>
+      <!-- ACTIVE SERVICES & GRANULAR STORAGE BREAKDOWN -->
+      <div class="grid-duo" id="services">
+        <!-- Services Hub -->
+        <section class="bento-card">
+          <div class="metric-top" style="margin-bottom: 18px;">
+            <strong style="font-size: 15px; color: var(--text);">Configured Services Hub</strong>
+            <span class="status-pill online">ALL ONLINE</span>
           </div>
-          <div class="metric-number" id="cpuVal">—%</div>
-          <div class="metric-subtext" id="cpuSub">8-Core ARM64 · Schedutil</div>
-          <div class="metric-progress-track">
-            <div class="metric-progress-bar bar-cpu" id="cpuBar"></div>
-          </div>
-          <svg class="sparkline-svg" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline class="sparkline-polyline spark-cpu" id="cpuSpark" points="0,20 100,20"></polyline>
-          </svg>
-        </article>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <div class="service-card-item">
+              <div class="service-identity">
+                <div class="service-badge-icon">🌐</div>
+                <div>
+                  <b>Cloudflare Tunnel</b>
+                  <small>redmi-tunnel · HTTP/2 Zero Trust Ingress</small>
+                </div>
+              </div>
+              <span class="status-pill active-tunnel">SECURE</span>
+            </div>
 
-        <!-- Card 2: RAM Consumption -->
-        <article class="bento-card">
-          <div class="metric-top">
-            <span>Memory Usage</span>
-            <div class="metric-icon-wrap icon-ram">▦</div>
-          </div>
-          <div class="metric-number" id="ramVal">—%</div>
-          <div class="metric-subtext" id="ramSub">Awaiting telemetry</div>
-          <div class="metric-progress-track">
-            <div class="metric-progress-bar bar-ram" id="ramBar"></div>
-          </div>
-          <svg class="sparkline-svg" viewBox="0 0 100 24" preserveAspectRatio="none">
-            <polyline class="sparkline-polyline spark-ram" id="ramSpark" points="0,20 100,20"></polyline>
-          </svg>
-        </article>
+            <div class="service-card-item">
+              <div class="service-identity">
+                <div class="service-badge-icon">⚡</div>
+                <div>
+                  <b>Nginx Web Gateway</b>
+                  <small>Reverse proxy on 127.0.0.1:8085</small>
+                </div>
+              </div>
+              <span class="status-pill online">PORT 8085</span>
+            </div>
 
-        <!-- Card 3: Battery & Power -->
-        <article class="bento-card">
-          <div class="metric-top">
-            <span>Battery &amp; Power</span>
-            <div class="metric-icon-wrap icon-battery">ϟ</div>
-          </div>
-          <div class="metric-number" id="batVal">—%</div>
-          <div class="metric-subtext" id="batSub">Checking state</div>
-          <div class="metric-progress-track">
-            <div class="metric-progress-bar bar-battery" id="batBar"></div>
-          </div>
-          <div style="margin-top: 14px; font-size: 11px; color: var(--emerald); font-weight: 600;" id="batStatusBadge">
-            ⚡ Tablet Plugged In
-          </div>
-        </article>
+            <div class="service-card-item">
+              <div class="service-identity">
+                <div class="service-badge-icon">📂</div>
+                <div>
+                  <b>FileBrowser Server</b>
+                  <small>Internal manager on 127.0.0.1:8080</small>
+                </div>
+              </div>
+              <a href="/files/" target="_blank" class="status-pill online" style="text-decoration:none;">OPEN /files/ ↗</a>
+            </div>
 
-        <!-- Card 4: Thermals & Governor -->
-        <article class="bento-card">
-          <div class="metric-top">
-            <span>Tablet Thermals</span>
-            <div class="metric-icon-wrap icon-thermal">🌡️</div>
+            <div class="service-card-item">
+              <div class="service-identity">
+                <div class="service-badge-icon">🐕</div>
+                <div>
+                  <b>Watchdog &amp; Health API</b>
+                  <small>Python daemon on :8086 + run-tunnel.sh</small>
+                </div>
+              </div>
+              <span class="status-pill online" id="monitorPill">RECEIVING</span>
+            </div>
           </div>
-          <div class="metric-number" id="thermalVal" style="font-size: 26px;">38.5°C</div>
-          <div class="metric-subtext" id="thermalSub">Snapdragon SoC · No Throttling</div>
-          <div class="metric-progress-track">
-            <div class="metric-progress-bar" id="thermalBar" style="width: 38%; background: linear-gradient(90deg, var(--emerald), var(--amber));"></div>
-          </div>
-          <div style="margin-top: 12px; font-size: 11px; color: var(--emerald); font-weight: 600;" id="governorBadge">
-            Governor: schedutil (Dynamic)
-          </div>
-        </article>
+        </section>
 
-        <!-- Card 5: Cloudflare Tunnel & Network Feed -->
-        <article class="bento-card">
-          <div class="metric-top">
-            <span>Cloudflare Ingress</span>
-            <div class="metric-icon-wrap icon-tunnel">🌐</div>
+        <!-- Granular Storage Breakdown -->
+        <section class="bento-card">
+          <div class="metric-top" style="margin-bottom: 14px;">
+            <strong style="font-size: 15px; color: var(--text);">Granular Storage Breakdown</strong>
+            <span style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;" id="diskTag">LIVE</span>
           </div>
-          <div class="metric-number" id="tunnelLatency" style="font-size: 26px; color: var(--cyan);">28 ms</div>
-          <div class="metric-subtext">HTTP/2 Anycast · Zero Inbound Ports</div>
-          <div class="metric-progress-track">
-            <div class="metric-progress-bar" style="width: 100%; background: linear-gradient(90deg, var(--cyan), #38bdf8);"></div>
+
+          <div class="storage-stat-row">
+            <span>Used Storage:</span>
+            <strong id="diskUsed">34.2 GB</strong>
           </div>
-          <div style="margin-top: 12px; font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;" id="tunnelRouteBadge">
-            chozzen.xyz → cfargotunnel
+          <div class="storage-stat-row">
+            <span>Free Usable Space:</span>
+            <strong id="diskFree">93.8 GB</strong>
           </div>
-        </article>
+
+          <!-- Stacked Multi-slice Storage Bar -->
+          <div class="storage-stacked-meter" title="Storage Allocation Breakdown">
+            <div class="storage-slice slice-system" id="sliceSystem" style="width: 12%;" title="System & PRoot"></div>
+            <div class="storage-slice slice-media" id="sliceMedia" style="width: 13%;" title="Media & Storage"></div>
+            <div class="storage-slice slice-db" id="sliceDb" style="width: 2%;" title="SQLite DBs & Logs"></div>
+          </div>
+
+          <div class="storage-legend-grid">
+            <div class="storage-legend-item">
+              <span class="storage-legend-dot" style="background: var(--indigo);"></span>
+              <span>OS &amp; PRoot: <b id="statSystem">~8.4 GB</b></span>
+            </div>
+            <div class="storage-legend-item">
+              <span class="storage-legend-dot" style="background: var(--cyan);"></span>
+              <span>Media/Storage: <b id="statMedia">~24.8 GB</b></span>
+            </div>
+            <div class="storage-legend-item">
+              <span class="storage-legend-dot" style="background: var(--amber);"></span>
+              <span>Databases: <b id="statDb">~1.0 GB</b></span>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 8px; margin-top: 18px;">
+            <button class="action-btn" id="btnGoToSupport" type="button" style="flex:1; justify-content:center;">View Specs &amp; Diagram →</button>
+            <a href="/files/" target="_blank" class="action-btn" style="flex:1; justify-content:center; text-decoration:none; border-color:var(--indigo);">Files →</a>
+          </div>
+        </section>
       </div>
     </div>
 
     <!-- ==============================================================
-         ACTIVE SERVICES & GRANULAR STORAGE BREAKDOWN
+         PAGE VIEW 2: SUPPORT (ARCHITECTURE, SPECS, & RUNBOOK)
          ============================================================== -->
-    <div class="grid-duo" id="services">
-      <!-- Services Hub -->
-      <section class="bento-card">
-        <div class="metric-top" style="margin-bottom: 18px;">
-          <strong style="font-size: 15px; color: var(--text);">Configured Services Hub</strong>
-          <span class="status-pill online">ALL ONLINE</span>
+    <div id="viewSupport" class="page-view">
+      <!-- Support Hero Banner -->
+      <section class="support-hero-banner">
+        <div class="support-banner-text">
+          <h2>Server Architecture &amp; Support Hub</h2>
+          <p>Complete technical blueprint, execution layers, port routing, and operations runbook for chozzen.xyz.</p>
         </div>
-        <div style="display: flex; flex-direction: column; gap: 10px;">
-          <div class="service-card-item">
-            <div class="service-identity">
-              <div class="service-badge-icon">🌐</div>
-              <div>
-                <b>Cloudflare Tunnel</b>
-                <small>redmi-tunnel · HTTP/2 Zero Trust Ingress</small>
-              </div>
-            </div>
-            <span class="status-pill active-tunnel">SECURE</span>
-          </div>
+        <div style="display: flex; gap: 10px;">
+          <a href="architecture.html" target="_blank" class="action-btn" style="background: linear-gradient(135deg, var(--indigo), var(--cyan)); border:none; text-decoration:none;">
+            🚀 Open Full Diagram ↗
+          </a>
+          <button class="action-btn" id="btnBackToChozzen" type="button">
+            🐶 Back to Chozzen
+          </button>
+        </div>
+      </section>
 
-          <div class="service-card-item">
-            <div class="service-identity">
-              <div class="service-badge-icon">⚡</div>
-              <div>
-                <b>Nginx Web Gateway</b>
-                <small>Reverse proxy on 127.0.0.1:8085</small>
-              </div>
-            </div>
-            <span class="status-pill online">PORT 8085</span>
-          </div>
+      <!-- Architecture Diagram Interactive Launcher Card -->
+      <section class="bento-card" id="support-arch">
+        <div class="metric-top" style="margin-bottom: 14px;">
+          <strong style="font-size: 16px; color: var(--text);">Verified System Architecture Blueprint</strong>
+          <span class="status-pill online">ARCHIFY 3.0 VERIFIED</span>
+        </div>
+        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 16px;">
+          The system uses an outbound Cloudflare HTTP/2 tunnel to punch through CGNAT without open firewall ports, proxying into an internal Nginx gateway on port 8085.
+        </p>
 
-          <div class="service-card-item">
-            <div class="service-identity">
-              <div class="service-badge-icon">📂</div>
-              <div>
-                <b>FileBrowser Server</b>
-                <small>Internal manager on 127.0.0.1:8080</small>
-              </div>
-            </div>
-            <a href="/files/" target="_blank" class="status-pill online" style="text-decoration:none;">OPEN /files/ ↗</a>
-          </div>
-
-          <div class="service-card-item">
-            <div class="service-identity">
-              <div class="service-badge-icon">🐕</div>
-              <div>
-                <b>Watchdog &amp; Health API</b>
-                <small>Python daemon on :8086 + run-tunnel.sh</small>
-              </div>
-            </div>
-            <span class="status-pill online" id="monitorPill">RECEIVING</span>
+        <div style="border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; background: #050810; position: relative;">
+          <iframe src="architecture.html" style="width: 100%; height: 440px; border: none; display: block;" title="Archify Architecture Diagram"></iframe>
+          <div style="padding: 12px 16px; background: rgba(10, 14, 25, 0.9); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; color: var(--text-muted);">Explore with zoom, pan, themes, and SVG exports directly.</span>
+            <a href="architecture.html" target="_blank" class="action-btn" style="font-size: 12px; padding: 6px 14px; text-decoration:none;">Fullscreen Diagram ↗</a>
           </div>
         </div>
       </section>
 
-      <!-- Granular Storage Breakdown -->
-      <section class="bento-card">
-        <div class="metric-top" style="margin-bottom: 14px;">
-          <strong style="font-size: 15px; color: var(--text);">Granular Storage Breakdown</strong>
-          <span style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;" id="diskTag">LIVE</span>
+      <!-- Technical Specifications Grid -->
+      <section class="bento-card" id="support-specs">
+        <div class="metric-top" style="margin-bottom: 16px;">
+          <strong style="font-size: 16px; color: var(--text);">Hardware &amp; Network Specifications</strong>
+          <span style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">SNAPSHOT v0.02</span>
         </div>
 
-        <div class="storage-stat-row">
-          <span>Used Storage:</span>
-          <strong id="diskUsed">34.2 GB</strong>
-        </div>
-        <div class="storage-stat-row">
-          <span>Free Usable Space:</span>
-          <strong id="diskFree">93.8 GB</strong>
-        </div>
-
-        <!-- Stacked Multi-slice Storage Bar -->
-        <div class="storage-stacked-meter" title="Storage Allocation Breakdown">
-          <div class="storage-slice slice-system" id="sliceSystem" style="width: 12%;" title="System & PRoot"></div>
-          <div class="storage-slice slice-media" id="sliceMedia" style="width: 13%;" title="Media & Storage"></div>
-          <div class="storage-slice slice-db" id="sliceDb" style="width: 2%;" title="SQLite DBs & Logs"></div>
-        </div>
-
-        <div class="storage-legend-grid">
-          <div class="storage-legend-item">
-            <span class="storage-legend-dot" style="background: var(--indigo);"></span>
-            <span>OS &amp; PRoot: <b id="statSystem">~8.4 GB</b></span>
+        <div class="specs-card-grid">
+          <div class="spec-item-box">
+            <span class="spec-item-label">Public Domain</span>
+            <span class="spec-item-val" style="color: var(--cyan);">https://chozzen.xyz</span>
           </div>
-          <div class="storage-legend-item">
-            <span class="storage-legend-dot" style="background: var(--cyan);"></span>
-            <span>Media/Storage: <b id="statMedia">~24.8 GB</b></span>
+          <div class="spec-item-box">
+            <span class="spec-item-label">Host Device</span>
+            <span class="spec-item-val">ARM64 Android Tablet</span>
           </div>
-          <div class="storage-legend-item">
-            <span class="storage-legend-dot" style="background: var(--amber);"></span>
-            <span>Databases: <b id="statDb">~1.0 GB</b></span>
+          <div class="spec-item-box">
+            <span class="spec-item-label">Execution Layers</span>
+            <span class="spec-item-val">Termux (Host) + Debian PRoot (Guest)</span>
+          </div>
+          <div class="spec-item-box">
+            <span class="spec-item-label">DNS &amp; Nameservers</span>
+            <span class="spec-item-val">carol &amp; howard .ns.cloudflare.com</span>
+          </div>
+          <div class="spec-item-box">
+            <span class="spec-item-label">Tunnel UUID</span>
+            <span class="spec-item-val">a80246c7-82b8-48fc-8324-1a5055dc0d1d</span>
+          </div>
+          <div class="spec-item-box">
+            <span class="spec-item-label">Nginx Web Gateway</span>
+            <span class="spec-item-val">127.0.0.1:8085 (/ &amp; /about)</span>
+          </div>
+          <div class="spec-item-box">
+            <span class="spec-item-label">File Manager Backend</span>
+            <span class="spec-item-val">127.0.0.1:8080 (/files/)</span>
+          </div>
+          <div class="spec-item-box">
+            <span class="spec-item-label">Auth &amp; Telemetry API</span>
+            <span class="spec-item-val">127.0.0.1:8086 (/api/stats)</span>
           </div>
         </div>
+      </section>
 
-        <div style="display: flex; gap: 8px; margin-top: 18px;">
-          <a href="architecture.html" class="action-btn" style="flex:1; justify-content:center; text-decoration:none;">Diagram ↗</a>
-          <a href="about.html" class="action-btn" style="flex:1; justify-content:center; text-decoration:none;">Specs →</a>
-          <a href="/files/" target="_blank" class="action-btn" style="flex:1; justify-content:center; text-decoration:none; border-color:var(--indigo);">Files →</a>
+      <!-- Operations Runbook & Quick Commands -->
+      <section class="bento-card" id="support-runbook">
+        <div class="metric-top" style="margin-bottom: 16px;">
+          <strong style="font-size: 16px; color: var(--text);">Operations Runbook &amp; Startup Commands</strong>
+          <span class="status-pill active-tunnel">GITOPS AUTOMATION</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div>
+            <span style="font-size: 12px; font-weight: 700; color: #fff; display: block; margin-bottom: 8px;">A. Manual Service Start (Debian PRoot):</span>
+            <div class="runbook-code-block">
+              proot-distro login debian<br>
+              bash /path/to/tablet-server-infra/scripts/start-server.sh
+            </div>
+          </div>
+
+          <div>
+            <span style="font-size: 12px; font-weight: 700; color: #fff; display: block; margin-bottom: 8px;">B. Deploy Latest GitOps Updates:</span>
+            <div class="runbook-code-block">
+              bash /path/to/tablet-server-infra/scripts/deploy.sh
+            </div>
+          </div>
         </div>
       </section>
     </div>
@@ -1249,14 +1606,15 @@
 </div>
 
 <!-- ==============================================================
-     INTERACTIVE JAVASCRIPT & ENGINE
+     INTERACTIVE JAVASCRIPT & PAGE SWITCHER ENGINE
      ============================================================== -->
 <script>
 (function() {
   var history = { cpu: [], ram: [] };
-  var currentAvatar = '3d'; // '3d' or 'real'
+  var currentAvatar = '3d';
   var latestData = null;
   var soundEnabled = localStorage.getItem('chozzen_sound') !== 'false';
+  var currentPage = 'chozzen'; // 'chozzen' or 'support'
 
   // Ambient mouse light tracker
   window.addEventListener('mousemove', function(e) {
@@ -1290,6 +1648,266 @@
     if (!soundEnabled) return;
     playTone(280, 0.08, 'triangle');
     setTimeout(function() { playTone(440, 0.12, 'sine'); }, 60);
+  }
+
+  function playSpankSound() {
+    if (!soundEnabled) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      var t = audioCtx.currentTime;
+      var osc1 = audioCtx.createOscillator();
+      var gain1 = audioCtx.createGain();
+      osc1.type = 'triangle';
+      osc1.frequency.setValueAtTime(480, t);
+      osc1.frequency.exponentialRampToValueAtTime(75, t + 0.09);
+      gain1.gain.setValueAtTime(0.25, t);
+      gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+      osc1.connect(gain1);
+      gain1.connect(audioCtx.destination);
+      osc1.start(t);
+      osc1.stop(t + 0.11);
+
+      setTimeout(function() {
+        if (!audioCtx) return;
+        var t2 = audioCtx.currentTime;
+        var osc2 = audioCtx.createOscillator();
+        var gain2 = audioCtx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(360, t2);
+        osc2.frequency.linearRampToValueAtTime(620, t2 + 0.08);
+        gain2.gain.setValueAtTime(0.14, t2);
+        gain2.gain.exponentialRampToValueAtTime(0.001, t2 + 0.18);
+        osc2.connect(gain2);
+        gain2.connect(audioCtx.destination);
+        osc2.start(t2);
+        osc2.stop(t2 + 0.19);
+      }, 70);
+    } catch(e) {}
+  }
+
+  // ==============================================================
+  // PAGE SWITCHER: CHOZZEN vs SUPPORT TOGGLE CONTROLLER
+  // ==============================================================
+  var btnPageChozzen = document.getElementById('btnPageChozzen');
+  var btnPageSupport = document.getElementById('btnPageSupport');
+  var viewChozzen = document.getElementById('viewChozzen');
+  var viewSupport = document.getElementById('viewSupport');
+  var topbarTitle = document.getElementById('topbarTitle');
+  var topbarSubtitle = document.getElementById('topbarSubtitle');
+  var btnGoToSupport = document.getElementById('btnGoToSupport');
+  var btnBackToChozzen = document.getElementById('btnBackToChozzen');
+
+  function switchPage(page) {
+    currentPage = page;
+    if (page === 'support') {
+      if (watchdogHero && watchdogHero.classList.contains('zoomed')) {
+        closeWatchdogZoom();
+      }
+      btnPageSupport.classList.add('active');
+      btnPageSupport.setAttribute('aria-selected', 'true');
+      btnPageChozzen.classList.remove('active');
+      btnPageChozzen.setAttribute('aria-selected', 'false');
+      viewSupport.classList.add('active');
+      viewChozzen.classList.remove('active');
+      topbarTitle.textContent = 'System Support & Architecture';
+      topbarSubtitle.textContent = 'Technical specifications, Cloudflare tunnel routing, and operations runbook';
+      playTone(560, 0.1, 'sine');
+      location.hash = '#support';
+    } else {
+      btnPageChozzen.classList.add('active');
+      btnPageChozzen.setAttribute('aria-selected', 'true');
+      btnPageSupport.classList.remove('active');
+      btnPageSupport.setAttribute('aria-selected', 'false');
+      viewChozzen.classList.add('active');
+      viewSupport.classList.remove('active');
+      topbarTitle.textContent = 'Autonomous Tablet Infrastructure';
+      topbarSubtitle.textContent = 'Live AI-assisted telemetry & Cloudflare ingress gateway';
+      playTone(680, 0.1, 'sine');
+      location.hash = '#chozzen';
+    }
+  }
+
+  if (btnPageChozzen) btnPageChozzen.addEventListener('click', function() {
+    switchPage('chozzen');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  if (btnPageSupport) btnPageSupport.addEventListener('click', function() {
+    switchPage('support');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  if (btnGoToSupport) btnGoToSupport.addEventListener('click', function() {
+    switchPage('support');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+  if (btnBackToChozzen) btnBackToChozzen.addEventListener('click', function() {
+    switchPage('chozzen');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Unified Nav Links Handler (handles cross-page anchors without splitting navbar)
+  document.querySelectorAll('.nav-links .nav-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var targetPage = btn.getAttribute('data-page');
+      if (targetPage && targetPage !== currentPage) {
+        switchPage(targetPage);
+      }
+      if (btn.id !== 'navWatchdog' && watchdogHero && watchdogHero.classList.contains('zoomed')) {
+        closeWatchdogZoom();
+      }
+      document.querySelectorAll('.nav-links .nav-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    });
+  });
+
+  // ==============================================================
+  // CHOZZEN WATCHDOG ZOOM / SPOTLIGHT CONTROLLER
+  // ==============================================================
+  var navWatchdog = document.getElementById('navWatchdog');
+  var watchdogHero = document.getElementById('watchdog');
+  var watchdogZoomModal = document.getElementById('watchdogZoomModal');
+  var watchdogZoomBackdrop = document.getElementById('watchdogZoomBackdrop');
+  var watchdogZoomStage = document.getElementById('watchdogZoomStage');
+  var watchdogPlaceholder = document.getElementById('watchdogPlaceholder');
+  var watchdogCloseBtn = document.getElementById('watchdogZoomCloseBtn');
+
+  function openWatchdogZoom() {
+    try {
+      if (currentPage !== 'chozzen') {
+        switchPage('chozzen');
+      }
+      if (watchdogPlaceholder && watchdogZoomStage && watchdogHero && watchdogZoomModal) {
+        watchdogPlaceholder.style.display = 'block';
+        watchdogZoomStage.appendChild(watchdogHero);
+        watchdogHero.classList.add('zoomed');
+        watchdogZoomModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+      playTone(760, 0.12, 'sine');
+      setTimeout(function() { playTone(880, 0.14, 'sine'); }, 70);
+      triggerBarkAnimation();
+      setWatchdogMood('playful', '🐾 Zoom Focus · Direct Uplink');
+      applyTextEffect("Woof! Chozzen the Watchdog is right in front of you! Ask me questions, run diagnostic terminal commands, or feed me digital treats!");
+    } catch (e) {
+      console.error('Error opening watchdog zoom:', e);
+    }
+  }
+
+  function closeWatchdogZoom() {
+    try {
+      if (watchdogZoomModal) watchdogZoomModal.classList.remove('active');
+      if (watchdogHero) {
+        watchdogHero.classList.remove('zoomed');
+        if (watchdogPlaceholder && watchdogPlaceholder.parentNode) {
+          watchdogPlaceholder.parentNode.insertBefore(watchdogHero, watchdogPlaceholder);
+          watchdogPlaceholder.style.display = 'none';
+        }
+        document.body.style.overflow = '';
+        watchdogHero.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      playTone(520, 0.08);
+      setTimeout(recheckWatchdogIntelligence, 2000);
+    } catch (err) {
+      console.error('Error closing watchdog zoom:', err);
+      if (watchdogZoomModal) watchdogZoomModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  var isExitingZoom = false;
+  function triggerSpankAndExit() {
+    if (isExitingZoom) return;
+    isExitingZoom = true;
+
+    // 1. Play slap sound safely
+    try {
+      playSpankSound();
+    } catch (e) {
+      console.warn('Audio play error:', e);
+    }
+
+    // 2. Play butt-spank wobble animation on avatar
+    try {
+      var avatar = document.getElementById('avatarWrap');
+      var burst = document.getElementById('spankBurst');
+      if (avatar) {
+        avatar.classList.remove('tail-wag');
+        avatar.classList.add('spank-wobble');
+      }
+      if (burst) {
+        burst.classList.add('show');
+      }
+      applyTextEffect("👋 *SMACK!* Yip-Woof! 🐾 *Tail spins wildly in joy!* Bye for now, I'm watching your server!");
+    } catch (e) {
+      console.warn('Animation error:', e);
+    }
+
+    // 3. Smoothly exit zoom after spank animation finishes (guaranteed cleanup)
+    setTimeout(function() {
+      try {
+        var burst = document.getElementById('spankBurst');
+        var avatar = document.getElementById('avatarWrap');
+        if (burst) burst.classList.remove('show');
+        if (avatar) {
+          avatar.classList.remove('spank-wobble');
+          avatar.classList.add('tail-wag');
+        }
+        closeWatchdogZoom();
+      } catch (err) {
+        console.error('Error during exit:', err);
+        if (watchdogZoomModal) watchdogZoomModal.classList.remove('active');
+        document.body.style.overflow = '';
+      } finally {
+        isExitingZoom = false;
+      }
+    }, 550);
+  }
+  window.triggerSpankAndExit = triggerSpankAndExit;
+  window.closeWatchdogZoom = closeWatchdogZoom;
+
+  if (navWatchdog) {
+    navWatchdog.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (watchdogHero && watchdogHero.classList.contains('zoomed')) {
+        triggerSpankAndExit();
+      } else {
+        openWatchdogZoom();
+      }
+    });
+  }
+
+  if (watchdogZoomBackdrop) {
+    watchdogZoomBackdrop.addEventListener('click', triggerSpankAndExit);
+  }
+  if (watchdogCloseBtn) {
+    watchdogCloseBtn.addEventListener('click', triggerSpankAndExit);
+  }
+
+  // Global event delegation for Exit Station button and backdrop clicks
+  document.addEventListener('click', function(e) {
+    if (e.target && (e.target.id === 'watchdogZoomCloseBtn' || e.target.closest('#watchdogZoomCloseBtn, .sexy-exit-btn'))) {
+      e.preventDefault();
+      e.stopPropagation();
+      triggerSpankAndExit();
+      return;
+    }
+    if (e.target && (e.target.id === 'watchdogZoomBackdrop' || e.target.classList.contains('watchdog-zoom-backdrop'))) {
+      e.preventDefault();
+      e.stopPropagation();
+      triggerSpankAndExit();
+      return;
+    }
+  });
+
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && watchdogHero && watchdogHero.classList.contains('zoomed')) {
+      triggerSpankAndExit();
+    }
+  });
+
+  // Handle URL hash on load
+  if (location.hash.startsWith('#support')) {
+    switchPage('support');
   }
 
   // Sound Toggle Button
@@ -1384,14 +2002,14 @@
     setTimeout(recheckWatchdogIntelligence, 4000);
   });
 
-  // Tab Switching (Dialogue vs Mini-Terminal)
+  // Tab Switching inside Watchdog (Dialogue vs Mini-Terminal)
   var tabDialogueBtn = document.getElementById('tabDialogueBtn');
   var tabTerminalBtn = document.getElementById('tabTerminalBtn');
   var speechContainer = document.getElementById('speechContainer');
   var miniTerminal = document.getElementById('miniTerminal');
   var navTerminalBtn = document.getElementById('navTerminalBtn');
 
-  function showTab(tab) {
+  function showStationTab(tab) {
     playTone(600, 0.08);
     if (tab === 'terminal') {
       tabTerminalBtn.classList.add('active');
@@ -1407,11 +2025,12 @@
     }
   }
 
-  if (tabDialogueBtn) tabDialogueBtn.addEventListener('click', function() { showTab('dialogue'); });
-  if (tabTerminalBtn) tabTerminalBtn.addEventListener('click', function() { showTab('terminal'); });
+  if (tabDialogueBtn) tabDialogueBtn.addEventListener('click', function() { showStationTab('dialogue'); });
+  if (tabTerminalBtn) tabTerminalBtn.addEventListener('click', function() { showStationTab('terminal'); });
   if (navTerminalBtn) navTerminalBtn.addEventListener('click', function() {
+    if (currentPage !== 'chozzen') switchPage('chozzen');
     location.hash = '#watchdog';
-    showTab('terminal');
+    showStationTab('terminal');
   });
 
   // ==============================================================
@@ -1443,6 +2062,7 @@
       appendTerminalLine('  ping       - Test round-trip edge latency to chozzen.xyz', 'sys');
       appendTerminalLine('  services   - Inspect Nginx, FileBrowser, and Monitor status', 'sys');
       appendTerminalLine('  storage    - Show granular disk allocation for /root/storage', 'sys');
+      appendTerminalLine('  support    - Switch directly to Support & Architecture page', 'sys');
       appendTerminalLine('  patrol     - Run comprehensive automated security scan', 'sys');
       appendTerminalLine('  treat/pet  - Interact with Chozzen the Watchdog', 'sys');
       appendTerminalLine('  clear      - Clear terminal screen buffer', 'sys');
@@ -1451,6 +2071,12 @@
 
     if (cmd === 'clear') {
       terminalOutput.innerHTML = '';
+      return;
+    }
+
+    if (cmd === 'support') {
+      switchPage('support');
+      appendTerminalLine('Switching to Support & Architecture page view...', 'success');
       return;
     }
 
@@ -1558,7 +2184,6 @@
     var batStat = latestData.battery ? latestData.battery.status : 'Charging';
     var temp = Number(latestData.thermal ? latestData.thermal.temp_c : 38.5);
 
-    // 1. High Memory Alert
     if (ram > 80) {
       setWatchdogMood('alert', '⚠️ High Alert · RAM > 80%');
       triggerBarkAnimation();
@@ -1566,7 +2191,6 @@
       return;
     }
 
-    // 2. High CPU Alert
     if (cpu > 80) {
       setWatchdogMood('alert', '🔥 Alert · High CPU Load');
       triggerBarkAnimation();
@@ -1574,21 +2198,18 @@
       return;
     }
 
-    // 3. Low Battery & Discharging Alert
     if (bat < 20 && batStat === 'Discharging') {
       setWatchdogMood('alert', '⚡ Warning · Battery Low');
       applyTextEffect("⚡ Whimper! Tablet battery is low (" + bat + "%) and unplugged! Please connect power to avoid downtime.");
       return;
     }
 
-    // 4. Thermal Throttling Alert
     if (temp > 62) {
       setWatchdogMood('alert', '🌡️ Warning · SoC Warm');
       applyTextEffect("🌡️ Notice: Core temperature reached " + temp + "°C. Monitoring tablet thermal dissipation.");
       return;
     }
 
-    // All Clear Normal State
     setWatchdogMood('', '🟢 Patrolling · System Healthy');
   }
 
@@ -1632,7 +2253,6 @@
       return;
     }
 
-    // Generic rotating intelligent answers
     var responses = [
       "Woof! Did you know my host is an ARM64 Android tablet with Debian PRoot? Lightweight and ultra power-efficient!",
       "I'm keeping an eye on the Cloudflare tunnel right now. Everything is running smoothly at chozzen.xyz.",
@@ -1643,7 +2263,6 @@
     applyTextEffect(randomReply);
   }
 
-  // Handle interaction chips
   document.querySelectorAll('.dog-chip').forEach(function(chip) {
     chip.addEventListener('click', function() {
       var action = chip.getAttribute('data-action');
@@ -1651,7 +2270,6 @@
     });
   });
 
-  // Handle input submit
   var form = document.getElementById('watchdogForm');
   var input = document.getElementById('watchdogInput');
   if (form && input) {
@@ -1694,7 +2312,6 @@
       if (!d || !d.cpu || !d.ram) throw new Error('Incomplete data');
       applyTelemetryData(d);
     } catch (e) {
-      // Local preview fallback demo data
       var isLocalPreview = location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
       if (isLocalPreview) {
         var demoCpu = Math.min(95, Math.max(8, 16.5 + Math.sin(Date.now() / 2500) * 10));
@@ -1770,7 +2387,6 @@
       document.getElementById('diskUsed').textContent = used.toFixed(1) + ' GB';
       document.getElementById('diskFree').textContent = free.toFixed(1) + ' GB';
 
-      // Granular sub-allocations
       var sysGb = Math.round(used * 0.25 * 10) / 10;
       var mediaGb = Math.round(used * 0.72 * 10) / 10;
       var dbGb = Math.round(used * 0.03 * 10) / 10;
@@ -1793,7 +2409,6 @@
 
     document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-    // Proactive watchdog analysis
     recheckWatchdogIntelligence();
   }
 
@@ -1826,7 +2441,6 @@
     location.replace('login.html');
   });
 
-  // Localhost preview navigation links
   if (location.protocol === 'file:' || ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
     var navFb = document.getElementById('navFileBrowser');
     if (navFb) {
