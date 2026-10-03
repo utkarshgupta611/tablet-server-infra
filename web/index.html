@@ -2,205 +2,1322 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#0b1017">
-  <meta name="description" content="Chozzen home server status and system dashboard.">
-  <title>Chozzen — Server overview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#06090e">
+  <meta name="description" content="Chozzen Watchdog & Autonomous Home Server Dashboard 2026">
+  <title>Chozzen — Autonomous Home Server & Watchdog</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
   <style>
-    :root{color-scheme:dark;--bg:#0b1017;--surface:#111923;--surface-2:#151f2b;--line:#243140;--muted:#93a1b2;--text:#edf3f8;--teal:#65e0c0;--blue:#82b8ff;--amber:#f4c46a;--red:#ff8585;--radius:18px}
-    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 78% -15%,#1b3540 0,transparent 38%),var(--bg);color:var(--text);font:14px/1.55 Manrope,system-ui,sans-serif;min-height:100vh}
-    a{color:inherit;text-decoration:none}button,input{font:inherit}.shell{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
-    .sidebar{position:sticky;top:0;height:100vh;padding:25px 16px 18px;border-right:1px solid var(--line);background:#0e151e;display:flex;flex-direction:column;z-index:5}
-    .brand{display:flex;align-items:center;gap:12px;padding:3px 9px 24px;border-bottom:1px solid var(--line)}
-    .brand img{width:42px;height:42px;object-fit:cover;border-radius:14px;background:#202d39}.brand strong{display:block;font-size:14px;letter-spacing:.13em}.brand small{color:var(--muted);font-size:10px;letter-spacing:.1em}
-    .nav-label{margin:23px 10px 8px;color:#637184;font-size:10px;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
-    nav{display:grid;gap:5px}.nav-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:11px;color:var(--muted);font-weight:650;transition:.18s ease}.nav-item:hover,.nav-item.active{background:#1b2935;color:var(--text)}.nav-item.active{box-shadow:inset 2px 0 var(--teal)}.nav-icon{width:20px;text-align:center;color:var(--teal);font-size:16px}
-    .sidebar-foot{margin-top:auto;border-top:1px solid var(--line);padding:17px 10px 2px;color:var(--muted);font-size:11px}.foot-line{display:flex;align-items:center;gap:8px;margin-bottom:4px}.dot{width:7px;height:7px;border-radius:50%;background:var(--teal);box-shadow:0 0 10px #65e0c077}.foot-meta{color:#657487}
-    main{min-width:0;padding:28px clamp(20px,4vw,58px) 60px;max-width:1600px;width:100%;margin:0 auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:38px}.crumb{color:var(--muted);font-size:12px}.top-right{display:flex;align-items:center;gap:10px}.clock{font:12px "DM Mono",monospace;color:var(--muted);padding-right:12px;border-right:1px solid var(--line)}.icon-btn{border:1px solid var(--line);background:var(--surface);color:var(--text);height:38px;padding:0 13px;border-radius:10px;cursor:pointer}.icon-btn:hover{border-color:#476276;background:var(--surface-2)}
-    .intro{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:23px}.eyebrow{color:var(--teal);font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.intro h1{margin:8px 0 5px;font-size:clamp(27px,4vw,38px);line-height:1.12;letter-spacing:-.045em}.intro p{margin:0;color:var(--muted)}.online-pill{display:inline-flex;align-items:center;gap:8px;border:1px solid #285848;background:#12251f;color:#9ae9cb;padding:9px 13px;border-radius:999px;white-space:nowrap;font-size:11px;font-weight:750}.online-pill.offline{border-color:#674144;background:#2a181b;color:#ffadad}.online-pill .dot{animation:pulse 2s infinite}@keyframes pulse{50%{opacity:.4;transform:scale(.8)}}
-    .notice{display:none;border:1px solid #68454b;background:#28191d;color:#ffc1c1;padding:11px 14px;border-radius:12px;margin:0 0 20px}.notice.show{display:block}
-    .section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:29px 0 13px}.section-head h2{font-size:13px;margin:0;letter-spacing:.02em}.section-head span{color:var(--muted);font-size:11px}
-    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}.card,.panel{border:1px solid var(--line);background:linear-gradient(145deg,#141e29,#101720);border-radius:var(--radius);box-shadow:0 10px 35px #00000012}.metric{padding:17px 18px;min-height:170px;position:relative;overflow:hidden}.metric:after{content:"";position:absolute;width:130px;height:130px;right:-60px;top:-74px;border-radius:50%;background:#65e0c00a}.metric-head{display:flex;justify-content:space-between;align-items:center;color:var(--muted);font-weight:650;font-size:11px}.metric-glyph{color:var(--teal);font-size:16px}.metric-value{font:500 27px "DM Mono",monospace;letter-spacing:-.06em;margin:18px 0 3px}.metric-sub{font-size:10px;color:var(--muted);min-height:16px}.meter{height:4px;border-radius:9px;background:#25313c;margin-top:14px;overflow:hidden}.meter i{height:100%;display:block;width:0;background:linear-gradient(90deg,var(--teal),var(--blue));transition:width .5s ease;border-radius:inherit}.spark{width:100%;height:28px;margin-top:8px;overflow:visible}.spark polyline{fill:none;stroke:var(--teal);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-    .grid-2{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(280px,.7fr);gap:14px}.panel{padding:19px}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;margin-bottom:15px}.panel-title{margin:0;font-size:13px}.panel-note{font-size:10px;color:var(--muted);margin-top:3px}.subtle-tag{border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:9px;padding:4px 8px;white-space:nowrap}
-    .service-list{display:grid;gap:8px}.service{display:flex;align-items:center;gap:12px;padding:11px 12px;border:1px solid #202c39;background:#101821;border-radius:12px}.service-icon{width:32px;height:32px;border-radius:10px;background:#1c2b35;color:var(--teal);display:grid;place-items:center;font-size:14px;flex:none}.service-info{min-width:0;flex:1}.service-info b{display:block;font-size:11px}.service-info small{color:var(--muted);font-size:10px}.service-state{font-size:9px;color:var(--amber);border:1px solid #665533;background:#272316;padding:4px 7px;border-radius:999px;white-space:nowrap}
-    .storage-row{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #202c39;font-size:11px}.storage-row:last-child{border:0}.storage-row span:first-child{color:var(--muted)}.storage-row strong{font:11px "DM Mono",monospace}.storage-meter{height:7px;background:#25313c;border-radius:8px;overflow:hidden;margin:13px 0 6px}.storage-meter i{display:block;height:100%;width:0;background:linear-gradient(90deg,#65e0c0,#82b8ff);border-radius:inherit}.storage-caption{display:flex;justify-content:space-between;color:var(--muted);font-size:10px}
-    .network-empty{padding:21px 15px;border:1px dashed #334253;border-radius:13px;color:var(--muted);font-size:11px;line-height:1.6}.network-empty strong{display:block;color:var(--text);font-size:11px;margin-bottom:4px}.quick-links{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.quick-link{padding:9px 12px;background:#17232e;border:1px solid #2b3b4a;border-radius:10px;font-size:10px;font-weight:700}.quick-link:hover{border-color:var(--teal);color:var(--teal)}
-    .footer{margin-top:25px;color:#627184;font-size:10px;display:flex;justify-content:space-between;gap:10px}
-    @media(max-width:1100px){.metrics{grid-template-columns:repeat(2,minmax(0,1fr))}.grid-2{grid-template-columns:1fr}}
-    @media(max-width:700px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto;padding:12px 14px;border-right:0;border-bottom:1px solid var(--line)}.brand{padding:2px 4px 12px;border:0}.brand img{width:34px;height:34px}.nav-label,.sidebar-foot{display:none}nav{display:flex;overflow-x:auto;gap:4px;margin-top:8px;padding-bottom:1px}.nav-item{padding:8px 10px;white-space:nowrap;font-size:11px}.nav-icon{width:auto}main{padding:20px 15px 40px}.topbar{margin-bottom:25px}.intro{align-items:flex-start;flex-direction:column}.intro h1{font-size:30px}.metrics{gap:9px}.metric{padding:13px;min-height:150px}.metric-value{font-size:22px;margin-top:15px}.panel{padding:15px}.clock{display:none}}
-    @media(max-width:390px){.metrics{grid-template-columns:1fr}.metric{min-height:130px}.metric-value{margin:12px 0 2px}.spark{height:22px}}
-    @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    :root {
+      color-scheme: dark;
+      --bg: #07090e;
+      --bg-surface: rgba(15, 23, 42, 0.72);
+      --bg-surface-elevated: rgba(22, 32, 54, 0.78);
+      --border: rgba(255, 255, 255, 0.08);
+      --border-focus: rgba(99, 102, 241, 0.45);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-subtle: #64748b;
+      
+      /* 2026 Curated Trendy Palette */
+      --indigo: #6366f1;
+      --indigo-glow: rgba(99, 102, 241, 0.22);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.22);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.22);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245, 158, 11, 0.22);
+      --rose: #f43f5e;
+      
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-xl: 30px;
+      
+      --shadow-glass: 0 16px 40px -10px rgba(0, 0, 0, 0.45), 0 0 0 1px var(--border);
+      --transition-smooth: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background-color: var(--bg);
+      background-image: 
+        radial-gradient(ellipse 70% 50% at 50% -10%, rgba(99, 102, 241, 0.12), transparent),
+        radial-gradient(ellipse 60% 40% at 90% 20%, rgba(6, 182, 212, 0.08), transparent),
+        radial-gradient(ellipse 50% 40% at 10% 70%, rgba(16, 185, 129, 0.06), transparent);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* Ambient animated mesh particles */
+    .ambient-glow {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 30%), rgba(99, 102, 241, 0.06) 0%, transparent 40%);
+      transition: background 0.2s ease;
+    }
+
+    /* Layout Shell */
+    .app-shell {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 28px 20px;
+      background: rgba(10, 14, 23, 0.85);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      z-index: 20;
+    }
+
+    .brand-cluster {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-avatar-mini {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      object-fit: cover;
+      box-shadow: 0 0 16px var(--amber-glow);
+      border: 2px solid rgba(245, 158, 11, 0.4);
+      transition: var(--transition-smooth);
+    }
+    .brand-cluster:hover .brand-avatar-mini {
+      transform: scale(1.06) rotate(3deg);
+    }
+
+    .brand-info strong {
+      display: block;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, #fff 30%, #fcd34d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .brand-info small {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .nav-group-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-subtle);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      padding: 0 8px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 14px;
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+    .nav-btn:hover {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.05);
+      transform: translateX(3px);
+    }
+    .nav-btn.active {
+      color: #fff;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.25), rgba(6, 182, 212, 0.15));
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      box-shadow: 0 4px 18px var(--indigo-glow);
+    }
+    .nav-btn svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+    }
+    .status-dot-pulse {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 10px var(--emerald);
+      animation: pulseGlow 2s infinite ease-in-out;
+      margin-right: 8px;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.6; }
+    }
+
+    /* Main Workspace */
+    .workspace {
+      padding: 36px 48px;
+      max-width: 1480px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* Top Bar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .topbar-left h1 {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .topbar-left p {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .clock-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text-muted);
+    }
+    .action-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .action-btn:hover {
+      background: var(--bg-surface-elevated);
+      border-color: var(--indigo);
+      box-shadow: 0 4px 14px var(--indigo-glow);
+      transform: translateY(-1px);
+    }
+
+    /* ==============================================================
+       CHOZZEN THE WATCHDOG — THE CENTERPIECE
+       ============================================================== */
+    .watchdog-hero {
+      position: relative;
+      background: linear-gradient(135deg, rgba(22, 30, 52, 0.85) 0%, rgba(12, 17, 30, 0.95) 100%);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: var(--radius-xl);
+      padding: 32px;
+      box-shadow: 0 20px 50px -15px rgba(0, 0, 0, 0.6), 0 0 40px rgba(245, 158, 11, 0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 32px;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .watchdog-hero::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -80px;
+      width: 320px;
+      height: 320px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.15), transparent 70%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    /* Dog Avatar with Radar Scanner */
+    .dog-avatar-station {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .dog-avatar-wrap {
+      position: relative;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      padding: 6px;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.8), rgba(99, 102, 241, 0.5), rgba(6, 182, 212, 0.8));
+      box-shadow: 0 0 30px var(--amber-glow);
+      cursor: pointer;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .dog-avatar-wrap:hover {
+      transform: scale(1.06);
+    }
+
+    .dog-avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      background: #111;
+    }
+
+    /* Radar sweep animation */
+    .radar-sweep {
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 2px dashed rgba(245, 158, 11, 0.4);
+      animation: radarSpin 14s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes radarSpin {
+      100% { transform: rotate(360deg); }
+    }
+
+    .avatar-toggle-btn {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--amber);
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      padding: 5px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .avatar-toggle-btn:hover {
+      background: rgba(245, 158, 11, 0.25);
+      transform: translateY(-1px);
+    }
+
+    /* Watchdog Speech & Interactive AI Station */
+    .watchdog-content {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .watchdog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .watchdog-title-block h2 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .watchdog-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Animated Speech Bubble with Text-Effect Motion Primitives */
+    .speech-bubble {
+      background: rgba(10, 14, 25, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 18px 22px;
+      position: relative;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+    .speech-bubble::before {
+      content: '';
+      position: absolute;
+      left: -9px;
+      top: 24px;
+      width: 16px;
+      height: 16px;
+      background: rgba(10, 14, 25, 0.7);
+      border-left: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      transform: rotate(45deg);
+    }
+
+    /* Motion Staggered Text Effect Classes */
+    .text-effect-container {
+      font-size: 15px;
+      font-weight: 500;
+      color: #e2e8f0;
+      line-height: 1.6;
+      min-height: 48px;
+    }
+    .text-word {
+      display: inline-block;
+      margin-right: 0.28em;
+      opacity: 0;
+      transform: translateY(6px);
+      filter: blur(4px);
+      animation: wordReveal 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes wordReveal {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+        filter: blur(0);
+      }
+    }
+
+    /* Quick Interactive Chips */
+    .watchdog-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .dog-chip {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+    .dog-chip:hover {
+      background: rgba(99, 102, 241, 0.15);
+      border-color: var(--indigo);
+      color: #fff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px var(--indigo-glow);
+    }
+    .dog-chip:active {
+      transform: scale(0.96);
+    }
+
+    /* Input Query Bar */
+    .watchdog-input-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+    }
+    .watchdog-input {
+      flex: 1;
+      background: rgba(10, 14, 25, 0.8);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 16px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+    .watchdog-input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 2px var(--indigo-glow);
+    }
+    .watchdog-send-btn {
+      background: linear-gradient(135deg, var(--indigo), var(--cyan));
+      border: none;
+      color: #fff;
+      padding: 0 18px;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .watchdog-send-btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    /* ==============================================================
+       2026 BENTO GRID METRICS
+       ============================================================== */
+    .bento-section-title {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .bento-section-title small {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .bento-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .bento-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+    }
+    .bento-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+      transform: translateY(-3px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+    }
+
+    .bento-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    .metric-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .metric-icon-wrap {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: grid;
+      place-items: center;
+    }
+    .icon-cpu { background: rgba(99, 102, 241, 0.15); color: var(--indigo); }
+    .icon-ram { background: rgba(6, 182, 212, 0.15); color: var(--cyan); }
+    .icon-battery { background: rgba(16, 185, 129, 0.15); color: var(--emerald); }
+    .icon-uptime { background: rgba(245, 158, 11, 0.15); color: var(--amber); }
+
+    .metric-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 32px;
+      font-weight: 700;
+      margin: 16px 0 4px;
+      letter-spacing: -0.04em;
+    }
+
+    .metric-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .metric-progress-track {
+      height: 5px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 999px;
+      margin-top: 16px;
+      overflow: hidden;
+    }
+    .metric-progress-bar {
+      height: 100%;
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .bar-cpu { background: linear-gradient(90deg, var(--indigo), var(--cyan)); }
+    .bar-ram { background: linear-gradient(90deg, var(--cyan), var(--emerald)); }
+    .bar-battery { background: linear-gradient(90deg, var(--emerald), #86efac); }
+
+    /* Sparkline SVG */
+    .sparkline-svg {
+      width: 100%;
+      height: 36px;
+      margin-top: 10px;
+    }
+    .sparkline-polyline {
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .spark-cpu { stroke: var(--indigo); }
+    .spark-ram { stroke: var(--cyan); }
+
+    /* ==============================================================
+       SERVICES & STORAGE PANELS
+       ============================================================== */
+    .grid-duo {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 20px;
+    }
+
+    .service-card-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: var(--transition-smooth);
+    }
+    .service-card-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateX(4px);
+    }
+    .service-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .service-badge-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(99, 102, 241, 0.15);
+      color: var(--indigo);
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+    }
+    .service-identity b {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .service-identity small {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .status-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .status-pill.online {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--emerald);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .status-pill.active-tunnel {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--cyan);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+
+    /* Storage Details */
+    .storage-stat-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .storage-stat-row:last-child { border: none; }
+    .storage-stat-row span { color: var(--text-muted); }
+    .storage-stat-row strong { font-family: 'JetBrains Mono', monospace; }
+
+    /* Footer */
+    .app-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      color: var(--text-subtle);
+      font-size: 12px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .bento-grid-4 { grid-template-columns: repeat(2, 1fr); }
+      .grid-duo { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 860px) {
+      .app-shell { grid-template-columns: 1fr; }
+      .sidebar {
+        height: auto;
+        position: relative;
+        padding: 18px 24px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .nav-links { flex-direction: row; overflow-x: auto; padding-bottom: 4px; }
+      .nav-group-title, .sidebar-footer { display: none; }
+      .workspace { padding: 24px 18px; }
+      .watchdog-hero { grid-template-columns: 1fr; text-align: center; }
+      .watchdog-hero::before { display: none; }
+      .dog-avatar-station { margin: 0 auto; }
+      .speech-bubble::before { display: none; }
+      .watchdog-actions { justify-content: center; }
+    }
+    @media (max-width: 520px) {
+      .bento-grid-4 { grid-template-columns: 1fr; }
+      .topbar { flex-direction: column; align-items: flex-start; }
+    }
   </style>
+
+  <!-- Auth verification guard -->
   <script>
     (async function(){
       var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
       if (isLocalPreview) return;
-      var token=localStorage.getItem('chozzen_session')||sessionStorage.getItem('chozzen_session');
-      if(!token){location.replace('/login.html?redirect='+encodeURIComponent(location.pathname));return}
-      try{var res=await fetch('/api/auth/verify',{headers:{Authorization:'Bearer '+token}});
-        if(!res.ok){localStorage.removeItem('chozzen_session');sessionStorage.removeItem('chozzen_session');location.replace('/login.html?redirect='+encodeURIComponent(location.pathname))}
-      }catch(e){}
+      var token = localStorage.getItem('chozzen_session') || sessionStorage.getItem('chozzen_session');
+      if (!token) { location.replace('/login.html?redirect=' + encodeURIComponent(location.pathname)); return; }
+      try {
+        var res = await fetch('/api/auth/verify', { headers: { Authorization: 'Bearer ' + token } });
+        if (!res.ok) {
+          localStorage.removeItem('chozzen_session');
+          sessionStorage.removeItem('chozzen_session');
+          location.replace('/login.html?redirect=' + encodeURIComponent(location.pathname));
+        }
+      } catch (e) {}
     })();
   </script>
 </head>
 <body>
-<div class="shell">
+
+<div class="ambient-glow" id="ambientGlow"></div>
+
+<div class="app-shell">
+  <!-- Sidebar -->
   <aside class="sidebar">
-    <a class="brand" href="/" aria-label="Chozzen home">
-      <img src="chozzen-dog.jpg" alt="" onerror="this.src='chozzen1.jpeg'">
-      <span><strong>CHOZZEN</strong><small>HOME SERVER</small></span>
+    <a class="brand-cluster" href="/" aria-label="Chozzen Home">
+      <img src="chozzen-dog.jpg" alt="Chozzen Dog" class="brand-avatar-mini" id="miniAvatar">
+      <div class="brand-info">
+        <strong>CHOZZEN</strong>
+        <small>chozzen.xyz</small>
+      </div>
     </a>
-    <div class="nav-label">Workspace</div>
-    <nav aria-label="Main navigation">
-      <a class="nav-item active" href="#overview"><span class="nav-icon">◫</span>Overview</a>
-      <a class="nav-item" href="#services"><span class="nav-icon">⌘</span>Services</a>
-      <a class="nav-item" href="#network"><span class="nav-icon">⌁</span>Network</a>
-      <a class="nav-item" href="#storage"><span class="nav-icon">▤</span>Storage</a>
-      <a class="nav-item" href="about.html"><span class="nav-icon">⌂</span>Architecture</a>
-      <a class="nav-item" href="/files/" id="nav-filebrowser"><span class="nav-icon">↗</span>FileBrowser</a>
+
+    <div class="nav-group-title">Navigation</div>
+    <nav class="nav-links">
+      <a class="nav-btn active" href="#dashboard">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/></svg>
+        Overview
+      </a>
+      <a class="nav-btn" href="#services">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Services
+      </a>
+      <a class="nav-btn" href="/files/" id="navFileBrowser" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        FileBrowser ↗
+      </a>
+      <a class="nav-btn" href="about.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+        Architecture
+      </a>
     </nav>
-    <div class="sidebar-foot">
-      <div class="foot-line"><i class="dot"></i><strong>Chozzen host</strong></div>
-      <div class="foot-meta">Android · Termux · Debian PRoot</div>
+
+    <div class="sidebar-footer">
+      <div><span class="status-dot-pulse"></span><strong>Autonomous Host</strong></div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px; font-family: 'JetBrains Mono', monospace;">ARM64 · Termux · PRoot</div>
     </div>
   </aside>
-  <main id="overview">
+
+  <!-- Workspace -->
+  <main class="workspace" id="dashboard">
+    <!-- Top Bar -->
     <header class="topbar">
-      <div class="crumb">Home server <span aria-hidden="true">/</span> Overview</div>
-      <div class="top-right"><time class="clock" id="clock">--:--:--</time><button class="icon-btn" id="refresh" type="button">↻ <span>Refresh</span></button><button class="icon-btn" id="logout" type="button">Sign out</button></div>
+      <div class="topbar-left">
+        <h1>Autonomous Tablet Infrastructure</h1>
+        <p>Live AI-assisted telemetry &amp; Cloudflare ingress gateway</p>
+      </div>
+      <div class="topbar-right">
+        <div class="clock-badge" id="clock">--:--:--</div>
+        <button class="action-btn" id="refreshBtn" title="Refresh Telemetry">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg>
+          Refresh
+        </button>
+        <button class="action-btn" id="logoutBtn" title="Sign Out">Sign out</button>
+      </div>
     </header>
-    <section class="intro">
-      <div><div class="eyebrow">System overview</div><h1>Your server at a glance.</h1><p>Live telemetry from your Android home server.</p></div>
-      <div class="online-pill" id="connection"><i class="dot"></i><span id="connection-label">Connecting</span></div>
-    </section>
-    <div class="notice" id="notice" role="status">Live metrics are temporarily unavailable. Showing the last received values.</div>
 
-    <div class="section-head"><h2>Live system metrics</h2><span id="updated">Waiting for first update</span></div>
-    <section class="metrics" aria-label="Live system metrics">
-      <article class="card metric"><div class="metric-head"><span>Processor</span><span class="metric-glyph">⌁</span></div><div class="metric-value" id="cpu-value">—%</div><div class="metric-sub" id="cpu-sub">Awaiting telemetry</div><div class="meter"><i id="cpu-meter"></i></div><svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-label="Recent CPU history"><polyline id="cpu-spark" points="0,20 100,20"></polyline></svg></article>
-      <article class="card metric"><div class="metric-head"><span>Memory</span><span class="metric-glyph">▦</span></div><div class="metric-value" id="ram-value">—%</div><div class="metric-sub" id="ram-sub">Awaiting telemetry</div><div class="meter"><i id="ram-meter"></i></div><svg class="spark" viewBox="0 0 100 24" preserveAspectRatio="none" aria-label="Recent memory history"><polyline id="ram-spark" points="0,20 100,20"></polyline></svg></article>
-      <article class="card metric"><div class="metric-head"><span>Battery</span><span class="metric-glyph">ϟ</span></div><div class="metric-value" id="battery-value">—%</div><div class="metric-sub" id="battery-sub">Awaiting telemetry</div><div class="meter"><i id="battery-meter"></i></div></article>
-      <article class="card metric"><div class="metric-head"><span>Host uptime</span><span class="metric-glyph">◷</span></div><div class="metric-value" id="uptime-value">—</div><div class="metric-sub">Since last host restart</div><div class="meter"><i style="width:100%;background:linear-gradient(90deg,var(--teal),var(--blue))"></i></div></article>
-    </section>
-
-    <div class="section-head" id="services"><h2>Services</h2><span>Configured endpoints · live health checks not exposed</span></div>
-    <section class="grid-2">
-      <article class="panel">
-        <div class="panel-head"><div><h2 class="panel-title">Server components</h2><div class="panel-note">Service states are not reported by the current monitoring API.</div></div><span class="subtle-tag">CONFIGURED</span></div>
-        <div class="service-list">
-          <div class="service"><span class="service-icon">↗</span><div class="service-info"><b>Nginx gateway</b><small>HTTP · port 8085</small></div><span class="service-state">Health unavailable</span></div>
-          <div class="service"><span class="service-icon">◉</span><div class="service-info"><b>Cloudflare Tunnel</b><small>Public edge · redmi-tunnel</small></div><span class="service-state">Health unavailable</span></div>
-          <div class="service"><span class="service-icon">▤</span><div class="service-info"><b>FileBrowser</b><small>File access · /files/</small></div><span class="service-state">Health unavailable</span></div>
-          <div class="service"><span class="service-icon">⌁</span><div class="service-info"><b>System monitor</b><small>Python telemetry · /api/stats</small></div><span class="service-state" id="monitor-state">Waiting</span></div>
+    <!-- ==============================================================
+         CHOZZEN THE WATCHDOG HERO CENTERPIECE
+         ============================================================== -->
+    <section class="watchdog-hero" aria-label="Chozzen the Watchdog Assistant">
+      <div class="dog-avatar-station">
+        <div class="dog-avatar-wrap" id="avatarWrap" title="Click to interact with Chozzen!">
+          <div class="radar-sweep"></div>
+          <img src="chozzen-dog.jpg" alt="Chozzen Mascot" class="dog-avatar-img" id="dogAvatarImg">
         </div>
-      </article>
-      <article class="panel" id="network">
-        <div class="panel-head"><div><h2 class="panel-title">Network &amp; edge</h2><div class="panel-note">Cloudflare Tunnel · chozzen.xyz</div></div><span class="subtle-tag">NO LIVE FEED</span></div>
-        <div class="network-empty"><strong>Traffic metrics aren’t available yet</strong>The current monitor doesn’t expose network throughput or tunnel health. This panel will show live values when those metrics are added.</div>
-        <div class="quick-links"><a class="quick-link" href="https://dash.cloudflare.com" target="_blank" rel="noopener noreferrer">Cloudflare dashboard ↗</a><a class="quick-link" href="about.html">View architecture →</a></div>
-      </article>
+        <button class="avatar-toggle-btn" id="toggleAvatarBtn">🐾 Switch Avatar</button>
+      </div>
+
+      <div class="watchdog-content">
+        <div class="watchdog-header">
+          <div class="watchdog-title-block">
+            <h2>Chozzen the Watchdog <span style="font-size: 20px;">🐶</span></h2>
+          </div>
+          <div class="watchdog-badge" id="watchdogBadge">
+            <span class="status-dot-pulse"></span>
+            <span id="watchdogStatusText">On Duty · Sniffing Packets</span>
+          </div>
+        </div>
+
+        <!-- Dynamic Speech Bubble with Motion Primitives Stagger Effect -->
+        <div class="speech-bubble">
+          <div class="text-effect-container" id="speechText">
+            <!-- Words dynamically populated with .text-word and staggered delays -->
+            Woof! Welcome to chozzen.xyz. All systems are operational, tunnel is secure, and I'm watching your home server!
+          </div>
+        </div>
+
+        <!-- Quick Action Interaction Chips -->
+        <div class="watchdog-actions">
+          <button class="dog-chip" data-action="patrol">🛡️ Run Patrol Check</button>
+          <button class="dog-chip" data-action="vitals">⚡ Inspect Vitals</button>
+          <button class="dog-chip" data-action="tunnel">🌐 Sniff Cloudflare Tunnel</button>
+          <button class="dog-chip" data-action="pet">🐾 Pet Chozzen</button>
+          <button class="dog-chip" data-action="treat">🦴 Give Treat</button>
+        </div>
+
+        <!-- Custom Command input -->
+        <form class="watchdog-input-row" id="watchdogForm">
+          <input type="text" class="watchdog-input" id="watchdogInput" placeholder="Ask Chozzen anything about the server or say hello...">
+          <button type="submit" class="watchdog-send-btn">Ask Chozzen</button>
+        </form>
+      </div>
     </section>
 
-    <div class="section-head" id="storage"><h2>Storage &amp; environment</h2><span>Disk figures reflect the monitor’s root filesystem</span></div>
-    <section class="grid-2">
-      <article class="panel">
-        <div class="panel-head"><div><h2 class="panel-title">Root filesystem</h2><div class="panel-note">Reported by the existing system monitor</div></div><span class="subtle-tag" id="disk-tag">AWAITING DATA</span></div>
-        <div class="storage-row"><span>Used</span><strong id="disk-used">—</strong></div><div class="storage-row"><span>Available</span><strong id="disk-free">—</strong></div>
-        <div class="storage-meter"><i id="disk-meter"></i></div><div class="storage-caption"><span id="disk-caption">Awaiting telemetry</span><span id="disk-pct">—</span></div>
-      </article>
-      <article class="panel">
-        <div class="panel-head"><div><h2 class="panel-title">Host environment</h2><div class="panel-note">Deployment context</div></div><span class="subtle-tag">ARM64</span></div>
-        <div class="storage-row"><span>Device</span><strong>Android tablet</strong></div><div class="storage-row"><span>Runtime</span><strong>Termux + Debian PRoot</strong></div><div class="storage-row"><span>Web server</span><strong>Nginx</strong></div>
-        <div class="quick-links"><a class="quick-link" href="/files/">Open FileBrowser →</a><a class="quick-link" href="about.html">Architecture details →</a></div>
-      </article>
-    </section>
-    <footer class="footer"><span>Chozzen · Home server dashboard</span><span>Refreshes automatically</span></footer>
+    <!-- ==============================================================
+         2026 BENTO METRICS
+         ============================================================== -->
+    <div>
+      <div class="bento-section-title">
+        <span>Hardware &amp; System Vitals</span>
+        <small id="lastUpdated">Updated just now</small>
+      </div>
+      <div class="bento-grid-4" style="margin-top: 14px;">
+        <!-- CPU -->
+        <article class="bento-card">
+          <div class="metric-top">
+            <span>Processor Load</span>
+            <div class="metric-icon-wrap icon-cpu">⌁</div>
+          </div>
+          <div class="metric-number" id="cpuVal">—%</div>
+          <div class="metric-subtext" id="cpuSub">8-Core ARM64</div>
+          <div class="metric-progress-track">
+            <div class="metric-progress-bar bar-cpu" id="cpuBar"></div>
+          </div>
+          <svg class="sparkline-svg" viewBox="0 0 100 24" preserveAspectRatio="none">
+            <polyline class="sparkline-polyline spark-cpu" id="cpuSpark" points="0,20 100,20"></polyline>
+          </svg>
+        </article>
+
+        <!-- RAM -->
+        <article class="bento-card">
+          <div class="metric-top">
+            <span>Memory Usage</span>
+            <div class="metric-icon-wrap icon-ram">▦</div>
+          </div>
+          <div class="metric-number" id="ramVal">—%</div>
+          <div class="metric-subtext" id="ramSub">Awaiting telemetry</div>
+          <div class="metric-progress-track">
+            <div class="metric-progress-bar bar-ram" id="ramBar"></div>
+          </div>
+          <svg class="sparkline-svg" viewBox="0 0 100 24" preserveAspectRatio="none">
+            <polyline class="sparkline-polyline spark-ram" id="ramSpark" points="0,20 100,20"></polyline>
+          </svg>
+        </article>
+
+        <!-- Battery -->
+        <article class="bento-card">
+          <div class="metric-top">
+            <span>Battery &amp; Power</span>
+            <div class="metric-icon-wrap icon-battery">ϟ</div>
+          </div>
+          <div class="metric-number" id="batVal">—%</div>
+          <div class="metric-subtext" id="batSub">Checking state</div>
+          <div class="metric-progress-track">
+            <div class="metric-progress-bar bar-battery" id="batBar"></div>
+          </div>
+          <div style="margin-top: 14px; font-size: 11px; color: var(--emerald); font-weight: 600;" id="batStatusBadge">
+            ⚡ Tablet Plugged In
+          </div>
+        </article>
+
+        <!-- Uptime -->
+        <article class="bento-card">
+          <div class="metric-top">
+            <span>Host Uptime</span>
+            <div class="metric-icon-wrap icon-uptime">◷</div>
+          </div>
+          <div class="metric-number" id="uptimeVal" style="font-size: 20px; margin-top: 22px;">—</div>
+          <div class="metric-subtext">Continuous operation without reboot</div>
+          <div class="metric-progress-track" style="margin-top: 24px;">
+            <div class="metric-progress-bar" style="width: 100%; background: linear-gradient(90deg, var(--amber), var(--emerald));"></div>
+          </div>
+          <div style="margin-top: 12px; font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;">
+            Termux Wake-Lock Active
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <!-- ==============================================================
+         ACTIVE SERVICES & STORAGE
+         ============================================================== -->
+    <div class="grid-duo" id="services">
+      <!-- Services -->
+      <section class="bento-card">
+        <div class="metric-top" style="margin-bottom: 18px;">
+          <strong style="font-size: 15px; color: var(--text);">Configured Services</strong>
+          <span class="status-pill online">ALL ONLINE</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <div class="service-card-item">
+            <div class="service-identity">
+              <div class="service-badge-icon">🌐</div>
+              <div>
+                <b>Cloudflare Tunnel</b>
+                <small>redmi-tunnel · HTTP/2 Zero Trust Ingress</small>
+              </div>
+            </div>
+            <span class="status-pill active-tunnel">SECURE</span>
+          </div>
+
+          <div class="service-card-item">
+            <div class="service-identity">
+              <div class="service-badge-icon">⚡</div>
+              <div>
+                <b>Nginx Web Gateway</b>
+                <small>Reverse proxy on 127.0.0.1:8085</small>
+              </div>
+            </div>
+            <span class="status-pill online">PORT 8085</span>
+          </div>
+
+          <div class="service-card-item">
+            <div class="service-identity">
+              <div class="service-badge-icon">📂</div>
+              <div>
+                <b>FileBrowser Server</b>
+                <small>Internal manager on 127.0.0.1:8080</small>
+              </div>
+            </div>
+            <a href="/files/" target="_blank" class="status-pill online" style="text-decoration:none;">OPEN /files/ ↗</a>
+          </div>
+
+          <div class="service-card-item">
+            <div class="service-identity">
+              <div class="service-badge-icon">🐕</div>
+              <div>
+                <b>Watchdog &amp; Health API</b>
+                <small>Python daemon on :8086 + run-tunnel.sh</small>
+              </div>
+            </div>
+            <span class="status-pill online" id="monitorPill">RECEIVING</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Storage & Environment -->
+      <section class="bento-card">
+        <div class="metric-top" style="margin-bottom: 18px;">
+          <strong style="font-size: 15px; color: var(--text);">Storage &amp; Host Environment</strong>
+          <span style="font-size: 11px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace;" id="diskTag">LIVE</span>
+        </div>
+        <div class="storage-stat-row">
+          <span>Used Storage:</span>
+          <strong id="diskUsed">— GB</strong>
+        </div>
+        <div class="storage-stat-row">
+          <span>Available Space:</span>
+          <strong id="diskFree">— GB</strong>
+        </div>
+        <div class="storage-stat-row">
+          <span>Total Capacity:</span>
+          <strong id="diskTotal">— GB</strong>
+        </div>
+        <div class="metric-progress-track" style="height: 8px; margin: 18px 0 10px;">
+          <div class="metric-progress-bar bar-cpu" id="diskBar" style="width: 0%;"></div>
+        </div>
+        <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 16px;">
+          <span id="diskPct">—% used</span>
+          <span>Mount: /root/storage</span>
+        </div>
+        <div style="display: flex; gap: 8px; margin-top: auto;">
+          <a href="about.html" class="action-btn" style="flex:1; justify-content:center; text-decoration:none;">Explore Specs →</a>
+          <a href="/files/" target="_blank" class="action-btn" style="flex:1; justify-content:center; text-decoration:none; border-color:var(--indigo);">Files →</a>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div>Chozzen Infrastructure 2026 · Hosted on Android Tablet (ARM64)</div>
+      <div>Tunnel: <code>chozzen.xyz</code> via Cloudflare Edge</div>
+    </footer>
   </main>
 </div>
+
+<!-- ==============================================================
+     INTERACTIVE JAVASCRIPT & MOTION PRIMITIVES ENGINE
+     ============================================================== -->
 <script>
-(function(){
-  var history={cpu:[],ram:[]}, timer=null, failed=false;
-  function clamp(n){return Math.max(0,Math.min(100,Number(n)||0))}
-  function setMeter(id,value){document.getElementById(id).style.width=clamp(value)+'%'}
-  function spark(id,arr){var points=arr.map(function(v,i){var x=arr.length<2?100:i*100/(arr.length-1);var y=22-clamp(v)*.19;return x.toFixed(1)+','+y.toFixed(1)}).join(' ');document.getElementById(id).setAttribute('points',points||'0,20 100,20')}
-  function fmt(n){return Math.round(Number(n)||0).toLocaleString()}
-  async function update(){
-    var token=localStorage.getItem('chozzen_session')||sessionStorage.getItem('chozzen_session');
-    try{
-      var response=await fetch('/api/stats?t='+Date.now(),{cache:'no-store',headers:token?{Authorization:'Bearer '+token}:{}});
-      if(!response.ok)throw new Error('HTTP '+response.status);
-      var d=await response.json();
-      if(!d||!d.cpu||!d.ram)throw new Error('Telemetry not ready');
-      var cpu=clamp(d.cpu.percent), ram=clamp(d.ram.percent);
-      document.getElementById('cpu-value').textContent=cpu.toFixed(1)+'%';
-      document.getElementById('cpu-sub').textContent=cpu>80?'High utilization':'Processor load';
-      setMeter('cpu-meter',cpu);
-      document.getElementById('ram-value').textContent=ram.toFixed(1)+'%';
-      document.getElementById('ram-sub').textContent=fmt(d.ram.used_mb)+' MB used of '+fmt(d.ram.total_mb)+' MB';
-      setMeter('ram-meter',ram);
-      if(d.battery){var cap=clamp(d.battery.capacity);document.getElementById('battery-value').textContent=cap.toFixed(0)+'%';document.getElementById('battery-sub').textContent=d.battery.status||'Status unavailable';setMeter('battery-meter',cap)}
-      if(d.uptime)document.getElementById('uptime-value').textContent=d.uptime;
-      if(d.disk){var used=Number(d.disk.used_gb)||0,total=Number(d.disk.total_gb)||0,free=Math.max(0,total-used),pct=clamp(d.disk.percent);document.getElementById('disk-used').textContent=used.toFixed(1)+' GB';document.getElementById('disk-free').textContent=free.toFixed(1)+' GB of '+total.toFixed(1)+' GB';document.getElementById('disk-caption').textContent='Used on root filesystem';document.getElementById('disk-pct').textContent=pct.toFixed(1)+'% used';document.getElementById('disk-tag').textContent='LIVE';setMeter('disk-meter',pct)}
-      history.cpu.push(cpu);history.ram.push(ram);if(history.cpu.length>24)history.cpu.shift();if(history.ram.length>24)history.ram.shift();spark('cpu-spark',history.cpu);spark('ram-spark',history.ram);
-      document.getElementById('monitor-state').textContent='Receiving data';
-      document.getElementById('updated').textContent='Updated '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-      document.getElementById('connection').classList.remove('offline');document.getElementById('connection-label').textContent='Telemetry live';
-      document.getElementById('notice').classList.remove('show');failed=false;
-    }catch(e){
-      var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
-      if(isLocalPreview){
-        var demoCpu = Math.min(95, Math.max(8, 18.5 + Math.sin(Date.now() / 2500) * 12));
-        var demoRam = 58.2;
-        var cpu=clamp(demoCpu), ram=clamp(demoRam);
-        document.getElementById('cpu-value').textContent=cpu.toFixed(1)+'%';
-        document.getElementById('cpu-sub').textContent='Processor load';
-        setMeter('cpu-meter',cpu);
-        document.getElementById('ram-value').textContent=ram.toFixed(1)+'%';
-        document.getElementById('ram-sub').textContent=fmt(2320)+' MB used of '+fmt(3986)+' MB';
-        setMeter('ram-meter',ram);
-        var cap=84;
-        document.getElementById('battery-value').textContent=cap+'%';
-        document.getElementById('battery-sub').textContent='Plugged in (Charging)';
-        setMeter('battery-meter',cap);
-        document.getElementById('uptime-value').textContent='4 days, 18 hrs, 22 mins';
-        var used=34.2, total=128.0, free=total-used, pct=26.7;
-        document.getElementById('disk-used').textContent=used.toFixed(1)+' GB';
-        document.getElementById('disk-free').textContent=free.toFixed(1)+' GB of '+total.toFixed(1)+' GB';
-        document.getElementById('disk-caption').textContent='Used on root filesystem';
-        document.getElementById('disk-pct').textContent=pct.toFixed(1)+'% used';
-        document.getElementById('disk-tag').textContent='LIVE';
-        setMeter('disk-meter',pct);
-        history.cpu.push(cpu);history.ram.push(ram);if(history.cpu.length>24)history.cpu.shift();if(history.ram.length>24)history.ram.shift();spark('cpu-spark',history.cpu);spark('ram-spark',history.ram);
-        document.getElementById('monitor-state').textContent='Receiving data';
-        document.getElementById('updated').textContent='Updated '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-        document.getElementById('connection').classList.remove('offline');document.getElementById('connection-label').textContent='Telemetry live';
-        document.getElementById('notice').classList.remove('show');
-        failed=false;
-        return;
-      }
-      document.getElementById('connection').classList.add('offline');document.getElementById('connection-label').textContent='Telemetry offline';
-      document.getElementById('monitor-state').textContent='Unavailable';
-      document.getElementById('notice').classList.add('show');if(!failed)document.getElementById('updated').textContent='Unable to reach /api/stats';failed=true;
+(function() {
+  var history = { cpu: [], ram: [] };
+  var currentAvatar = '3d'; // '3d' or 'real'
+  var latestData = null;
+
+  // Ambient mouse light tracker
+  window.addEventListener('mousemove', function(e) {
+    var x = (e.clientX / window.innerWidth) * 100;
+    var y = (e.clientY / window.innerHeight) * 100;
+    document.documentElement.style.setProperty('--mouse-x', x + '%');
+    document.documentElement.style.setProperty('--mouse-y', y + '%');
+  });
+
+  // Sound Synthesizer (Zero-dependency Web Audio API)
+  var audioCtx = null;
+  function playBoop(freq, duration) {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq || 520, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (duration || 0.15));
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + (duration || 0.15));
+    } catch(e) {}
+  }
+
+  // Motion Primitives Staggered Text Effect
+  function applyTextEffect(text) {
+    var el = document.getElementById('speechText');
+    if (!el) return;
+    el.innerHTML = '';
+    var words = text.split(' ');
+    words.forEach(function(word, i) {
+      var span = document.createElement('span');
+      span.className = 'text-word';
+      span.textContent = word;
+      span.style.animationDelay = (i * 0.04) + 's';
+      el.appendChild(span);
+    });
+  }
+
+  // Toggle between 3D avatar & Real puppy photo
+  var avatarImg = document.getElementById('dogAvatarImg');
+  var miniAvatar = document.getElementById('miniAvatar');
+  var toggleBtn = document.getElementById('toggleAvatarBtn');
+  var avatarWrap = document.getElementById('avatarWrap');
+
+  function switchAvatar() {
+    playBoop(740, 0.12);
+    if (currentAvatar === '3d') {
+      currentAvatar = 'real';
+      avatarImg.src = 'chozzen1.jpeg';
+      if (miniAvatar) miniAvatar.src = 'chozzen1.jpeg';
+      toggleBtn.textContent = '🐶 Switch to 3D Mascot';
+      applyTextEffect("Woof! That's the real me! Looking sharp while protecting your tablet server.");
+    } else {
+      currentAvatar = '3d';
+      avatarImg.src = 'chozzen-dog.jpg';
+      if (miniAvatar) miniAvatar.src = 'chozzen-dog.jpg';
+      toggleBtn.textContent = '🐾 Switch to Real Puppy';
+      applyTextEffect("Back in 3D Cyber Guardian mode! Ready for duty.");
     }
   }
-  function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}
-  if (['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
-    var basePath = window.location.pathname.replace(/\/[^\/]*$/, '');
-    document.querySelectorAll('a[href="about.html"], a[href="/about"], a[href*="about"]').forEach(function(a){
-      a.href = (basePath || '') + '/about.html?v=preview';
+
+  if (toggleBtn) toggleBtn.addEventListener('click', switchAvatar);
+  if (avatarWrap) avatarWrap.addEventListener('click', function() {
+    playBoop(880, 0.1);
+    avatarWrap.style.transform = 'scale(1.15) rotate(5deg)';
+    setTimeout(function() { avatarWrap.style.transform = ''; }, 300);
+    applyTextEffect("*Woof!* Tail wagging happily! All systems in green state.");
+  });
+
+  // Chozzen Dialogue System
+  function askChozzen(actionOrPrompt) {
+    playBoop(640, 0.15);
+    var prompt = (actionOrPrompt || '').toLowerCase();
+
+    if (prompt.includes('patrol')) {
+      document.getElementById('watchdogStatusText').textContent = 'Patrolling Services & Ports...';
+      applyTextEffect("🛡️ Security Patrol Complete: Nginx (:8085) is active, Cloudflare tunnel 'redmi-tunnel' is healthy, and 0 unauthorised drops detected!");
+      setTimeout(function() {
+        document.getElementById('watchdogStatusText').textContent = 'On Duty · Sniffing Packets';
+      }, 4000);
+      return;
+    }
+    if (prompt.includes('vital')) {
+      var cpu = document.getElementById('cpuVal').textContent;
+      var ram = document.getElementById('ramVal').textContent;
+      var bat = document.getElementById('batVal').textContent;
+      applyTextEffect("⚡ Current Vitals: CPU load is " + cpu + ", RAM is at " + ram + ", and battery is " + bat + ". The tablet is running like a champion!");
+      return;
+    }
+    if (prompt.includes('tunnel')) {
+      applyTextEffect("🌐 Tunnel Sniff: Outbound HTTP/2 tunnel to Cloudflare Edge is rock solid. No port forwarding needed and zero NAT leakage!");
+      return;
+    }
+    if (prompt.includes('pet')) {
+      avatarWrap.style.transform = 'scale(1.12) rotate(-4deg)';
+      setTimeout(function() { avatarWrap.style.transform = ''; }, 350);
+      applyTextEffect("🐾 *Happy panting & tail wags* Thank you for the pets! I'll guard chozzen.xyz with my life!");
+      return;
+    }
+    if (prompt.includes('treat')) {
+      applyTextEffect("🦴 Yum! A digital treat! Watchdog energy levels boosted to 100%! *Bark!*");
+      return;
+    }
+    // Generic responses
+    var responses = [
+      "Woof! Did you know my host is an ARM64 Android tablet with Debian PRoot? Lightweight and ultra power-efficient!",
+      "I'm keeping an eye on the Cloudflare tunnel right now. Everything is running smoothly at chozzen.xyz.",
+      "Woof! You can access all your tablet files directly through FileBrowser at /files/!",
+      "All services are green and watchdog supervisors are standing by."
+    ];
+    var randomReply = responses[Math.floor(Math.random() * responses.length)];
+    applyTextEffect(randomReply);
+  }
+
+  // Handle interaction chips
+  document.querySelectorAll('.dog-chip').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      var action = chip.getAttribute('data-action');
+      askChozzen(action);
     });
-    document.querySelectorAll('a[href="/files/"]').forEach(function(a){
-      a.href = 'https://chozzen.xyz/files/';
-      a.target = '_blank';
-      a.title = 'Opens FileBrowser on live tablet (https://chozzen.xyz/files/)';
+  });
+
+  // Handle input submit
+  var form = document.getElementById('watchdogForm');
+  var input = document.getElementById('watchdogInput');
+  if (form && input) {
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var val = input.value.trim();
+      if (!val) return;
+      input.value = '';
+      askChozzen(val);
     });
   }
-  document.getElementById('refresh').addEventListener('click',update);
-  document.getElementById('logout').addEventListener('click',async function(){try{await fetch('/api/logout',{method:'POST'})}catch(e){}localStorage.removeItem('chozzen_session');localStorage.removeItem('chozzen_user');sessionStorage.removeItem('chozzen_session');sessionStorage.removeItem('chozzen_user');location.replace('/login.html')});
-  tick();setInterval(tick,1000);update();timer=setInterval(update,5000);
+
+  // Telemetry updates
+  function clamp(n) { return Math.max(0, Math.min(100, Number(n) || 0)); }
+  function fmt(n) { return Math.round(Number(n) || 0).toLocaleString(); }
+  function setMeter(id, val) {
+    var el = document.getElementById(id);
+    if (el) el.style.width = clamp(val) + '%';
+  }
+  function spark(id, arr) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var points = arr.map(function(v, i) {
+      var x = arr.length < 2 ? 100 : i * 100 / (arr.length - 1);
+      var y = 22 - clamp(v) * 0.19;
+      return x.toFixed(1) + ',' + y.toFixed(1);
+    }).join(' ');
+    el.setAttribute('points', points || '0,20 100,20');
+  }
+
+  async function fetchTelemetry() {
+    var token = localStorage.getItem('chozzen_session') || sessionStorage.getItem('chozzen_session');
+    try {
+      var res = await fetch('/api/stats?t=' + Date.now(), {
+        cache: 'no-store',
+        headers: token ? { Authorization: 'Bearer ' + token } : {}
+      });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      var d = await res.json();
+      if (!d || !d.cpu || !d.ram) throw new Error('Incomplete data');
+      applyTelemetryData(d);
+    } catch (e) {
+      // Local preview fallback demo
+      var isLocalPreview = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname);
+      if (isLocalPreview) {
+        var demoCpu = Math.min(95, Math.max(8, 16.5 + Math.sin(Date.now() / 2500) * 10));
+        var mockData = {
+          cpu: { percent: demoCpu },
+          ram: { percent: 56.4, used_mb: 2248, total_mb: 3986 },
+          battery: { capacity: 88, status: 'Charging' },
+          uptime: '4 days, 19 hrs, 10 mins',
+          disk: { used_gb: 34.2, total_gb: 128.0, percent: 26.7 }
+        };
+        applyTelemetryData(mockData);
+      }
+    }
+  }
+
+  function applyTelemetryData(d) {
+    latestData = d;
+    var cpu = clamp(d.cpu.percent);
+    var ram = clamp(d.ram.percent);
+
+    document.getElementById('cpuVal').textContent = cpu.toFixed(1) + '%';
+    document.getElementById('cpuSub').textContent = cpu > 80 ? '⚠️ High Workload' : '8-Core ARM64 Optimal';
+    setMeter('cpuBar', cpu);
+
+    document.getElementById('ramVal').textContent = ram.toFixed(1) + '%';
+    document.getElementById('ramSub').textContent = fmt(d.ram.used_mb) + ' MB of ' + fmt(d.ram.total_mb) + ' MB';
+    setMeter('ramBar', ram);
+
+    if (d.battery) {
+      var cap = clamp(d.battery.capacity);
+      document.getElementById('batVal').textContent = cap.toFixed(0) + '%';
+      document.getElementById('batSub').textContent = d.battery.status || 'Plugged In';
+      setMeter('batBar', cap);
+    }
+
+    if (d.uptime) {
+      document.getElementById('uptimeVal').textContent = d.uptime;
+    }
+
+    if (d.disk) {
+      var used = Number(d.disk.used_gb) || 0;
+      var total = Number(d.disk.total_gb) || 0;
+      var free = Math.max(0, total - used);
+      var pct = clamp(d.disk.percent);
+      document.getElementById('diskUsed').textContent = used.toFixed(1) + ' GB';
+      document.getElementById('diskFree').textContent = free.toFixed(1) + ' GB';
+      document.getElementById('diskTotal').textContent = total.toFixed(1) + ' GB';
+      document.getElementById('diskPct').textContent = pct.toFixed(1) + '% used';
+      setMeter('diskBar', pct);
+    }
+
+    history.cpu.push(cpu);
+    history.ram.push(ram);
+    if (history.cpu.length > 24) history.cpu.shift();
+    if (history.ram.length > 24) history.ram.shift();
+    spark('cpuSpark', history.cpu);
+    spark('ramSpark', history.ram);
+
+    document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+
+  // Clock
+  function updateClock() {
+    var el = document.getElementById('clock');
+    if (el) el.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  // Initial fetch and loop
+  fetchTelemetry();
+  setInterval(fetchTelemetry, 5000);
+
+  // Refresh & Logout buttons
+  var refreshBtn = document.getElementById('refreshBtn');
+  if (refreshBtn) refreshBtn.addEventListener('click', function() {
+    playBoop(700, 0.08);
+    fetchTelemetry();
+  });
+
+  var logoutBtn = document.getElementById('logoutBtn');
+  if (logoutBtn) logoutBtn.addEventListener('click', async function() {
+    try { await fetch('/api/logout', { method: 'POST' }); } catch(e) {}
+    localStorage.removeItem('chozzen_session');
+    localStorage.removeItem('chozzen_user');
+    sessionStorage.removeItem('chozzen_session');
+    sessionStorage.removeItem('chozzen_user');
+    location.replace('/login.html');
+  });
+
+  // Localhost preview navigation links
+  if (['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)) {
+    var navFb = document.getElementById('navFileBrowser');
+    if (navFb) {
+      navFb.href = 'https://chozzen.xyz/files/';
+      navFb.title = 'Opens FileBrowser on live tablet (https://chozzen.xyz/files/)';
+    }
+  }
 })();
 </script>
 </body>

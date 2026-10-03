@@ -1,9 +1,16 @@
 # Credentials & Secrets (CRITICAL SECURITY)
 *.json
+!package.json
+!package-lock.json
+!openapi.json
+!swagger.json
 cert.pem
 *.key
 *.pem
 *.crt
+
+# Node dependencies
+node_modules/
 
 # Local State & Databases
 *.db
@@ -22,3 +29,4 @@ __pycache__/
 
 .vscode/
 
+myresearch/
